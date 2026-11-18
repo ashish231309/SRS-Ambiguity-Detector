@@ -1,0 +1,528 @@
+<!-- ================= CHAPTER 7 ================= -->
+<h1 class="ch">7. System Architecture and UML Design</h1>
+
+<h2>7.1 Architecture Overview</h2>
+<p>The system follows a three-tier, layered architecture. The <b>presentation tier</b> is a Next.js (React + TypeScript) web application that renders public pages, the analyser, reports, history, dashboard and settings, and communicates with the back end only through a versioned REST API. The <b>application tier</b> is a FastAPI (Python) service organised in layers — API routers receive requests, a service layer executes business logic, and a repository layer is the only place that talks to the database through SQLAlchemy. Within this tier, the <b>deterministic detection engine</b> (segmentation, eleven detectors, deduplication, scoring) performs the complete analysis without any external dependency. The <b>data tier</b> is PostgreSQL, which stores users, analyses, requirements, issues, documents and credentials, together with a document storage component (local disk in development, managed object storage in production). External services are used only at the edges: an email service for verification and reset messages, a CAPTCHA service for abuse protection, error monitoring, and — only when the user configures it — external AI providers for the optional enhancement. Figure 7.1 shows the overall architecture.</p>
+
+<div class="figure">
+<svg viewBox="0 0 700 430" width="100%" style="max-width:600px;" font-family="'DejaVu Sans',sans-serif">
+  <defs><marker id="m1" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#34558b"/></marker></defs>
+  <rect x="190" y="8" width="300" height="40" rx="5" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+  <text x="340" y="32" text-anchor="middle" font-size="11.5" font-weight="bold">User's Web Browser (Desktop / Mobile)</text>
+  <rect x="160" y="76" width="360" height="58" rx="5" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+  <text x="340" y="98" text-anchor="middle" font-size="11.5" font-weight="bold">Next.js Front End (React + TypeScript)</text>
+  <text x="340" y="117" text-anchor="middle" font-size="9.5">Public pages · Analyser · Report · History · Dashboard · Settings</text>
+  <rect x="160" y="162" width="360" height="58" rx="5" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+  <text x="340" y="184" text-anchor="middle" font-size="11.5" font-weight="bold">FastAPI Back End (Python)</text>
+  <text x="340" y="203" text-anchor="middle" font-size="9.5">REST API /api/v1 → Services → Repositories</text>
+  <rect x="160" y="248" width="360" height="56" rx="5" fill="#dcebf7" stroke="#10355f" stroke-width="1.6"/>
+  <text x="340" y="270" text-anchor="middle" font-size="11.5" font-weight="bold">Deterministic Detection Engine</text>
+  <text x="340" y="289" text-anchor="middle" font-size="9.5">Segmentation → 11 Detectors → Deduplication → Scoring</text>
+  <rect x="140" y="332" width="180" height="58" rx="5" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+  <text x="230" y="354" text-anchor="middle" font-size="11" font-weight="bold">PostgreSQL Database</text>
+  <text x="230" y="372" text-anchor="middle" font-size="9">Users · Analyses · Issues</text>
+  <rect x="350" y="332" width="180" height="58" rx="5" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+  <text x="440" y="354" text-anchor="middle" font-size="11" font-weight="bold">Document Storage</text>
+  <text x="440" y="372" text-anchor="middle" font-size="9">Local disk / object storage</text>
+  <rect x="548" y="150" width="146" height="42" rx="5" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.1"/>
+  <text x="621" y="168" text-anchor="middle" font-size="10" font-weight="bold">Email Service</text>
+  <text x="621" y="183" text-anchor="middle" font-size="8.5">Verify / reset mail</text>
+  <rect x="548" y="204" width="146" height="42" rx="5" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.1"/>
+  <text x="621" y="222" text-anchor="middle" font-size="10" font-weight="bold">CAPTCHA Service</text>
+  <text x="621" y="237" text-anchor="middle" font-size="8.5">Abuse protection</text>
+  <rect x="548" y="258" width="146" height="42" rx="5" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.1"/>
+  <text x="621" y="276" text-anchor="middle" font-size="10" font-weight="bold">Error Monitoring</text>
+  <text x="621" y="291" text-anchor="middle" font-size="8.5">Scrubbed error reports</text>
+  <rect x="548" y="312" width="146" height="52" rx="5" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.1"/>
+  <text x="621" y="330" text-anchor="middle" font-size="10" font-weight="bold">AI Providers (Optional)</text>
+  <text x="621" y="345" text-anchor="middle" font-size="8.5">User's own credentials</text>
+  <line x1="340" y1="48" x2="340" y2="72" stroke="#34558b" stroke-width="1.2" marker-end="url(#m1)"/>
+  <text x="348" y="64" font-size="8.5">HTTPS</text>
+  <line x1="340" y1="134" x2="340" y2="158" stroke="#34558b" stroke-width="1.2" marker-end="url(#m1)"/>
+  <text x="348" y="150" font-size="8.5">REST /api/v1 · cookies</text>
+  <line x1="340" y1="220" x2="340" y2="244" stroke="#34558b" stroke-width="1.2" marker-end="url(#m1)"/>
+  <line x1="280" y1="304" x2="245" y2="328" stroke="#34558b" stroke-width="1.2" marker-end="url(#m1)"/>
+  <line x1="400" y1="304" x2="425" y2="328" stroke="#34558b" stroke-width="1.2" marker-end="url(#m1)"/>
+  <line x1="520" y1="176" x2="544" y2="172" stroke="#8a6d1a" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#m1)"/>
+  <line x1="520" y1="196" x2="544" y2="220" stroke="#8a6d1a" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#m1)"/>
+  <line x1="520" y1="216" x2="544" y2="272" stroke="#8a6d1a" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#m1)"/>
+  <line x1="520" y1="276" x2="544" y2="330" stroke="#8a6d1a" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#m1)"/>
+</svg>
+<div class="caption">Figure 7.1: System architecture of SRS Ambiguity Detector</div>
+</div>
+
+<h2>7.2 Module Description</h2>
+<table>
+  <tr><th style="width:24%;">Module</th><th>Responsibility</th></tr>
+  <tr><td>Authentication module</td><td>Registration, email verification, login/logout, refresh-token rotation with reuse detection, password reset and change, account deletion</td></tr>
+  <tr><td>SRS input module</td><td>Authenticated analyser for pasted requirement text with input-size limits</td></tr>
+  <tr><td>Document processing module</td><td>PDF/DOCX/TXT upload, type/size/magic-byte validation, text extraction, storage and deletion</td></tr>
+  <tr><td>Segmentation module</td><td>Deterministic splitting of input into ordered requirement statements with identifiers and section paths</td></tr>
+  <tr><td>Detection engine</td><td>Eleven rule-based detectors, finding deduplication, scoring, bands and health dimensions</td></tr>
+  <tr><td>Report module</td><td>Saved analysis report with score summary, category and health charts, requirement cards and issue explanations</td></tr>
+  <tr><td>History module</td><td>Paginated list of the user’s analyses with search, filter, sorting and deletion</td></tr>
+  <tr><td>Dashboard module</td><td>Aggregate statistics, ambiguity trends, severity and category distribution, recent analyses</td></tr>
+  <tr><td>Credential vault module</td><td>Encrypted storage, testing and deletion of the user’s own provider credentials</td></tr>
+  <tr><td>Enhancement module</td><td>Optional overview and rewrite suggestions through configured providers, with fallback and clear disclosure</td></tr>
+  <tr><td>Settings and privacy module</td><td>Profile, password, provider management, data export, history purge, retention preference, account deletion</td></tr>
+</table>
+
+<h2>7.3 Analysis Pipeline</h2>
+<ol class="n">
+  <li>The user submits SRS text or an uploaded document through the analyser.</li>
+  <li>Documents are validated (type, size, content) and their text is extracted; pasted text is taken directly.</li>
+  <li>The text is normalised and segmented deterministically into individual requirements.</li>
+  <li>All eleven detectors examine every requirement and produce findings (phrase, offsets, severity, reason, recommendation).</li>
+  <li>Findings are deduplicated: exact duplicates collapse, and identical spans reported by two detectors keep the higher severity.</li>
+  <li>Scores are computed per requirement (100 minus fixed severity deductions, minimum 0); the analysis score is their mean, mapped to a band, and four health dimensions are derived from the same deductions.</li>
+  <li>The analysis, requirements and issues are stored in PostgreSQL under the user’s ownership.</li>
+  <li>The report is rendered; if a provider is configured, the optional enhancement may add an overview and rewrite suggestions to the saved report.</li>
+</ol>
+
+<h2>7.4 UML Diagrams</h2>
+
+<h3>7.4.1 Use Case Diagram</h3>
+<p>The use case diagram (Figure 7.2) shows the two human actors. A <b>Visitor</b> can view public pages and register. A <b>Registered User</b> performs all working use cases: verifying email, logging in, analysing text, uploading documents, viewing reports, history and dashboard, managing provider credentials and privacy settings. Running ambiguity detection is included by both analysis use cases; the optional enhancement extends the report when a provider is configured.</p>
+
+<div class="figure">
+<svg viewBox="0 0 700 470" width="100%" style="max-width:600px;" font-family="'DejaVu Sans',sans-serif">
+  <defs><marker id="m2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#34558b"/></marker></defs>
+  <rect x="185" y="14" width="400" height="442" fill="none" stroke="#10355f" stroke-width="1.4"/>
+  <text x="385" y="36" text-anchor="middle" font-size="11.5" font-weight="bold">SRS Ambiguity Detector</text>
+  <g stroke="#111" stroke-width="1.4" fill="none">
+    <circle cx="90" cy="80" r="10" fill="#eef3fa"/>
+    <path d="M90,90 L90,118 M66,102 L114,102 M90,118 L72,146 M90,118 L108,146"/>
+    <circle cx="90" cy="290" r="10" fill="#eef3fa"/>
+    <path d="M90,300 L90,328 M66,312 L114,312 M90,328 L72,356 M90,328 L108,356"/>
+    <circle cx="640" cy="110" r="10" fill="#fdf6e3"/>
+    <path d="M640,120 L640,148 M616,132 L664,132 M640,148 L622,176 M640,148 L658,176"/>
+  </g>
+  <text x="90" y="166" text-anchor="middle" font-size="10.5" font-weight="bold">Visitor</text>
+  <text x="90" y="376" text-anchor="middle" font-size="10.5" font-weight="bold">Registered User</text>
+  <text x="640" y="196" text-anchor="middle" font-size="10.5" font-weight="bold">Email Service</text>
+  <g fill="#eef3fa" stroke="#34558b" stroke-width="1.2">
+    <ellipse cx="385" cy="66" rx="105" ry="17"/>
+    <ellipse cx="385" cy="106" rx="105" ry="17"/>
+    <ellipse cx="385" cy="146" rx="105" ry="17"/>
+    <ellipse cx="385" cy="186" rx="105" ry="17"/>
+    <ellipse cx="385" cy="226" rx="105" ry="17"/>
+    <ellipse cx="385" cy="266" rx="118" ry="17"/>
+    <ellipse cx="385" cy="306" rx="105" ry="17"/>
+    <ellipse cx="385" cy="346" rx="118" ry="17"/>
+    <ellipse cx="385" cy="386" rx="118" ry="17"/>
+    <ellipse cx="385" cy="426" rx="118" ry="17"/>
+  </g>
+  <g font-size="10" text-anchor="middle">
+    <text x="385" y="70">Register Account</text>
+    <text x="385" y="110">Verify Email</text>
+    <text x="385" y="150">Log In / Log Out</text>
+    <text x="385" y="190">Analyse SRS Text</text>
+    <text x="385" y="230">Upload SRS Document</text>
+    <text x="385" y="270">Run Ambiguity Detection</text>
+    <text x="385" y="310">View Analysis Report</text>
+    <text x="385" y="350">View History &amp; Dashboard</text>
+    <text x="385" y="390">Manage Provider Credentials</text>
+    <text x="385" y="430">Manage Settings &amp; Privacy</text>
+  </g>
+  <g stroke="#34558b" stroke-width="1.1">
+    <line x1="104" y1="96" x2="278" y2="70"/>
+    <line x1="104" y1="300" x2="278" y2="150"/>
+    <line x1="104" y1="308" x2="278" y2="192"/>
+    <line x1="104" y1="316" x2="278" y2="228"/>
+    <line x1="104" y1="324" x2="278" y2="306"/>
+    <line x1="104" y1="332" x2="264" y2="344"/>
+    <line x1="104" y1="340" x2="264" y2="384"/>
+    <line x1="104" y1="348" x2="264" y2="424"/>
+  </g>
+  <g stroke="#34558b" stroke-width="1.1" stroke-dasharray="5,3">
+    <line x1="385" y1="203" x2="385" y2="247" marker-end="url(#m2)"/>
+    <line x1="385" y1="243" x2="385" y2="247" marker-end="url(#m2)"/>
+    <line x1="492" y1="110" x2="626" y2="112" marker-end="url(#m2)"/>
+  </g>
+  <text x="398" y="228" font-size="8.5">«include»</text>
+  <text x="520" y="102" font-size="8.5">sends mail</text>
+</svg>
+<div class="caption">Figure 7.2: Use case diagram</div>
+</div>
+
+<h3>7.4.2 Activity Diagram</h3>
+<p>The activity diagram (Figure 7.3) shows the flow of the main activity — analysing an SRS — from login to the final report, including the choice between pasted text and document upload, and the optional enhancement branch.</p>
+
+<div class="figure">
+<svg viewBox="0 0 600 690" width="100%" style="max-width:470px;" font-family="'DejaVu Sans',sans-serif">
+  <defs><marker id="m3" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#34558b"/></marker></defs>
+  <ellipse cx="300" cy="18" rx="52" ry="13" fill="#10355f"/>
+  <text x="300" y="22" text-anchor="middle" font-size="9.5" fill="#fff" font-weight="bold">Start</text>
+  <g fill="#eef3fa" stroke="#34558b" stroke-width="1.2">
+    <rect x="185" y="44" width="230" height="32" rx="6"/>
+    <rect x="185" y="90" width="230" height="32" rx="6"/>
+    <rect x="60" y="168" width="190" height="32" rx="6"/>
+    <rect x="350" y="168" width="210" height="32" rx="6"/>
+    <rect x="170" y="222" width="260" height="32" rx="6"/>
+    <rect x="170" y="268" width="260" height="32" rx="6"/>
+    <rect x="170" y="314" width="260" height="32" rx="6"/>
+    <rect x="170" y="360" width="260" height="32" rx="6"/>
+    <rect x="170" y="406" width="260" height="32" rx="6"/>
+    <rect x="170" y="452" width="260" height="32" rx="6"/>
+    <rect x="330" y="520" width="240" height="34" rx="6"/>
+  </g>
+  <polygon points="300,132 372,150 300,168 228,150" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.2"/>
+  <polygon points="300,494 366,512 300,530 234,512" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.2"/>
+  <g font-size="10" text-anchor="middle">
+    <text x="300" y="64">Log in with verified account</text>
+    <text x="300" y="110">Open Analyser</text>
+    <text x="300" y="154" font-weight="bold">Input type?</text>
+    <text x="155" y="188">Paste SRS text</text>
+    <text x="455" y="188">Upload, validate, extract</text>
+    <text x="300" y="242">Segment into requirements</text>
+    <text x="300" y="288">Run 11 detectors per requirement</text>
+    <text x="300" y="334">Deduplicate findings</text>
+    <text x="300" y="380">Compute score, band, health</text>
+    <text x="300" y="426">Save analysis to database</text>
+    <text x="300" y="472">Display report</text>
+    <text x="300" y="516" font-weight="bold">Provider set?</text>
+    <text x="450" y="541">Request optional enhancement</text>
+  </g>
+  <ellipse cx="300" cy="640" rx="14" ry="14" fill="#fff" stroke="#10355f" stroke-width="1.4"/>
+  <ellipse cx="300" cy="640" rx="8" ry="8" fill="#10355f"/>
+  <g stroke="#34558b" stroke-width="1.2" fill="none">
+    <line x1="300" y1="31" x2="300" y2="41" marker-end="url(#m3)"/>
+    <line x1="300" y1="76" x2="300" y2="87" marker-end="url(#m3)"/>
+    <line x1="300" y1="122" x2="300" y2="130" marker-end="url(#m3)"/>
+    <path d="M228,150 L155,150 L155,165" marker-end="url(#m3)"/>
+    <path d="M372,150 L455,150 L455,165" marker-end="url(#m3)"/>
+    <path d="M155,200 L155,238 L167,238" marker-end="url(#m3)"/>
+    <path d="M455,200 L455,238 L433,238" marker-end="url(#m3)"/>
+    <line x1="300" y1="254" x2="300" y2="265" marker-end="url(#m3)"/>
+    <line x1="300" y1="300" x2="300" y2="311" marker-end="url(#m3)"/>
+    <line x1="300" y1="346" x2="300" y2="357" marker-end="url(#m3)"/>
+    <line x1="300" y1="392" x2="300" y2="403" marker-end="url(#m3)"/>
+    <line x1="300" y1="438" x2="300" y2="449" marker-end="url(#m3)"/>
+    <line x1="300" y1="484" x2="300" y2="492" marker-end="url(#m3)"/>
+    <path d="M366,512 L450,512 L450,517" marker-end="url(#m3)"/>
+    <path d="M450,554 L450,640 L317,640" marker-end="url(#m3)"/>
+    <line x1="300" y1="530" x2="300" y2="623" marker-end="url(#m3)"/>
+  </g>
+  <text x="316" y="580" font-size="9">No</text>
+  <text x="400" y="505" font-size="9">Yes</text>
+  <text x="180" y="143" font-size="9">Text</text>
+  <text x="392" y="143" font-size="9">Document</text>
+</svg>
+<div class="caption">Figure 7.3: Activity diagram for SRS analysis</div>
+</div>
+
+<h3>7.4.3 Data Flow Diagrams</h3>
+<p>Figure 7.4 is the context-level (Level 0) DFD: the whole system is one process exchanging data with the user, the email service and, optionally, an external provider. Figure 7.5 decomposes it into the five main processes and the two principal data stores.</p>
+
+<div class="figure">
+<svg viewBox="0 0 680 250" width="100%" style="max-width:580px;" font-family="'DejaVu Sans',sans-serif">
+  <defs><marker id="m4" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#34558b"/></marker></defs>
+  <rect x="16" y="95" width="110" height="58" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+  <text x="71" y="120" text-anchor="middle" font-size="10.5" font-weight="bold">User</text>
+  <text x="71" y="136" text-anchor="middle" font-size="8.5">(Visitor / Registered)</text>
+  <circle cx="345" cy="124" r="62" fill="#dcebf7" stroke="#10355f" stroke-width="1.5"/>
+  <text x="345" y="112" text-anchor="middle" font-size="10.5" font-weight="bold">0.0</text>
+  <text x="345" y="128" text-anchor="middle" font-size="10.5" font-weight="bold">SRS Ambiguity</text>
+  <text x="345" y="144" text-anchor="middle" font-size="10.5" font-weight="bold">Detector</text>
+  <rect x="520" y="26" width="150" height="48" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.1"/>
+  <text x="595" y="46" text-anchor="middle" font-size="10" font-weight="bold">Email Service</text>
+  <text x="595" y="61" text-anchor="middle" font-size="8.5">Verification / reset</text>
+  <rect x="520" y="176" width="150" height="48" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.1"/>
+  <text x="595" y="196" text-anchor="middle" font-size="10" font-weight="bold">AI Provider (Optional)</text>
+  <text x="595" y="211" text-anchor="middle" font-size="8.5">User-configured</text>
+  <g stroke="#34558b" stroke-width="1.2" fill="none">
+    <path d="M126,108 L276,108" marker-end="url(#m4)"/>
+    <path d="M276,142 L126,142" marker-end="url(#m4)"/>
+    <path d="M398,88 L516,56" marker-end="url(#m4)"/>
+    <path d="M404,148 L516,192" stroke-dasharray="5,3" marker-end="url(#m4)"/>
+  </g>
+  <text x="150" y="100" font-size="9">Credentials, SRS text / document</text>
+  <text x="150" y="160" font-size="9">Reports, scores, history, dashboard</text>
+  <text x="420" y="58" font-size="9">Mail request</text>
+  <text x="420" y="182" font-size="9">Enhancement request / response</text>
+</svg>
+<div class="caption">Figure 7.4: Data flow diagram — Level 0 (context diagram)</div>
+</div>
+
+<div class="figure">
+<svg viewBox="0 0 700 450" width="100%" style="max-width:590px;" font-family="'DejaVu Sans',sans-serif">
+  <defs><marker id="m5" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#34558b"/></marker></defs>
+  <rect x="12" y="185" width="96" height="56" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+  <text x="60" y="209" text-anchor="middle" font-size="10.5" font-weight="bold">User</text>
+  <text x="60" y="225" text-anchor="middle" font-size="8.5">Visitor / Registered</text>
+  <g fill="#dcebf7" stroke="#10355f" stroke-width="1.3">
+    <rect x="150" y="36" width="160" height="50" rx="8"/>
+    <rect x="300" y="185" width="170" height="56" rx="8"/>
+    <rect x="150" y="330" width="160" height="50" rx="8"/>
+    <rect x="520" y="36" width="165" height="50" rx="8"/>
+    <rect x="520" y="330" width="165" height="50" rx="8"/>
+  </g>
+  <g font-size="10" text-anchor="middle" font-weight="bold">
+    <text x="230" y="57">1.0 Manage Accounts</text>
+    <text x="385" y="209">2.0 Analyse</text>
+    <text x="385" y="225">Requirements</text>
+    <text x="230" y="351">3.0 Process</text>
+    <text x="230" y="367">Documents</text>
+    <text x="602" y="57">4.0 Reports &amp;</text>
+    <text x="602" y="73">Dashboard</text>
+    <text x="602" y="351">5.0 Optional</text>
+    <text x="602" y="367">Enhancement</text>
+  </g>
+  <g fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.1">
+    <rect x="345" y="36" width="150" height="42"/>
+    <rect x="520" y="192" width="165" height="42"/>
+  </g>
+  <text x="420" y="53" text-anchor="middle" font-size="9.5" font-weight="bold">D1 Users &amp; Tokens</text>
+  <text x="420" y="68" text-anchor="middle" font-size="8.5">accounts, sessions</text>
+  <text x="602" y="209" text-anchor="middle" font-size="9.5" font-weight="bold">D2 Analysis Data</text>
+  <text x="602" y="224" text-anchor="middle" font-size="8.5">analyses, requirements, issues</text>
+  <rect x="345" y="392" width="150" height="40" fill="#fff" stroke="#8a6d1a" stroke-width="1.1"/>
+  <text x="420" y="409" text-anchor="middle" font-size="9.5" font-weight="bold">AI Provider</text>
+  <text x="420" y="423" text-anchor="middle" font-size="8.5">(external, optional)</text>
+  <g stroke="#34558b" stroke-width="1.15" fill="none">
+    <path d="M84,185 L120,120 L146,86" marker-end="url(#m5)"/>
+    <path d="M310,56 L341,56" marker-end="url(#m5)"/>
+    <path d="M108,205 L296,208" marker-end="url(#m5)"/>
+    <path d="M108,226 L180,326" marker-end="url(#m5)"/>
+    <path d="M310,345 L352,250" marker-end="url(#m5)"/>
+    <path d="M470,205 L516,208" marker-end="url(#m5)"/>
+    <path d="M602,192 L602,90" marker-end="url(#m5)"/>
+    <path d="M520,52 L130,24 L66,181" marker-end="url(#m5)"/>
+    <path d="M470,232 L560,326" stroke-dasharray="5,3" marker-end="url(#m5)"/>
+    <path d="M560,380 L470,392" stroke-dasharray="5,3" marker-end="url(#m5)"/>
+    <path d="M470,398 L499,392" stroke-dasharray="5,3" marker-end="url(#m5)"/>
+  </g>
+  <g font-size="8.8">
+    <text x="88" y="118">register / login</text>
+    <text x="150" y="196">SRS text</text>
+    <text x="112" y="300">document file</text>
+    <text x="300" y="300">extracted text</text>
+    <text x="474" y="196">findings &amp; score</text>
+    <text x="610" y="140">stored analyses</text>
+    <text x="300" y="18">reports, charts</text>
+    <text x="486" y="290">flagged requirements</text>
+    <text x="470" y="384">overview</text>
+  </g>
+</svg>
+<div class="caption">Figure 7.5: Data flow diagram — Level 1</div>
+</div>
+
+<h3>7.4.4 Entity-Relationship Diagram</h3>
+<p>The ER diagram (Figure 7.6) shows the ten database entities and their relationships. Every user-owned entity carries the owner’s identifier, so one user’s data is structurally separated from another’s. The detailed schema is presented in Chapter 8.</p>
+
+<div class="figure">
+<svg viewBox="0 0 700 520" width="100%" style="max-width:590px;" font-family="'DejaVu Sans',sans-serif">
+  <g font-size="9">
+    <!-- users -->
+    <rect x="30" y="215" width="165" height="86" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="30" y="215" width="165" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="112" y="229" text-anchor="middle" font-size="10" font-weight="bold">users</text>
+    <text x="38" y="250">id (PK)</text><text x="38" y="264">email (unique)</text><text x="38" y="278">password_hash</text><text x="38" y="292">is_verified</text>
+    <!-- analyses -->
+    <rect x="275" y="205" width="175" height="100" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="275" y="205" width="175" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="362" y="219" text-anchor="middle" font-size="10" font-weight="bold">analyses</text>
+    <text x="283" y="240">id (PK)</text><text x="283" y="254">owner_id (FK)</text><text x="283" y="268">document_id (FK)</text><text x="283" y="282">score, band</text><text x="283" y="296">source_type, status</text>
+    <!-- requirements -->
+    <rect x="520" y="80" width="165" height="86" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="520" y="80" width="165" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="602" y="94" text-anchor="middle" font-size="10" font-weight="bold">requirements</text>
+    <text x="528" y="115">id (PK)</text><text x="528" y="129">analysis_id (FK)</text><text x="528" y="143">position, text</text><text x="528" y="157">score, severity</text>
+    <!-- issues -->
+    <rect x="520" y="330" width="165" height="100" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="520" y="330" width="165" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="602" y="344" text-anchor="middle" font-size="10" font-weight="bold">issues</text>
+    <text x="528" y="365">id (PK)</text><text x="528" y="379">requirement_id (FK)</text><text x="528" y="393">detector_id, category</text><text x="528" y="407">severity, phrase</text><text x="528" y="421">reason, recommendation</text>
+    <!-- documents -->
+    <rect x="275" y="40" width="175" height="86" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="275" y="40" width="175" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="362" y="54" text-anchor="middle" font-size="10" font-weight="bold">documents</text>
+    <text x="283" y="75">id (PK)</text><text x="283" y="89">owner_id (FK)</text><text x="283" y="103">filename, file_type</text><text x="283" y="117">byte_size, storage_path</text>
+    <!-- credentials -->
+    <rect x="30" y="395" width="185" height="86" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="30" y="395" width="185" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="122" y="409" text-anchor="middle" font-size="10" font-weight="bold">ai_provider_credentials</text>
+    <text x="38" y="430">id (PK)</text><text x="38" y="444">owner_id (FK)</text><text x="38" y="458">provider</text><text x="38" y="472">encrypted_api_key</text>
+    <!-- tokens -->
+    <rect x="30" y="60" width="185" height="72" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="30" y="60" width="185" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="122" y="74" text-anchor="middle" font-size="10" font-weight="bold">authentication tokens</text>
+    <text x="38" y="95">refresh_tokens</text><text x="38" y="109">email_verification_tokens</text><text x="38" y="123">password_reset_tokens</text>
+    <!-- preferences -->
+    <rect x="275" y="395" width="175" height="72" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="275" y="395" width="175" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="362" y="409" text-anchor="middle" font-size="10" font-weight="bold">user_preferences</text>
+    <text x="283" y="430">owner_id (PK, FK)</text><text x="283" y="444">history_retention_days</text><text x="283" y="458">created_at, updated_at</text>
+  </g>
+  <g stroke="#34558b" stroke-width="1.2">
+    <line x1="195" y1="245" x2="271" y2="248"/>
+    <line x1="450" y1="125" x2="516" y2="122"/>
+    <line x1="602" y1="166" x2="602" y2="326"/>
+    <line x1="450" y1="255" x2="516" y2="368"/>
+    <line x1="362" y1="126" x2="362" y2="201"/>
+    <line x1="150" y1="215" x2="150" y2="136"/>
+    <line x1="112" y1="301" x2="116" y2="391"/>
+    <line x1="240" y1="330" x2="300" y2="391"/>
+  </g>
+  <g font-size="9.5" font-weight="bold">
+    <text x="206" y="240">1</text><text x="256" y="240">N</text>
+    <text x="462" y="116">1</text><text x="500" y="116">N</text>
+    <text x="610" y="240">1</text><text x="610" y="322">N</text>
+    <text x="466" y="300">1</text><text x="500" y="356">N</text>
+    <text x="370" y="160">1</text><text x="370" y="196">0..1</text>
+    <text x="158" y="180">1</text><text x="158" y="140">N</text>
+    <text x="122" y="345">1</text><text x="122" y="388">N</text>
+    <text x="248" y="352">1</text><text x="288" y="388">1</text>
+  </g>
+</svg>
+<div class="caption">Figure 7.6: Entity-relationship diagram</div>
+</div>
+
+<h3>7.4.5 Sequence Diagram</h3>
+<p>The sequence diagram (Figure 7.7) traces one text-analysis request through the browser, API, service layer, detection engine and database, and back to the rendered report.</p>
+
+<div class="figure">
+<svg viewBox="0 0 720 400" width="100%" style="max-width:600px;" font-family="'DejaVu Sans',sans-serif">
+  <defs><marker id="m7" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#34558b"/></marker></defs>
+  <g fill="#eef3fa" stroke="#34558b" stroke-width="1.2">
+    <rect x="14" y="10" width="86" height="30"/><rect x="122" y="10" width="86" height="30"/><rect x="230" y="10" width="96" height="30"/>
+    <rect x="348" y="10" width="106" height="30"/><rect x="476" y="10" width="106" height="30"/><rect x="604" y="10" width="96" height="30"/>
+  </g>
+  <g font-size="9.5" text-anchor="middle" font-weight="bold">
+    <text x="57" y="29">User</text><text x="165" y="29">Web UI</text><text x="278" y="29">FastAPI API</text>
+    <text x="401" y="29">Analysis Service</text><text x="529" y="29">Detection Engine</text><text x="652" y="29">PostgreSQL</text>
+  </g>
+  <g stroke="#999" stroke-width="1" stroke-dasharray="4,4">
+    <line x1="57" y1="40" x2="57" y2="385"/><line x1="165" y1="40" x2="165" y2="385"/><line x1="278" y1="40" x2="278" y2="385"/>
+    <line x1="401" y1="40" x2="401" y2="385"/><line x1="529" y1="40" x2="529" y2="385"/><line x1="652" y1="40" x2="652" y2="385"/>
+  </g>
+  <g stroke="#34558b" stroke-width="1.15">
+    <line x1="57" y1="66" x2="161" y2="66" marker-end="url(#m7)"/>
+    <line x1="165" y1="94" x2="274" y2="94" marker-end="url(#m7)"/>
+    <line x1="278" y1="122" x2="397" y2="122" marker-end="url(#m7)"/>
+    <line x1="401" y1="150" x2="525" y2="150" marker-end="url(#m7)"/>
+    <line x1="401" y1="206" x2="648" y2="206" marker-end="url(#m7)"/>
+    <line x1="529" y1="178" x2="405" y2="178" stroke-dasharray="5,3" marker-end="url(#m7)"/>
+    <line x1="652" y1="234" x2="405" y2="234" stroke-dasharray="5,3" marker-end="url(#m7)"/>
+    <line x1="401" y1="262" x2="282" y2="262" stroke-dasharray="5,3" marker-end="url(#m7)"/>
+    <line x1="278" y1="290" x2="169" y2="290" stroke-dasharray="5,3" marker-end="url(#m7)"/>
+    <line x1="165" y1="318" x2="61" y2="318" stroke-dasharray="5,3" marker-end="url(#m7)"/>
+  </g>
+  <g font-size="9">
+    <text x="64" y="60">1: Enter SRS text</text>
+    <text x="172" y="88">2: POST /api/v1/analysis</text>
+    <text x="284" y="116">3: Verify session, validate input</text>
+    <text x="406" y="144">4: Segment, then detect</text>
+    <text x="430" y="172">5: Findings + scores</text>
+    <text x="408" y="200">6: Save analysis, requirements, issues</text>
+    <text x="560" y="228">7: Saved (id)</text>
+    <text x="300" y="256">8: Report data</text>
+    <text x="176" y="284">9: Report JSON</text>
+    <text x="70" y="312">10: Render report</text>
+  </g>
+  <rect x="392" y="146" width="18" height="92" fill="#dcebf7" stroke="#34558b" stroke-width="0.8"/>
+  <rect x="520" y="146" width="18" height="36" fill="#dcebf7" stroke="#34558b" stroke-width="0.8"/>
+</svg>
+<div class="caption">Figure 7.7: Sequence diagram for text analysis</div>
+</div>
+
+<!-- ================= CHAPTER 8 ================= -->
+<h1 class="ch">8. Database Design</h1>
+
+<h2>8.1 Overview and Design Principles</h2>
+<p>The system uses PostgreSQL (version 16 compatible) as its database. The schema is implemented through SQLAlchemy models and is created and evolved only through versioned Alembic migrations; no table is created informally. The design follows these principles:</p>
+<ul class="b">
+  <li>Every table has a UUID primary key generated by the application, so the same schema runs identically on a local PostgreSQL and on a managed service.</li>
+  <li>Every user-owned table carries <span class="mono">owner_id</span> referencing <span class="mono">users(id)</span> with <span class="mono">ON DELETE CASCADE</span>; ownership is checked in SQL and again in the API layer.</li>
+  <li>Status-like columns are short character fields guarded by CHECK constraints rather than database enums, which keeps migrations simple.</li>
+  <li>All timestamps are stored in UTC (<span class="mono">TIMESTAMPTZ</span>); every table has <span class="mono">created_at</span>, and mutable tables also have <span class="mono">updated_at</span>.</li>
+  <li>Deletion is real deletion (no soft-delete flags); privacy-sensitive purges remove rows and stored files together.</li>
+  <li>Indexes are created on the actual query paths: owner with time for history, owner with score for risk sorting, and analysis with category for charts.</li>
+</ul>
+
+<h2>8.2 Principal Tables</h2>
+<h3>8.2.1 users — user accounts</h3>
+<table>
+  <tr><th style="width:26%;">Column</th><th style="width:24%;">Type</th><th>Constraints / Notes</th></tr>
+  <tr><td class="mono">id</td><td>UUID</td><td>Primary key</td></tr>
+  <tr><td class="mono">email</td><td>VARCHAR(320)</td><td>Unique, not null; stored lower-cased</td></tr>
+  <tr><td class="mono">display_name</td><td>VARCHAR(100)</td><td>Nullable; shown in profile</td></tr>
+  <tr><td class="mono">password_hash</td><td>TEXT</td><td>Argon2id hash only; never a plain password</td></tr>
+  <tr><td class="mono">is_verified</td><td>BOOLEAN</td><td>Default false; true after email verification</td></tr>
+  <tr><td class="mono">is_active</td><td>BOOLEAN</td><td>Default true</td></tr>
+  <tr><td class="mono">last_login_at</td><td>TIMESTAMPTZ</td><td>Set at each successful login</td></tr>
+  <tr><td class="mono">created_at / updated_at</td><td>TIMESTAMPTZ</td><td>Not null</td></tr>
+</table>
+
+<h3>8.2.2 analyses — one analysis run</h3>
+<table>
+  <tr><th style="width:26%;">Column</th><th style="width:24%;">Type</th><th>Constraints / Notes</th></tr>
+  <tr><td class="mono">id</td><td>UUID</td><td>Primary key</td></tr>
+  <tr><td class="mono">owner_id</td><td>UUID</td><td>Foreign key to users, cascade delete</td></tr>
+  <tr><td class="mono">document_id</td><td>UUID</td><td>Foreign key to documents, null for pasted-text analyses</td></tr>
+  <tr><td class="mono">title</td><td>VARCHAR(200)</td><td>Auto-derived title of the analysis</td></tr>
+  <tr><td class="mono">source_type</td><td>VARCHAR(16)</td><td>CHECK: text / document</td></tr>
+  <tr><td class="mono">status</td><td>VARCHAR(16)</td><td>CHECK: segmented / analyzed / failed</td></tr>
+  <tr><td class="mono">source_text</td><td>TEXT</td><td>Normalised input retained with the analysis</td></tr>
+  <tr><td class="mono">score</td><td>SMALLINT</td><td>CHECK 0–100; null until scored</td></tr>
+  <tr><td class="mono">band</td><td>VARCHAR(16)</td><td>CHECK: low / moderate / high / very_high</td></tr>
+  <tr><td class="mono">score_breakdown</td><td>JSONB</td><td>Per-issue deductions for explainability</td></tr>
+  <tr><td class="mono">health</td><td>JSONB</td><td>Four health dimensions</td></tr>
+  <tr><td class="mono">requirements_count / issues_count</td><td>INTEGER</td><td>Denormalised counters for fast dashboard queries</td></tr>
+  <tr><td class="mono">ai_overview / ai_provider / ai_status</td><td>TEXT / VARCHAR</td><td>Optional enhancement outcome; status: ok / failed / skipped / unconfigured</td></tr>
+</table>
+
+<h3>8.2.3 requirements — segmented requirements</h3>
+<table>
+  <tr><th style="width:26%;">Column</th><th style="width:24%;">Type</th><th>Constraints / Notes</th></tr>
+  <tr><td class="mono">id</td><td>UUID</td><td>Primary key</td></tr>
+  <tr><td class="mono">owner_id / analysis_id</td><td>UUID</td><td>Foreign keys, cascade delete</td></tr>
+  <tr><td class="mono">position</td><td>INTEGER</td><td>Order in the document; unique per analysis</td></tr>
+  <tr><td class="mono">identifier</td><td>VARCHAR(32)</td><td>Detected identifier such as FR-001, when present</td></tr>
+  <tr><td class="mono">section</td><td>VARCHAR(200)</td><td>Heading-derived section path, when detectable</td></tr>
+  <tr><td class="mono">text</td><td>TEXT</td><td>Full requirement text</td></tr>
+  <tr><td class="mono">score</td><td>SMALLINT</td><td>CHECK 0–100; null until scored</td></tr>
+  <tr><td class="mono">severity</td><td>VARCHAR(16)</td><td>Worst severity among its issues; null when none</td></tr>
+  <tr><td class="mono">issues_count</td><td>INTEGER</td><td>Denormalised counter</td></tr>
+  <tr><td class="mono">suggested_rewrite</td><td>TEXT</td><td>Improvement suggestion, when produced</td></tr>
+</table>
+
+<h3>8.2.4 issues — detected findings</h3>
+<table>
+  <tr><th style="width:26%;">Column</th><th style="width:24%;">Type</th><th>Constraints / Notes</th></tr>
+  <tr><td class="mono">id</td><td>UUID</td><td>Primary key</td></tr>
+  <tr><td class="mono">owner_id / analysis_id / requirement_id</td><td>UUID</td><td>Foreign keys, cascade delete</td></tr>
+  <tr><td class="mono">detector_id</td><td>VARCHAR(64)</td><td>Stable detector identifier, e.g. <span class="mono">vague-quantifier</span></td></tr>
+  <tr><td class="mono">category</td><td>VARCHAR(64)</td><td>User-facing category name</td></tr>
+  <tr><td class="mono">severity</td><td>VARCHAR(16)</td><td>CHECK: low / medium / high / critical</td></tr>
+  <tr><td class="mono">phrase</td><td>TEXT</td><td>The exact matched phrase</td></tr>
+  <tr><td class="mono">start_offset / end_offset</td><td>INTEGER</td><td>Character offsets within the requirement; end after start (CHECK)</td></tr>
+  <tr><td class="mono">reason / recommendation</td><td>TEXT</td><td>Why it was flagged and how to improve it</td></tr>
+  <tr><td class="mono">ai_explanation</td><td>TEXT</td><td>Nullable; filled only by the optional enhancement</td></tr>
+</table>
+
+<h2>8.3 Supporting Tables</h2>
+<table>
+  <tr><th style="width:24%;">Table</th><th>Purpose and Key Columns</th></tr>
+  <tr><td class="mono">documents</td><td>Uploaded files: owner, original filename, verified file type, MIME type, byte size, SHA-256 digest, server-generated storage path, extracted character count, extraction status</td></tr>
+  <tr><td class="mono">ai_provider_credentials</td><td>User’s provider credentials: owner, provider name, label, <b>encrypted</b> key, key fingerprint and last four characters for display, enabled/default flags, fallback order, last test result. The plain key is never stored or returned.</td></tr>
+  <tr><td class="mono">refresh_tokens</td><td>Hashed refresh tokens with expiry and rotation/revocation information for session management</td></tr>
+  <tr><td class="mono">email_verification_tokens</td><td>Hashed, expiring tokens for email verification</td></tr>
+  <tr><td class="mono">password_reset_tokens</td><td>Hashed, expiring, single-use tokens for password reset</td></tr>
+  <tr><td class="mono">user_preferences</td><td>One row per user with privacy preferences such as history retention days</td></tr>
+</table>
+
+<h2>8.4 Keys, Constraints and Indexes</h2>
+<ul class="b">
+  <li>Primary keys are UUIDs on all tables; foreign keys enforce the relationships of Figure 7.6 with cascade deletion, so removing a user removes all dependent rows.</li>
+  <li>CHECK constraints protect value domains: analysis source type and status, score range 0–100, issue severity, and issue offset ordering.</li>
+  <li>A unique constraint on <span class="mono">users.email</span> prevents duplicate accounts; a unique constraint on (analysis, position) keeps requirement order unambiguous.</li>
+  <li>Composite indexes on (owner_id, created_at) and (owner_id, score) serve history and risk-sorted queries; (analysis_id, category) serves the report charts.</li>
+  <li>Only the enabled credential of a provider is treated as active for a user; disabling a credential frees that position, enforced by constraint.</li>
+</ul>
+
+<h2>8.5 Normalisation</h2>
+<p>The schema is in third normal form for its operational data: user facts are stored once in <span class="mono">users</span>, an analysis stores only its own attributes and foreign keys, requirements belong to exactly one analysis, and issues belong to exactly one requirement — no requirement text or user fact is repeated across rows. Two deliberate, documented exceptions are made for read performance: counters (<span class="mono">requirements_count</span>, <span class="mono">issues_count</span>, worst severity) are denormalised onto parent rows, and two JSONB columns (<span class="mono">score_breakdown</span>, <span class="mono">health</span>) store small derived summaries whose full detail remains available in the <span class="mono">issues</span> table. These derived values are always written in the same transaction as the findings they summarise, so they cannot disagree with the detailed data.</p>
+
+<h2>8.6 Data Integrity and Protection</h2>
+<p>Integrity is protected at three levels: database constraints reject invalid rows even if application code errs; the repository layer always filters by owner, so cross-user access returns “not found”; and all writes pass through the service layer in transactions that commit or roll back as a unit. Passwords exist only as Argon2id hashes, session and reset tokens only as hashes, and provider keys only as ciphertext — a database leak therefore does not directly expose any usable secret. Deleting an analysis also removes its requirements and issues and purges an orphaned uploaded document from storage; deleting the account removes all of the user’s rows and files.</p>

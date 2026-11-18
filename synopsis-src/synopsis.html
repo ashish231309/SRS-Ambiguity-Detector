@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SRS Ambiguity Detector — Synopsis</title>
+<style>
+@font-face { font-family:'Tinos'; src:url('fonts/tinos-latin-400-normal.woff2') format('woff2'); font-weight:400; font-style:normal; }
+@font-face { font-family:'Tinos'; src:url('fonts/tinos-latin-400-italic.woff2') format('woff2'); font-weight:400; font-style:italic; }
+@font-face { font-family:'Tinos'; src:url('fonts/tinos-latin-700-normal.woff2') format('woff2'); font-weight:700; font-style:normal; }
+@font-face { font-family:'Tinos'; src:url('fonts/tinos-latin-700-italic.woff2') format('woff2'); font-weight:700; font-style:italic; }
+@page { size: A4; margin: 52px 60px 72px 60px; }
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; }
+body { font-family:'Tinos','Times New Roman',serif; font-size:11.5pt; line-height:1.45; color:#111; }
+p { text-align:justify; margin:0 0 10px 0; }
+h1.ch { font-size:16.5pt; font-weight:700; color:#10355f; text-transform:uppercase; letter-spacing:.4px; border-bottom:2.2px solid #10355f; padding-bottom:7px; margin:0 0 18px 0; page-break-before:always; page-break-after:avoid; }
+h1.ch:first-of-type { page-break-before:avoid; }
+h2 { font-size:12.5pt; font-weight:700; color:#000; margin:15px 0 6px 0; page-break-after:avoid; }
+h3 { font-size:12pt; font-weight:700; color:#10355f; margin:14px 0 6px 0; page-break-after:avoid; }
+ul.b { list-style:none; margin:4px 0 12px 0; padding-left:20px; }
+ul.b li { margin-bottom:5px; text-align:justify; }
+ul.b li::before { content:"●"; font-size:6.5pt; color:#222; display:inline-block; width:17px; margin-left:-17px; vertical-align:2px; }
+ol.n { margin:4px 0 12px 0; padding-left:26px; }
+ol.n li { margin-bottom:5px; text-align:justify; }
+table { border-collapse:collapse; width:100%; margin:10px 0 16px 0; font-size:10pt; line-height:1.38; }
+th, td { border:1px solid #555; padding:4px 6px; vertical-align:top; text-align:left; }
+th { background:#d9e2ef; font-weight:700; }
+thead { display:table-header-group; }
+tr { page-break-inside:avoid; }
+.mono { font-family:'DejaVu Sans Mono',monospace; font-size:9.3pt; }
+.frontpage { page-break-after:always; }
+.fronttitle { text-align:center; font-size:16pt; font-weight:700; color:#10355f; letter-spacing:1.2px; margin:6px 0 26px 0; }
+.center { text-align:center; }
+.figure { text-align:center; margin:10px 0 14px 0; page-break-inside:avoid; }
+.figure img { max-width:100%; border:1px solid #888; }
+.caption { font-size:10.5pt; font-style:italic; margin-top:7px; text-align:center; }
+.sigrow { display:flex; justify-content:space-between; margin-top:56px; }
+.sigbox { width:44%; }
+.sigline { border-top:1.4px solid #111; margin-top:34px; padding-top:5px; }
+.small { font-size:10.5pt; }
+.tocline { margin:0 0 9px 0; font-size:12.5pt; }
+.eqbox { background:#f2f5fa; border:1px solid #b9c6da; padding:10px 14px; margin:10px 0 14px 0; font-size:11pt; }
+.avoidbreak { page-break-inside:avoid; }
+</style>
+</head>
+<body>
+
+<!-- ================= COVER PAGE ================= -->
+<div class="frontpage">
+  <div style="margin-top:52px;" class="center">
+    <div style="font-size:22.5pt; font-weight:700; color:#10355f; line-height:1.3;">“SRS AMBIGUITY DETECTOR”</div>
+    <div style="font-size:14.5pt; font-weight:700; margin-top:26px; line-height:1.45;">SYNOPSIS OF STARTUP AND<br>ENTREPRENEURIAL ACTIVITY ASSESSMENT</div>
+    <div style="font-size:13.5pt; margin-top:30px; line-height:1.9;">
+      of<br>
+      <b>Bachelor of Technology</b><br>
+      in<br>
+      <b>Computer Science and Engineering</b>
+    </div>
+    <div style="font-size:13pt; margin-top:30px;"><b>By</b></div>
+  </div>
+  <table style="width:88%; margin:16px auto 0 auto; font-size:11.5pt;">
+    <tr><th style="width:12%; text-align:center;">S.NO</th><th style="width:34%;">Student Name</th><th style="width:28%;">Roll Number</th><th>Branch and Section</th></tr>
+    <tr><td style="text-align:center;">1</td><td>Ashish Kumar</td><td>2301650100054</td><td>Computer Science and Engineering (Section A)</td></tr>
+  </table>
+  <div class="center" style="font-size:12pt; margin-top:14px;">Seventh Semester, Session 2026–27</div>
+  <div class="center" style="margin-top:38px;">
+    <img src="assets/kit-logo.png" style="width:430px;">
+  </div>
+  <div class="center" style="margin-top:26px; font-size:13.5pt; font-weight:700; line-height:1.7;">
+    Kanpur Institute of Technology, Kanpur<br>
+    Dr. A.P.J. Abdul Kalam Technical University, Lucknow
+  </div>
+</div>
+
+<!-- ================= DECLARATION ================= -->
+<div class="frontpage">
+  <div class="fronttitle">DECLARATION</div>
+  <p>I hereby declare that the project work entitled <b>“SRS AMBIGUITY DETECTOR”</b>, submitted as a Synopsis of Startup and Entrepreneurial Activity Assessment for the degree of Bachelor of Technology in Computer Science and Engineering, is my original work carried out by me under the guidance of the concerned faculty <b>Mr. Suraj Srivastava</b>.</p>
+  <p>To the best of my knowledge and belief, the work presented in this report has not been submitted, either wholly or partly, for the award of any other degree or academic qualification. All sources of information and assistance used in the preparation of this project have been duly acknowledged wherever applicable. I accept responsibility for the accuracy and originality of the work presented in this report.</p>
+  <p style="margin-top:26px;"><b>Name:</b> Ashish Kumar<br><b>Roll No.:</b> 2301650100054</p>
+  <p style="margin-top:22px;"><b>Approved By:</b><br>Mr. Suraj Srivastava<br>Assistant Professor<br>Department of Computer Science and Engineering<br>Kanpur Institute of Technology, Kanpur</p>
+  <div class="sigrow">
+    <div class="sigbox"><div class="sigline"><b>Student Signature</b></div></div>
+    <div class="sigbox"><div class="sigline"><b>Faculty Signature</b></div></div>
+  </div>
+</div>
+
+<!-- ================= CERTIFICATE ================= -->
+<div class="frontpage">
+  <div class="fronttitle">CERTIFICATE</div>
+  <p>This is to certify that the project report entitled <b>“SRS AMBIGUITY DETECTOR”</b> has been prepared by <b>Ashish Kumar</b>, a student of B.Tech in Computer Science and Engineering (Seventh Semester), under the guidance of <b>Mr. Suraj Srivastava</b>, Assistant Professor, Department of Computer Science and Engineering, Kanpur Institute of Technology, Kanpur.</p>
+  <p>The work presented in this report is submitted as a Synopsis of Startup and Entrepreneurial Activity Assessment for the degree of Bachelor of Technology in Computer Science and Engineering. The project work has been carried out as per the academic requirements of the Department of Computer Science and Engineering, Kanpur Institute of Technology, Kanpur.</p>
+  <p style="margin-top:24px;"><b>Student Name:</b> Ashish Kumar<br><b>Roll No.:</b> 2301650100054</p>
+  <div style="margin-top:40px;">
+    <p><b>Project Guide</b><br>Name: Mr. Suraj Srivastava<br>Designation: Assistant Professor<br>Department: CSE<br>Signature: ________________</p>
+  </div>
+  <div style="margin-top:44px;">
+    <p><b>Head of Department</b><br>Name: Mr. Rahul Singh<br>Designation: Head of Department<br>Department: CSE<br>Signature: ________________</p>
+  </div>
+</div>
+
+<!-- ================= ACKNOWLEDGEMENT ================= -->
+<div class="frontpage">
+  <div class="fronttitle">ACKNOWLEDGEMENT</div>
+  <p>I would like to express my sincere gratitude to <b>Mr. Suraj Srivastava</b>, Assistant Professor, Department of Computer Science and Engineering, Kanpur Institute of Technology, Kanpur, for his valuable guidance, support, and encouragement throughout the preparation of my project entitled <b>“SRS Ambiguity Detector.”</b></p>
+  <p>I am thankful to the Head of the Department and all the faculty members of the Department of Computer Science and Engineering for providing the necessary academic support and resources to complete this project.</p>
+  <p>I would also like to thank my college for providing me with the opportunity to work on this project as part of the Startup and Entrepreneurial Activity Assessment. This project has helped me understand how a careful study of software requirements, combined with systematic software design, implementation and testing, can produce a practical tool that solves a real problem faced by software teams and can also be developed as a small technology startup idea.</p>
+  <p>Finally, I am grateful to my family and friends who supported and motivated me during the completion of this project.</p>
+  <p style="margin-top:34px;"><b>Ashish Kumar</b><br>Roll No.: 2301650100054<br>B.Tech – Computer Science and Engineering<br>Kanpur Institute of Technology, Kanpur</p>
+</div>
+
+<!-- ================= ABSTRACT ================= -->
+<div class="frontpage">
+  <div class="fronttitle">ABSTRACT</div>
+  <p>The Software Requirements Specification (SRS) is the foundation on which a software system is designed, developed and tested. In practice, however, requirement statements are written in natural language and frequently contain vague words, subjective terms, undefined terminology, optional language and missing measurable criteria. Such ambiguous requirements are understood differently by different stakeholders, which leads to wrong implementation, repeated clarification, rework, cost overrun and defects that reach the testing phase. This project, <b>SRS Ambiguity Detector</b>, is a full-stack web application that automatically reviews SRS text and documents and reports requirement statements that may be ambiguous, incomplete or difficult to verify.</p>
+  <p>The application allows a registered user to paste requirement text or upload an SRS document in PDF, DOCX or TXT format. A deterministic rule-based detection engine — the authoritative analysis layer of the system — segments the input into individual requirements and examines each requirement with eleven detector categories, including vague quantifiers, subjective terms, missing measurable criteria, pronoun references, optional language, ambiguous operators, undefined terminology, absolute language, passive voice, missing constraints and incomplete requirements. Every finding is reported with the exact phrase that triggered it, its severity (Low, Medium, High or Critical), a reason, and a recommendation for improvement. A transparent scoring model starts from 100 and applies fixed deductions per issue (Low −5, Medium −10, High −15, Critical −20) to produce an ambiguity score, an ambiguity band and four requirement-health dimensions (measurability, specificity, clarity and completeness). An optional enhancement feature can additionally produce an overview and rewrite suggestions using the user’s own provider credentials, without ever changing the deterministic result. All analyses are saved in a PostgreSQL database, so the user can reopen reports, browse analysis history and view dashboard charts of ambiguity trends.</p>
+  <p>The system is developed using Next.js, React and TypeScript for the front end and Python with the FastAPI framework, SQLAlchemy and PostgreSQL for the back end, with authentication, email verification, document processing, privacy controls and production-oriented security measures such as Argon2id password hashing, HttpOnly session cookies, encrypted credential storage and rate limiting. The complete system was executed and verified: the automated test suites (591 back-end tests and 432 front-end tests, 1,023 tests in total) pass, and a live demonstration on a sample SRS produced a score of 73/100 (Moderate ambiguity) with 18 issues detected across 7 requirements. As a startup idea, the tool requires only modest cloud investment, follows a freemium model for students, professionals and institutions, and demonstrates how software engineering methods can convert a well-identified problem into a working, useful product.</p>
+</div>
+
+<!-- ================= TABLE OF CONTENTS ================= -->
+<div class="frontpage">
+  <div class="fronttitle">TABLE OF CONTENTS</div>
+  <p class="tocline">Declaration</p>
+  <p class="tocline">Certificate</p>
+  <p class="tocline">Acknowledgement</p>
+  <p class="tocline">Abstract</p>
+  <p class="tocline">1. Introduction</p>
+  <p class="tocline">2. Problem Statement and Motivation</p>
+  <p class="tocline">3. Objectives and Scope</p>
+  <p class="tocline">4. Literature and Background Study</p>
+  <p class="tocline">5. Existing and Proposed System</p>
+  <p class="tocline">6. Feasibility Study and Requirement Analysis</p>
+  <p class="tocline">7. System Architecture and UML Design</p>
+  <p class="tocline">8. Database Design</p>
+  <p class="tocline">9. Implementation, Deployment and Maintenance</p>
+  <p class="tocline">10. Security, Privacy, Testing and Quality Assurance</p>
+  <p class="tocline">11. Project Evaluation and Future Enhancements</p>
+  <p class="tocline">12. Conclusion</p>
+  <p class="tocline">13. References</p>
+</div>
+
+<!-- ================= CHAPTER 1 ================= -->
+<h1 class="ch">1. Introduction</h1>
+
+<h2>1.1 Background</h2>
+<p>Every software project begins with requirements. The Software Requirements Specification (SRS) document records what the system shall do, under which conditions, and to what level of quality. Developers design and code from this document, testers derive test cases from it, managers estimate cost and schedule from it, and the client accepts the final product against it. Because so much depends on this one document, the quality of the language used in it directly affects the quality of the software that is finally delivered.</p>
+<p>In real projects, requirements are written in natural language by people with different backgrounds. Natural language is expressive, but it is also imprecise. A sentence such as <i>“The system shall respond quickly”</i> appears simple, yet it does not state how quickly, under what load, or measured how. Another sentence such as <i>“It shall generate reports as needed”</i> leaves the reader guessing what “it” refers to and who decides what is “needed”. Studies of software failure repeatedly show that defects introduced during the requirements phase are the most expensive to repair, because they are discovered late — often during testing or after delivery — when design, code and test cases built upon the wrong interpretation must all be changed.</p>
+<p>Ambiguity cannot be removed from natural language completely, but a large part of it follows recognisable patterns: vague quantity words (“many”, “several”), subjective quality words (“fast”, “user-friendly”), optional wording (“may”, “if possible”), absolutes (“always”, “never”), pronouns with unclear references, and performance claims without numbers. Because these patterns are systematic, they can be detected automatically by a program. Automation does not replace the judgement of a requirements analyst; it gives the analyst an early, consistent and tireless first review, so that human effort is spent on decisions rather than on searching for careless wording.</p>
+
+<h2>1.2 Project Overview</h2>
+<p><b>SRS Ambiguity Detector</b> is a web-based application that reviews SRS text and documents and reports requirement statements that may be ambiguous, incomplete or difficult to verify. The user registers and logs in, then either pastes requirement text directly into the analyser or uploads an SRS document in PDF, DOCX or TXT format. The system segments the input into individual requirements, applies a deterministic rule-based detection engine of eleven ambiguity categories to every requirement, and presents a report containing an overall ambiguity score, severity counts, category-wise issue distribution, four requirement-health dimensions, and a requirement-by-requirement list of findings. Each finding highlights the exact phrase that was flagged and explains why it was flagged and how it can be improved.</p>
+<p>All analyses are stored in a PostgreSQL database under the user’s account. The user can reopen any saved report, search and filter the analysis history, and view a dashboard with aggregate statistics and charts. The system also provides an optional enhancement feature: if the user saves credentials of a supported external AI service in an encrypted vault, the tool can request an overview summary and rewrite suggestions for flagged requirements. This enhancement is strictly optional and additive — the detection, scoring and report are always produced by the deterministic engine and never depend on any external service. The application is responsive and works on desktop, tablet and mobile browsers.</p>
+
+<h2>1.3 Need for the Project</h2>
+<ul class="b">
+  <li>Manual review of a long SRS is slow and inconsistent; the same careless wording is easily missed on the tenth page that would be caught on the first.</li>
+  <li>Ambiguous requirements are interpreted differently by developers and testers, producing rework, disputes and defects that surface late in the life cycle.</li>
+  <li>Students, junior analysts and small teams usually have no access to costly commercial requirements-management tools that offer quality checks.</li>
+  <li>A transparent, explainable tool is needed that not only flags a problem but also states the reason and suggests how the requirement can be rewritten.</li>
+  <li>A repeatable score is needed so that the quality of a document can be compared before and after revision, and tracked over time.</li>
+  <li>SRS documents exist in different formats (PDF, DOCX, TXT), so the tool must accept documents as well as pasted text.</li>
+</ul>
+
+<h2>1.4 Organization of the Report</h2>
+<p>This report is organised as follows. Chapter 1 introduces the background and the project. Chapter 2 states the problem and the motivation, identifies the stakeholders and defines success criteria and expected outcomes. Chapter 3 records the objectives and the scope of the work. Chapter 4 reviews the relevant literature and background. Chapter 5 compares existing practice with the proposed system and presents advantages, risks and the business model. Chapter 6 studies feasibility and analyses the functional and non-functional requirements. Chapter 7 describes the system architecture and the UML design. Chapter 8 presents the database design. Chapter 9 explains the implementation, deployment and maintenance, together with output screens of the working application. Chapter 10 covers security, privacy, testing and quality assurance. Chapter 11 evaluates the project and lists future enhancements. Chapter 12 concludes the report, and Chapter 13 lists the references.</p>
+
+<h2>1.5 Objectives of the Project</h2>
+<ul class="b">
+  <li>To design and develop a web application that accepts SRS text and SRS documents (PDF, DOCX, TXT) for automatic review.</li>
+  <li>To segment the input deterministically into individual requirement statements.</li>
+  <li>To detect patterns that indicate ambiguity, incompleteness or weak verifiability using a rule-based engine of eleven detector categories.</li>
+  <li>To explain every finding with the matched phrase, severity, reason and a recommendation for improvement.</li>
+  <li>To compute a transparent ambiguity score with severity-wise deductions, an ambiguity band and four requirement-health dimensions.</li>
+  <li>To provide user accounts with registration, email verification, login and password reset, and to store all analyses in a PostgreSQL database.</li>
+  <li>To provide saved reports, a searchable analysis history and a dashboard with charts and trends.</li>
+  <li>To provide an optional enhancement that generates an overview and rewrite suggestions from the user’s own external service credentials, stored encrypted.</li>
+  <li>To protect user data through sound security and privacy measures, and to verify the complete system through automated testing and live demonstration.</li>
+</ul>
+
+<h2>1.6 Scope of the Project</h2>
+<p>The scope of this project includes a responsive web application in which a registered and verified user can paste requirement text (up to 200,000 characters) or upload one SRS document in PDF, DOCX or TXT format (up to 10 MB), run a deterministic ambiguity analysis, and view the score, issue categories, health dimensions and requirement-level findings. It includes account management (registration, email verification, login, logout, password change and reset, account deletion), saved analysis reports, paginated history with search, filter and sorting, a statistics dashboard, profile and privacy settings including data export and purge, and optional enhancement through user-configured service providers. The system is designed primarily for students, requirements analysts, developers, testers and small software teams who prepare or review SRS documents in English. The detailed inclusions and exclusions are recorded in Chapter 3.</p>
+
+<!-- ================= CHAPTER 2 ================= -->
+<h1 class="ch">2. Problem Statement and Motivation</h1>
+
+<h2>2.1 Problem Statement</h2>
+<p>Software Requirements Specifications are written in natural language and therefore commonly contain vague, subjective, incomplete and unverifiable statements. Phrases such as “fast response”, “many users”, “as needed”, “user-friendly” and “shall be processed” do not define measurable behaviour. Different stakeholders interpret the same statement in different ways, so the system that is designed, coded and tested may not be the system that was actually wanted. At present, detecting such statements depends almost entirely on slow manual reading, which is inconsistent and does not scale to long documents. There is a need for an automated, explainable and repeatable tool that performs a first-level review of an SRS, pinpoints the exact phrases that create ambiguity, explains the problem, suggests an improvement, and summarises document quality in a score that can be tracked.</p>
+
+<h2>2.2 Effects of Ambiguous Requirements</h2>
+<ul class="b">
+  <li><b>Rework and cost overrun:</b> defects whose origin lies in requirements are usually found during testing or after delivery, when correcting them requires changes in design, code and tests together.</li>
+  <li><b>Incorrect implementation:</b> developers fill the gaps left by vague statements with their own assumptions, which may differ from the client’s expectation.</li>
+  <li><b>Unverifiable testing:</b> a requirement without measurable criteria cannot be tested objectively; testers cannot decide pass or fail for “respond quickly”.</li>
+  <li><b>Estimation errors:</b> scope hidden inside words like “etc.”, “and/or” and “as needed” makes effort and schedule estimation unreliable.</li>
+  <li><b>Disputes at acceptance:</b> at delivery time, each side reads the ambiguous sentence in the way that favours it, leading to conflict and loss of trust.</li>
+  <li><b>Maintenance difficulty:</b> later changes become risky when the original intention of a requirement is not clearly recorded.</li>
+</ul>
+
+<h2>2.3 Motivation</h2>
+<p>The motivation for this project came from observing, during academic software engineering work, how much time is spent arguing about the meaning of requirement sentences that a careful first review could have corrected in minutes. Most ambiguity in requirements is not deep or philosophical; it is created by a limited set of careless wording patterns that repeat from document to document. If those patterns are known, a program can find them reliably, tirelessly and in seconds. A deterministic rule-based approach was chosen deliberately: its decisions can be explained phrase by phrase, its scoring is transparent and repeatable, and it works without depending on any external service. Building the solution as a complete web product also provided the opportunity to practise the full process of developing, testing and presenting a real software system, and to examine it as a small startup idea under this assessment.</p>
+
+<h2>2.4 Stakeholders</h2>
+<table>
+  <tr><th style="width:24%;">Stakeholder</th><th style="width:36%;">Interest in the System</th><th>Benefit Expected</th></tr>
+  <tr><td>Business / Requirements Analyst</td><td>Writes and reviews the SRS before it is approved</td><td>Faster self-review; concrete suggestions to improve each weak requirement</td></tr>
+  <tr><td>Software Developer</td><td>Implements the requirements</td><td>Clearer requirements; fewer wrong assumptions and less rework</td></tr>
+  <tr><td>Tester / QA Engineer</td><td>Derives test cases and acceptance criteria</td><td>Unverifiable statements are highlighted before test design begins</td></tr>
+  <tr><td>Project Manager</td><td>Estimates effort, schedule and risk</td><td>Score and trends give an early indication of document quality and risk</td></tr>
+  <tr><td>Client / Product Owner</td><td>Approves what will be built</td><td>A shared, objective view of requirement quality before sign-off</td></tr>
+  <tr><td>Students and Faculty</td><td>Learn software engineering and requirements writing</td><td>Practical feedback on SRS documents prepared in coursework</td></tr>
+  <tr><td>System Administrator</td><td>Operates and maintains the deployed service</td><td>Documented deployment, monitoring and maintenance procedures</td></tr>
+</table>
+
+<h2>2.5 Success Criteria</h2>
+<ul class="b">
+  <li>The system accepts pasted SRS text and SRS documents in PDF, DOCX and TXT formats and analyses them through one common pipeline.</li>
+  <li>At least ten distinct ambiguity categories are detected, each reported with the matched phrase, severity, reason and recommendation.</li>
+  <li>The ambiguity score, band and health dimensions are computed by a documented, deterministic and repeatable formula.</li>
+  <li>Users can register, verify their email, log in, save analyses, reopen reports, search history and view dashboard statistics.</li>
+  <li>One user can never access another user’s analyses, documents or credentials.</li>
+  <li>The complete system passes its automated test suites and is demonstrated live on sample SRS input.</li>
+</ul>
+
+<h2>2.6 Expected Outcomes</h2>
+<ul class="b">
+  <li>A working, deployed-quality web application for SRS ambiguity detection, usable from desktop and mobile browsers.</li>
+  <li>Earlier detection of weak requirements, leading to clearer SRS documents and reduced downstream rework for its users.</li>
+  <li>A measurable quality indicator (score, band, health dimensions) that makes improvement of a document visible and comparable.</li>
+  <li>A documented, tested and maintainable codebase that demonstrates sound software engineering practice.</li>
+  <li>A viable small-startup concept with a clear target group, low operating cost and a simple revenue model.</li>
+</ul>
+
+<!-- ================= CHAPTER 3 ================= -->
+<h1 class="ch">3. Objectives and Scope</h1>
+
+<h2>3.1 Objectives</h2>
+<ol class="n">
+  <li>To develop a web application that reviews SRS text and SRS documents and reports likely ambiguity automatically.</li>
+  <li>To implement deterministic requirement segmentation that splits input text into individual, ordered requirement statements.</li>
+  <li>To implement eleven rule-based detectors covering vague quantifiers, subjective terms, missing measurable criteria, pronoun references, optional language, ambiguous operators, undefined terminology, absolute language, passive voice, missing constraints and incomplete requirements.</li>
+  <li>To attach to every finding the matched phrase with character offsets, a severity, a human-readable reason and a recommendation.</li>
+  <li>To compute a transparent score (100 minus fixed severity deductions), ambiguity bands and four health dimensions, and to remove duplicate findings deterministically.</li>
+  <li>To provide secure user accounts: registration, email verification, login/logout, password reset and change, and account deletion.</li>
+  <li>To persist analyses, requirements, issues and documents in PostgreSQL and to provide saved reports, searchable history and a dashboard with charts.</li>
+  <li>To offer optional enhancement (overview and rewrite suggestions) through user-owned credentials of supported providers, encrypted at rest, without affecting the deterministic result.</li>
+  <li>To implement privacy lifecycle features — data export, history purge, retention preference and complete account deletion.</li>
+  <li>To verify the system with automated unit, integration and interface tests and a live end-to-end demonstration.</li>
+</ol>
+
+<h2>3.2 Scope of the System</h2>
+<h3>3.2.1 In Scope</h3>
+<ul class="b">
+  <li>Paste-text analysis of SRS content up to 200,000 characters.</li>
+  <li>Single-document upload in PDF, DOCX or TXT format up to 10 MB, with text extraction and the same analysis pipeline.</li>
+  <li>Deterministic segmentation, eleven detector categories, deduplication, scoring, bands and health dimensions.</li>
+  <li>Email/password authentication with verification, reset, secure cookie sessions and refresh-token rotation.</li>
+  <li>Saved reports, paginated history with search/filter/sort, and an aggregate dashboard.</li>
+  <li>Optional enhancement using the user’s own credentials for supported providers, with encrypted storage and clear disclosure in the report.</li>
+  <li>Profile, password, provider, privacy and retention settings; data export and account deletion.</li>
+  <li>Responsive interface for desktop, tablet and mobile, with public information pages (home, features, how it works, resources).</li>
+</ul>
+<h3>3.2.2 Out of Scope</h3>
+<ul class="b">
+  <li>Login through external identity providers (social/OAuth sign-in).</li>
+  <li>Optical Character Recognition (OCR) for scanned or image-only PDFs.</li>
+  <li>Analysis of languages other than English.</li>
+  <li>Team workspaces, shared analyses and multi-user collaboration on one document.</li>
+  <li>Batch or command-line processing for continuous-integration pipelines.</li>
+  <li>A guarantee of complete ambiguity detection: the tool reports patterns that <i>may</i> indicate ambiguity; final judgement remains with the human analyst.</li>
+</ul>
+
+<h2>3.3 Assumptions</h2>
+<ul class="b">
+  <li>The SRS content submitted for analysis is written in English and is available as text, PDF, DOCX or TXT.</li>
+  <li>Users have a modern web browser and an internet connection; the system is not required to work offline.</li>
+  <li>A finding indicates a <i>possible</i> ambiguity; a flagged phrase can occasionally be acceptable in context, and users apply their own judgement.</li>
+  <li>For the optional enhancement, the user possesses a valid credential of a supported provider; the core analysis needs no such credential.</li>
+  <li>Email delivery for verification and password reset is available through the configured mail service.</li>
+</ul>
+
+<h2>3.4 Deliverables</h2>
+<table>
+  <tr><th style="width:26%;">Deliverable</th><th>Description</th></tr>
+  <tr><td>Web application</td><td>Complete front-end and back-end source code of the SRS Ambiguity Detector</td></tr>
+  <tr><td>Database schema and migrations</td><td>PostgreSQL schema with versioned migration scripts</td></tr>
+  <tr><td>Automated test suites</td><td>Back-end (pytest) and front-end (Vitest) test suites with passing results</td></tr>
+  <tr><td>Project documentation</td><td>Architecture, database schema, API, security, detection-engine, deployment and user documentation</td></tr>
+  <tr><td>Output screenshots</td><td>Screenshots captured from the actual running application (Chapter 9)</td></tr>
+  <tr><td>Synopsis report</td><td>This document, prepared for the Startup and Entrepreneurial Activity Assessment</td></tr>
+</table>
+
+<!-- ================= CHAPTER 4 ================= -->
+<h1 class="ch">4. Literature and Background Study</h1>
+
+<h2>4.1 The SRS and Its Quality Characteristics</h2>
+<p>The Software Requirements Specification has been studied for decades. The IEEE Std 830-1998, <i>IEEE Recommended Practice for Software Requirements Specifications</i>, states that a good SRS should be correct, unambiguous, complete, consistent, ranked for importance and/or stability, verifiable, modifiable and traceable [1]. Its successor, ISO/IEC/IEEE 29148:2018, continues the same line and requires that each requirement be singular, unambiguous, complete, verifiable and conforming [2]. Of all these characteristics, <i>unambiguous</i> is the one most directly connected with language: an SRS is unambiguous if every requirement in it has only one interpretation. Standard textbooks repeat the point — Wiegers and Beatty insist that requirements must be written so that every reader arrives at the same understanding, and Sommerville lists ambiguity among the principal causes of requirements problems [7][8]. The present project takes this classical quality characteristic and turns it into an automatic check.</p>
+
+<h2>4.2 Nature of Ambiguity in Requirements</h2>
+<p>Berry and Kamsties, in their widely cited study of ambiguity in requirements specification, show that ambiguity enters natural-language requirements in several forms [3]. <b>Lexical ambiguity</b> arises when a word has more than one meaning. <b>Syntactic ambiguity</b> arises when a sentence can be parsed in more than one way, as with careless use of “and/or”. <b>Semantic and scope ambiguity</b> arise when quantifiers and modifiers do not make clear how much or to what they apply (“several users”, “all reports”). <b>Referential ambiguity</b> arises when pronouns such as “it” or “they” have no clear antecedent. To these classical forms, practical requirements writing adds further weaknesses that are not ambiguity in the strict linguistic sense but have the same effect: subjective words (“fast”, “user-friendly”), optional wording (“may”, “if possible”), absolutes (“always”, “never”), passive constructions that hide the responsible actor (“shall be approved”), and claims that carry no measurable criterion, so that nobody can verify whether the finished system satisfies them. The eleven detectors of the proposed system were selected to cover these practical categories (Chapter 7 and Chapter 9).</p>
+
+<h2>4.3 Requirements Smells and Automated Quality Checks</h2>
+<p>The idea of detecting weak requirement language automatically is established in the literature under the name <i>requirements smells</i>. Femmer and co-authors define a requirements smell as an indicator of a quality violation in a requirements artifact that can be detected with lightweight, static analysis, and they demonstrate that such smells — subjective language, ambiguous quantifiers, superlatives and similar patterns — can be found automatically and help rapid quality assurance [4]. Earlier, the QuARS (Quality Analyzer of Requirements Specification) tool developed at ISTI-CNR applied natural-language processing to evaluate ambiguity, completeness and consistency of requirements documents [5], and NASA’s Automated Requirement Measurement (ARM) tool measured requirement quality indicators in large specification documents [6]. These works establish two facts on which the present project is built: first, a large share of requirement weakness is pattern-based and therefore machine-detectable; second, automatic findings are review aids that must remain explainable to the analyst.</p>
+
+<h2>4.4 Other Existing Approaches</h2>
+<ul class="b">
+  <li><b>Manual peer review and checklists:</b> effective in expert hands, but slow, dependent on the reviewer’s attention, and difficult to repeat consistently over a long document.</li>
+  <li><b>Enterprise requirements-management suites</b> (for example IBM Engineering Requirements Management DOORS and Jama Connect, with quality add-ons): powerful, but costly, heavy to administer, and aimed at large organisations; they are practically unavailable to students and small teams.</li>
+  <li><b>Generic writing assistants:</b> grammar and readability tools improve prose style but know nothing about requirements; they do not check for measurable criteria, responsible actors or requirement completeness.</li>
+  <li><b>Research prototypes:</b> tools in the QuARS/ARM tradition validate the approach but are generally not available as maintained, easy-to-use web products.</li>
+  <li><b>General-purpose chatbot services:</b> can comment on a requirement, but results vary from run to run, no stable score or stored history is produced, and confidential SRS text must be sent to a third party by pasting it into a consumer service.</li>
+</ul>
+
+<h2>4.5 Gap Identified</h2>
+<p>The study shows a clear gap: there is no lightweight, freely usable web tool that (i) checks an SRS against a defined set of ambiguity categories, (ii) explains every finding at the exact phrase with a reason and a remedy, (iii) expresses document quality through a transparent, reproducible score, (iv) accepts the document formats actually used (PDF, DOCX, TXT), (v) preserves a private history of analyses for registered users, and (vi) gives deterministic results that do not change between runs. The proposed system is designed to fill exactly this gap, while keeping an optional, user-controlled enhancement for those who want generative suggestions in addition to the deterministic findings.</p>
+
+<!-- ================= CHAPTER 5 ================= -->
+<h1 class="ch">5. Existing and Proposed System</h1>
+
+<h2>5.1 Existing System</h2>
+<p>In the existing practice followed by most students and small teams, an SRS is written in a word processor and reviewed manually. One or two reviewers read the document, mark doubtful sentences in comments, and discuss them in a meeting. There is no fixed checklist of ambiguity patterns, no measurement of overall quality, and no record of how the document improved between drafts. Where any tool support exists, it is either a generic grammar checker that does not understand requirements, or an enterprise requirements suite whose licence cost and administration effort put it out of reach. Confidential documents reviewed through consumer chatbot websites additionally raise privacy concerns, and the comments obtained are not reproducible.</p>
+
+<h2>5.2 Proposed System</h2>
+<p>The proposed system, <b>SRS Ambiguity Detector</b>, is a full-stack web application that performs the first-level review automatically and consistently. Its working is as follows. A registered user pastes SRS text or uploads a PDF, DOCX or TXT document. The input is normalised and segmented deterministically into individual requirements. Eleven rule-based detectors examine every requirement and record findings with the matched phrase, character offsets, severity, reason and recommendation. Duplicate findings are removed by fixed rules. Each requirement starts with 100 points and loses fixed points per issue (Low 5, Medium 10, High 15, Critical 20); the analysis score is the mean of requirement scores, presented with an ambiguity band (Low, Moderate, High, Very High) and four health dimensions — measurability, specificity, clarity and completeness. The report is saved to PostgreSQL, appears in the user’s history and dashboard, and can be reopened at any time. If the user has stored credentials of a supported provider, an optional enhancement can add an overview and rewrite suggestions, clearly disclosed as such; the deterministic findings remain the authoritative result in all cases.</p>
+
+<h2>5.3 Comparison of Existing and Proposed System</h2>
+<table>
+  <tr><th style="width:26%;">Aspect</th><th style="width:35%;">Existing System</th><th>Proposed System</th></tr>
+  <tr><td>Review method</td><td>Manual reading by one or two reviewers</td><td>Automatic rule-based review of the whole document in seconds</td></tr>
+  <tr><td>Consistency</td><td>Depends on reviewer’s attention and experience</td><td>Same checks applied uniformly to every requirement</td></tr>
+  <tr><td>Findings</td><td>General comments in margins or meetings</td><td>Exact phrase highlighted, with category, severity, reason and recommendation</td></tr>
+  <tr><td>Quality measurement</td><td>None; improvement between drafts is not visible</td><td>Score out of 100, ambiguity band and four health dimensions</td></tr>
+  <tr><td>Input formats</td><td>Whatever the reviewer can open manually</td><td>Pasted text plus PDF, DOCX and TXT upload with text extraction</td></tr>
+  <tr><td>Record keeping</td><td>Scattered document versions and comments</td><td>Saved reports, searchable history and dashboard trends per user</td></tr>
+  <tr><td>Availability and cost</td><td>Enterprise tools costly; manual effort recurring</td><td>Web application; free tier possible on low-cost cloud hosting</td></tr>
+  <tr><td>Privacy</td><td>Documents often pasted into third-party consumer services</td><td>Private accounts; documents and keys stored under the user’s own account, encrypted where sensitive</td></tr>
+  <tr><td>Result reproducibility</td><td>Different reviewers give different comments</td><td>Deterministic engine: same input always gives the same findings and score</td></tr>
+</table>
+
+<h2>5.4 Advantages of the Proposed System</h2>
+<ul class="b">
+  <li>Review time for an SRS drops from hours of reading to a few seconds of automatic analysis.</li>
+  <li>Findings are explainable: the user sees exactly which phrase was flagged and why, and how to improve it.</li>
+  <li>The transparent score (no hidden weighting) lets users measure the improvement of a document draft by draft.</li>
+  <li>Deterministic behaviour makes results trustworthy and comparable; the tool works without any external service.</li>
+  <li>Document upload, history and dashboard make it useful as a continuing work tool, not a one-time check.</li>
+  <li>Security and privacy controls (verified accounts, encrypted credential vault, data export and deletion) make it suitable for real documents.</li>
+</ul>
+
+<h2>5.5 Risks</h2>
+<table>
+  <tr><th style="width:30%;">Risk</th><th>Description</th></tr>
+  <tr><td>False positives</td><td>A flagged phrase may be acceptable in a particular context, which may irritate users.</td></tr>
+  <tr><td>False negatives</td><td>Deep semantic ambiguity that needs domain knowledge cannot be detected by rules.</td></tr>
+  <tr><td>Over-trust in the score</td><td>Users may treat the heuristic score as a certification of document quality.</td></tr>
+  <tr><td>Document parsing limits</td><td>Scanned PDFs contain no extractable text; complex layouts may extract imperfectly.</td></tr>
+  <tr><td>Data protection duty</td><td>Uploaded SRS documents may be confidential; a breach would harm users and reputation.</td></tr>
+  <tr><td>External service dependency</td><td>The optional enhancement depends on third-party provider availability and pricing.</td></tr>
+</table>
+
+<h2>5.6 Risk Mitigation</h2>
+<table>
+  <tr><th style="width:30%;">Risk</th><th>Mitigation Adopted</th></tr>
+  <tr><td>False positives</td><td>Findings are worded as “may indicate ambiguity”; reason and context are always shown so the user can judge.</td></tr>
+  <tr><td>False negatives</td><td>The limitation is disclosed in the product and in this report; the tool is positioned as a first-level review aid.</td></tr>
+  <tr><td>Over-trust in the score</td><td>The report itself states that the score is a heuristic indicator, not a certification of SRS quality.</td></tr>
+  <tr><td>Document parsing limits</td><td>File type, size and content are validated; extraction limits and unsupported cases are reported clearly to the user.</td></tr>
+  <tr><td>Data protection duty</td><td>Verified accounts, owner-wise data isolation, encryption of stored credentials, secure cookies, rate limiting, data export and complete deletion facilities (Chapter 10).</td></tr>
+  <tr><td>External service dependency</td><td>The deterministic engine is the authoritative layer; enhancement failure never blocks or changes the core result.</td></tr>
+</table>
+
+<h2>5.7 Business Model and Marketing Strategy</h2>
+<p>For the purpose of this startup assessment, the project is viewed as an early-stage software-as-a-service (SaaS) product named <b>SRS Ambiguity Detector</b>, aimed at students, individual professionals and institutions that prepare SRS documents.</p>
+<table>
+  <tr><th style="width:22%;">Item</th><th>Details</th></tr>
+  <tr><td>Startup Name</td><td>SRS Ambiguity Detector</td></tr>
+  <tr><td>Target Customers</td><td>Computer-science students and faculty; requirements analysts, developers and QA engineers in small and medium software teams; training institutes</td></tr>
+  <tr><td>Investment</td><td>Very low: open-source technology stack; free/low-cost cloud tiers for hosting, database and storage; optional domain name</td></tr>
+  <tr><td>Income Source</td><td>Freemium model — free tier for individuals (deterministic analysis); paid Pro plan for higher limits and enhancement credits; Institution plan with annual licence for colleges and companies</td></tr>
+  <tr><td>Marketing</td><td>College demonstrations and workshops, GitHub project page, LinkedIn and developer-community posts, demonstration video, word of mouth through faculty and student networks</td></tr>
+  <tr><td>Main Benefit</td><td>Users obtain an instant, explainable quality review of an SRS and a measurable score, improving documents before development begins</td></tr>
+</table>
+<p>As a worked example, if 100 users subscribe to a Pro plan of ₹299 per month, the monthly revenue is ₹29,900 against hosting expenses that remain within a few thousand rupees at this scale; an Institution plan of ₹24,999 per year for a college covers the remaining operating cost with a small number of customers. The marketing strategy is to begin with the academic community — free use for students, live demonstrations in software-engineering classes, and sharing of the public project page — and then approach small software firms and training institutes that prepare SRS documents regularly. Because the core engine runs without any paid external service, the cost of serving a free user is minimal, which keeps the freemium model practical.</p>
+
+<!-- ================= CHAPTER 6 ================= -->
+<h1 class="ch">6. Feasibility Study and Requirement Analysis</h1>
+
+<h2>6.1 Technical Feasibility</h2>
+<p>The system is built entirely with mature, open-source technologies that are well documented and widely used in industry: Next.js with React and TypeScript for the front end; Python with FastAPI, Pydantic and SQLAlchemy for the back end; PostgreSQL as the database; and Alembic for schema migrations. The detection engine needs no specialised hardware or paid library — it is a set of deterministic text-processing rules that run on an ordinary server. Document extraction uses established open-source parsers for PDF and DOCX. All components were installed, executed and tested on a normal development computer, and the production topology (front end on a managed web host, back end on a Python service host, managed PostgreSQL) uses standard services. The project is therefore technically feasible, and it has in fact been implemented and verified as described in Chapters 9 and 10.</p>
+
+<h2>6.2 Economic Feasibility</h2>
+<table>
+  <tr><th style="width:34%;">Cost Item</th><th>Estimate</th></tr>
+  <tr><td>Development tools and software</td><td>₹0 — all tools and libraries are free and open source</td></tr>
+  <tr><td>Development hardware</td><td>₹0 — existing personal computer used</td></tr>
+  <tr><td>Front-end hosting</td><td>₹0 on the free tier of a managed host (for example Vercel)</td></tr>
+  <tr><td>Back-end hosting</td><td>₹0 free tier to about ₹800/month on a starter Python service host</td></tr>
+  <tr><td>PostgreSQL database and file storage</td><td>₹0 on the free tier of a managed provider (for example Supabase) at academic scale</td></tr>
+  <tr><td>Domain name (optional)</td><td>About ₹700–₹1,000 per year</td></tr>
+  <tr><td>Email delivery</td><td>Free tier sufficient at this scale</td></tr>
+</table>
+<p>The total cost of developing and initially operating the system is negligible, while the benefit — hours of manual review saved on every SRS document — is immediate. As usage grows, hosting cost rises slowly and can be recovered through the Pro and Institution plans described in Section 5.7. The project is therefore economically feasible.</p>
+
+<h2>6.3 Operational Feasibility</h2>
+<p>The system operates through an ordinary web browser and needs no installation by the user. Its screens follow a simple workflow — register, verify, log in, paste or upload, analyse, read the report — that was designed to be understandable without training. The report language is deliberately plain: every finding states what was found, why it matters and what to do. Operation by the administrator consists of standard tasks (deploying updates, applying database migrations, reviewing error reports), all documented in the project’s deployment documentation. The system is therefore operationally feasible for its intended users.</p>
+
+<h2>6.4 Schedule Feasibility</h2>
+<p>The work was planned and executed module by module within one academic semester, alongside regular coursework. An indicative work plan is given below.</p>
+<table>
+  <tr><th style="width:26%;">Work Package</th><th style="width:22%;">Indicative Period</th><th>Main Activities</th></tr>
+  <tr><td>Problem study and planning</td><td>Weeks 1–2</td><td>Problem identification, literature study, scope and requirement finalisation</td></tr>
+  <tr><td>Design</td><td>Weeks 3–4</td><td>Architecture, UML diagrams, database schema, interface design</td></tr>
+  <tr><td>Back-end development</td><td>Weeks 5–8</td><td>Database, authentication, segmentation, detection engine, scoring, document processing, APIs</td></tr>
+  <tr><td>Front-end development</td><td>Weeks 8–11</td><td>Public pages, analyser, report, history, dashboard and settings interfaces</td></tr>
+  <tr><td>Testing and correction</td><td>Weeks 11–13</td><td>Automated test suites, end-to-end verification, defect fixing</td></tr>
+  <tr><td>Documentation and submission</td><td>Weeks 13–14</td><td>Project documentation, screenshots, synopsis and presentation preparation</td></tr>
+</table>
+
+<h2>6.5 Legal and Ethical Feasibility</h2>
+<p>The system processes documents that users themselves upload and provides them the facility to export or permanently delete their data, which supports responsible data handling in line with the principles of India’s Digital Personal Data Protection Act, 2023. User credentials for external services are stored only in encrypted form and are never displayed after saving. The software is built from open-source components used under their respective licences, and no copyrighted content is reproduced by the system. Findings are presented honestly as heuristic indicators rather than guarantees, which keeps the tool ethically sound. The project is therefore legally and ethically feasible.</p>
+
+<h2>6.6 Functional Requirements</h2>
+<table>
+  <tr><th style="width:11%;">ID</th><th style="width:32%;">Requirement</th><th>Description</th></tr>
+  <tr><td>FR-01</td><td>User registration</td><td>The system shall allow a visitor to register with name, email and password, with validation of all fields.</td></tr>
+  <tr><td>FR-02</td><td>Email verification</td><td>The system shall verify the user’s email through a time-limited verification link before the account is used.</td></tr>
+  <tr><td>FR-03</td><td>Login and logout</td><td>The system shall authenticate verified users and maintain a secure session using HttpOnly cookies with refresh-token rotation.</td></tr>
+  <tr><td>FR-04</td><td>Password reset and change</td><td>The system shall provide forgot-password reset through email and password change from settings.</td></tr>
+  <tr><td>FR-05</td><td>Text analysis</td><td>The system shall accept pasted SRS text up to 200,000 characters and analyse it.</td></tr>
+  <tr><td>FR-06</td><td>Document analysis</td><td>The system shall accept one PDF, DOCX or TXT document up to 10 MB, extract its text and analyse it.</td></tr>
+  <tr><td>FR-07</td><td>Requirement segmentation</td><td>The system shall split the input deterministically into ordered individual requirements.</td></tr>
+  <tr><td>FR-08</td><td>Ambiguity detection</td><td>The system shall examine every requirement with eleven detector categories and record phrase, offsets, severity, reason and recommendation for each finding.</td></tr>
+  <tr><td>FR-09</td><td>Scoring</td><td>The system shall compute requirement and analysis scores, an ambiguity band and four health dimensions by a fixed published formula.</td></tr>
+  <tr><td>FR-10</td><td>Analysis report</td><td>The system shall display a report with score, severity and category summaries, health dimensions and requirement-wise findings.</td></tr>
+  <tr><td>FR-11</td><td>History</td><td>The system shall list the user’s analyses with search, filter, sorting, pagination and deletion.</td></tr>
+  <tr><td>FR-12</td><td>Dashboard</td><td>The system shall show aggregate statistics, trends, severity and category charts and recent analyses.</td></tr>
+  <tr><td>FR-13</td><td>Provider credential management</td><td>The system shall let the user save, test and delete credentials of supported providers, stored encrypted and never shown again.</td></tr>
+  <tr><td>FR-14</td><td>Optional enhancement</td><td>Where a provider is configured, the system shall offer an overview and rewrite suggestions, clearly disclosed, without changing deterministic findings.</td></tr>
+  <tr><td>FR-15</td><td>Privacy lifecycle</td><td>The system shall provide profile management, data export, history purge, retention preference and complete account deletion.</td></tr>
+</table>
+
+<h2>6.7 Non-Functional Requirements</h2>
+<table>
+  <tr><th style="width:11%;">ID</th><th style="width:24%;">Requirement</th><th>Description</th></tr>
+  <tr><td>NFR-01</td><td>Performance</td><td>Analysis of a typical SRS shall complete within a few seconds; ordinary pages shall load promptly on a normal connection.</td></tr>
+  <tr><td>NFR-02</td><td>Security</td><td>Passwords shall be stored only as Argon2id hashes; sessions shall use HttpOnly cookies; stored provider credentials shall be encrypted; access to every resource shall be restricted to its owner.</td></tr>
+  <tr><td>NFR-03</td><td>Privacy</td><td>User documents and analysis content shall not be exposed to other users or written to logs; export and deletion shall be available to the user.</td></tr>
+  <tr><td>NFR-04</td><td>Usability</td><td>The interface shall be usable without training and shall work on desktop, tablet and mobile screens.</td></tr>
+  <tr><td>NFR-05</td><td>Reliability and determinism</td><td>The same input shall always produce the same findings and score; failure of the optional enhancement shall not affect the core result.</td></tr>
+  <tr><td>NFR-06</td><td>Maintainability</td><td>The code shall follow a layered structure (interface, service, repository, model) with automated tests, so defects can be located and corrected safely.</td></tr>
+  <tr><td>NFR-07</td><td>Scalability</td><td>The stateless back end and managed PostgreSQL shall permit additional server instances as usage grows.</td></tr>
+  <tr><td>NFR-08</td><td>Availability</td><td>The deployed service shall target normal business-hours availability appropriate to its hosting tier, with health-check endpoints for monitoring.</td></tr>
+</table>
+
+<h2>6.8 User Roles</h2>
+<table>
+  <tr><th style="width:24%;">Role</th><th>Permissions and Activities</th></tr>
+  <tr><td>Visitor (Guest)</td><td>Views public pages (home, features, how it works, resources); registers for an account</td></tr>
+  <tr><td>Registered User</td><td>Verifies email, logs in, analyses text and documents, views reports, history and dashboard, manages profile, provider credentials and privacy settings, deletes own data and account</td></tr>
+  <tr><td>Administrator / Operator</td><td>Deploys and configures the service, applies migrations, monitors health and errors, manages hosting and backups; has no access to user passwords or decrypted credentials</td></tr>
+</table>
+<!-- ================= CHAPTER 7 ================= -->
+<h1 class="ch">7. System Architecture and UML Design</h1>
+
+<h2>7.1 Architecture Overview</h2>
+<p>The system follows a three-tier, layered architecture. The <b>presentation tier</b> is a Next.js (React + TypeScript) web application that renders public pages, the analyser, reports, history, dashboard and settings, and communicates with the back end only through a versioned REST API. The <b>application tier</b> is a FastAPI (Python) service organised in layers — API routers receive requests, a service layer executes business logic, and a repository layer is the only place that talks to the database through SQLAlchemy. Within this tier, the <b>deterministic detection engine</b> (segmentation, eleven detectors, deduplication, scoring) performs the complete analysis without any external dependency. The <b>data tier</b> is PostgreSQL, which stores users, analyses, requirements, issues, documents and credentials, together with a document storage component (local disk in development, managed object storage in production). External services are used only at the edges: an email service for verification and reset messages, a CAPTCHA service for abuse protection, error monitoring, and — only when the user configures it — external AI providers for the optional enhancement. Figure 7.1 shows the overall architecture.</p>
+
+<div class="figure">
+<svg viewBox="0 0 700 430" width="100%" style="max-width:600px;" font-family="'DejaVu Sans',sans-serif">
+  <defs><marker id="m1" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#34558b"/></marker></defs>
+  <rect x="190" y="8" width="300" height="40" rx="5" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+  <text x="340" y="32" text-anchor="middle" font-size="11.5" font-weight="bold">User's Web Browser (Desktop / Mobile)</text>
+  <rect x="160" y="76" width="360" height="58" rx="5" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+  <text x="340" y="98" text-anchor="middle" font-size="11.5" font-weight="bold">Next.js Front End (React + TypeScript)</text>
+  <text x="340" y="117" text-anchor="middle" font-size="9.5">Public pages · Analyser · Report · History · Dashboard · Settings</text>
+  <rect x="160" y="162" width="360" height="58" rx="5" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+  <text x="340" y="184" text-anchor="middle" font-size="11.5" font-weight="bold">FastAPI Back End (Python)</text>
+  <text x="340" y="203" text-anchor="middle" font-size="9.5">REST API /api/v1 → Services → Repositories</text>
+  <rect x="160" y="248" width="360" height="56" rx="5" fill="#dcebf7" stroke="#10355f" stroke-width="1.6"/>
+  <text x="340" y="270" text-anchor="middle" font-size="11.5" font-weight="bold">Deterministic Detection Engine</text>
+  <text x="340" y="289" text-anchor="middle" font-size="9.5">Segmentation → 11 Detectors → Deduplication → Scoring</text>
+  <rect x="140" y="332" width="180" height="58" rx="5" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+  <text x="230" y="354" text-anchor="middle" font-size="11" font-weight="bold">PostgreSQL Database</text>
+  <text x="230" y="372" text-anchor="middle" font-size="9">Users · Analyses · Issues</text>
+  <rect x="350" y="332" width="180" height="58" rx="5" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+  <text x="440" y="354" text-anchor="middle" font-size="11" font-weight="bold">Document Storage</text>
+  <text x="440" y="372" text-anchor="middle" font-size="9">Local disk / object storage</text>
+  <rect x="548" y="150" width="146" height="42" rx="5" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.1"/>
+  <text x="621" y="168" text-anchor="middle" font-size="10" font-weight="bold">Email Service</text>
+  <text x="621" y="183" text-anchor="middle" font-size="8.5">Verify / reset mail</text>
+  <rect x="548" y="204" width="146" height="42" rx="5" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.1"/>
+  <text x="621" y="222" text-anchor="middle" font-size="10" font-weight="bold">CAPTCHA Service</text>
+  <text x="621" y="237" text-anchor="middle" font-size="8.5">Abuse protection</text>
+  <rect x="548" y="258" width="146" height="42" rx="5" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.1"/>
+  <text x="621" y="276" text-anchor="middle" font-size="10" font-weight="bold">Error Monitoring</text>
+  <text x="621" y="291" text-anchor="middle" font-size="8.5">Scrubbed error reports</text>
+  <rect x="548" y="312" width="146" height="52" rx="5" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.1"/>
+  <text x="621" y="330" text-anchor="middle" font-size="10" font-weight="bold">AI Providers (Optional)</text>
+  <text x="621" y="345" text-anchor="middle" font-size="8.5">User's own credentials</text>
+  <line x1="340" y1="48" x2="340" y2="72" stroke="#34558b" stroke-width="1.2" marker-end="url(#m1)"/>
+  <text x="348" y="64" font-size="8.5">HTTPS</text>
+  <line x1="340" y1="134" x2="340" y2="158" stroke="#34558b" stroke-width="1.2" marker-end="url(#m1)"/>
+  <text x="348" y="150" font-size="8.5">REST /api/v1 · cookies</text>
+  <line x1="340" y1="220" x2="340" y2="244" stroke="#34558b" stroke-width="1.2" marker-end="url(#m1)"/>
+  <line x1="280" y1="304" x2="245" y2="328" stroke="#34558b" stroke-width="1.2" marker-end="url(#m1)"/>
+  <line x1="400" y1="304" x2="425" y2="328" stroke="#34558b" stroke-width="1.2" marker-end="url(#m1)"/>
+  <line x1="520" y1="176" x2="544" y2="172" stroke="#8a6d1a" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#m1)"/>
+  <line x1="520" y1="196" x2="544" y2="220" stroke="#8a6d1a" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#m1)"/>
+  <line x1="520" y1="216" x2="544" y2="272" stroke="#8a6d1a" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#m1)"/>
+  <line x1="520" y1="276" x2="544" y2="330" stroke="#8a6d1a" stroke-width="1.1" stroke-dasharray="4,3" marker-end="url(#m1)"/>
+</svg>
+<div class="caption">Figure 7.1: System architecture of SRS Ambiguity Detector</div>
+</div>
+
+<h2>7.2 Module Description</h2>
+<table>
+  <tr><th style="width:24%;">Module</th><th>Responsibility</th></tr>
+  <tr><td>Authentication module</td><td>Registration, email verification, login/logout, refresh-token rotation with reuse detection, password reset and change, account deletion</td></tr>
+  <tr><td>SRS input module</td><td>Authenticated analyser for pasted requirement text with input-size limits</td></tr>
+  <tr><td>Document processing module</td><td>PDF/DOCX/TXT upload, type/size/magic-byte validation, text extraction, storage and deletion</td></tr>
+  <tr><td>Segmentation module</td><td>Deterministic splitting of input into ordered requirement statements with identifiers and section paths</td></tr>
+  <tr><td>Detection engine</td><td>Eleven rule-based detectors, finding deduplication, scoring, bands and health dimensions</td></tr>
+  <tr><td>Report module</td><td>Saved analysis report with score summary, category and health charts, requirement cards and issue explanations</td></tr>
+  <tr><td>History module</td><td>Paginated list of the user’s analyses with search, filter, sorting and deletion</td></tr>
+  <tr><td>Dashboard module</td><td>Aggregate statistics, ambiguity trends, severity and category distribution, recent analyses</td></tr>
+  <tr><td>Credential vault module</td><td>Encrypted storage, testing and deletion of the user’s own provider credentials</td></tr>
+  <tr><td>Enhancement module</td><td>Optional overview and rewrite suggestions through configured providers, with fallback and clear disclosure</td></tr>
+  <tr><td>Settings and privacy module</td><td>Profile, password, provider management, data export, history purge, retention preference, account deletion</td></tr>
+</table>
+
+<h2>7.3 Analysis Pipeline</h2>
+<ol class="n">
+  <li>The user submits SRS text or an uploaded document through the analyser.</li>
+  <li>Documents are validated (type, size, content) and their text is extracted; pasted text is taken directly.</li>
+  <li>The text is normalised and segmented deterministically into individual requirements.</li>
+  <li>All eleven detectors examine every requirement and produce findings (phrase, offsets, severity, reason, recommendation).</li>
+  <li>Findings are deduplicated: exact duplicates collapse, and identical spans reported by two detectors keep the higher severity.</li>
+  <li>Scores are computed per requirement (100 minus fixed severity deductions, minimum 0); the analysis score is their mean, mapped to a band, and four health dimensions are derived from the same deductions.</li>
+  <li>The analysis, requirements and issues are stored in PostgreSQL under the user’s ownership.</li>
+  <li>The report is rendered; if a provider is configured, the optional enhancement may add an overview and rewrite suggestions to the saved report.</li>
+</ol>
+
+<h2>7.4 UML Diagrams</h2>
+
+<h3>7.4.1 Use Case Diagram</h3>
+<p>The use case diagram (Figure 7.2) shows the two human actors. A <b>Visitor</b> can view public pages and register. A <b>Registered User</b> performs all working use cases: verifying email, logging in, analysing text, uploading documents, viewing reports, history and dashboard, managing provider credentials and privacy settings. Running ambiguity detection is included by both analysis use cases; the optional enhancement extends the report when a provider is configured.</p>
+
+<div class="figure">
+<svg viewBox="0 0 700 470" width="100%" style="max-width:600px;" font-family="'DejaVu Sans',sans-serif">
+  <defs><marker id="m2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#34558b"/></marker></defs>
+  <rect x="185" y="14" width="400" height="442" fill="none" stroke="#10355f" stroke-width="1.4"/>
+  <text x="385" y="36" text-anchor="middle" font-size="11.5" font-weight="bold">SRS Ambiguity Detector</text>
+  <g stroke="#111" stroke-width="1.4" fill="none">
+    <circle cx="90" cy="80" r="10" fill="#eef3fa"/>
+    <path d="M90,90 L90,118 M66,102 L114,102 M90,118 L72,146 M90,118 L108,146"/>
+    <circle cx="90" cy="290" r="10" fill="#eef3fa"/>
+    <path d="M90,300 L90,328 M66,312 L114,312 M90,328 L72,356 M90,328 L108,356"/>
+    <circle cx="640" cy="110" r="10" fill="#fdf6e3"/>
+    <path d="M640,120 L640,148 M616,132 L664,132 M640,148 L622,176 M640,148 L658,176"/>
+  </g>
+  <text x="90" y="166" text-anchor="middle" font-size="10.5" font-weight="bold">Visitor</text>
+  <text x="90" y="376" text-anchor="middle" font-size="10.5" font-weight="bold">Registered User</text>
+  <text x="640" y="196" text-anchor="middle" font-size="10.5" font-weight="bold">Email Service</text>
+  <g fill="#eef3fa" stroke="#34558b" stroke-width="1.2">
+    <ellipse cx="385" cy="66" rx="105" ry="17"/>
+    <ellipse cx="385" cy="106" rx="105" ry="17"/>
+    <ellipse cx="385" cy="146" rx="105" ry="17"/>
+    <ellipse cx="385" cy="186" rx="105" ry="17"/>
+    <ellipse cx="385" cy="226" rx="105" ry="17"/>
+    <ellipse cx="385" cy="266" rx="118" ry="17"/>
+    <ellipse cx="385" cy="306" rx="105" ry="17"/>
+    <ellipse cx="385" cy="346" rx="118" ry="17"/>
+    <ellipse cx="385" cy="386" rx="118" ry="17"/>
+    <ellipse cx="385" cy="426" rx="118" ry="17"/>
+  </g>
+  <g font-size="10" text-anchor="middle">
+    <text x="385" y="70">Register Account</text>
+    <text x="385" y="110">Verify Email</text>
+    <text x="385" y="150">Log In / Log Out</text>
+    <text x="385" y="190">Analyse SRS Text</text>
+    <text x="385" y="230">Upload SRS Document</text>
+    <text x="385" y="270">Run Ambiguity Detection</text>
+    <text x="385" y="310">View Analysis Report</text>
+    <text x="385" y="350">View History &amp; Dashboard</text>
+    <text x="385" y="390">Manage Provider Credentials</text>
+    <text x="385" y="430">Manage Settings &amp; Privacy</text>
+  </g>
+  <g stroke="#34558b" stroke-width="1.1">
+    <line x1="104" y1="96" x2="278" y2="70"/>
+    <line x1="104" y1="300" x2="278" y2="150"/>
+    <line x1="104" y1="308" x2="278" y2="192"/>
+    <line x1="104" y1="316" x2="278" y2="228"/>
+    <line x1="104" y1="324" x2="278" y2="306"/>
+    <line x1="104" y1="332" x2="264" y2="344"/>
+    <line x1="104" y1="340" x2="264" y2="384"/>
+    <line x1="104" y1="348" x2="264" y2="424"/>
+  </g>
+  <g stroke="#34558b" stroke-width="1.1" stroke-dasharray="5,3">
+    <line x1="385" y1="203" x2="385" y2="247" marker-end="url(#m2)"/>
+    <line x1="385" y1="243" x2="385" y2="247" marker-end="url(#m2)"/>
+    <line x1="492" y1="110" x2="626" y2="112" marker-end="url(#m2)"/>
+  </g>
+  <text x="398" y="228" font-size="8.5">«include»</text>
+  <text x="520" y="102" font-size="8.5">sends mail</text>
+</svg>
+<div class="caption">Figure 7.2: Use case diagram</div>
+</div>
+
+<h3>7.4.2 Activity Diagram</h3>
+<p>The activity diagram (Figure 7.3) shows the flow of the main activity — analysing an SRS — from login to the final report, including the choice between pasted text and document upload, and the optional enhancement branch.</p>
+
+<div class="figure">
+<svg viewBox="0 0 600 690" width="100%" style="max-width:470px;" font-family="'DejaVu Sans',sans-serif">
+  <defs><marker id="m3" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#34558b"/></marker></defs>
+  <ellipse cx="300" cy="18" rx="52" ry="13" fill="#10355f"/>
+  <text x="300" y="22" text-anchor="middle" font-size="9.5" fill="#fff" font-weight="bold">Start</text>
+  <g fill="#eef3fa" stroke="#34558b" stroke-width="1.2">
+    <rect x="185" y="44" width="230" height="32" rx="6"/>
+    <rect x="185" y="90" width="230" height="32" rx="6"/>
+    <rect x="60" y="168" width="190" height="32" rx="6"/>
+    <rect x="350" y="168" width="210" height="32" rx="6"/>
+    <rect x="170" y="222" width="260" height="32" rx="6"/>
+    <rect x="170" y="268" width="260" height="32" rx="6"/>
+    <rect x="170" y="314" width="260" height="32" rx="6"/>
+    <rect x="170" y="360" width="260" height="32" rx="6"/>
+    <rect x="170" y="406" width="260" height="32" rx="6"/>
+    <rect x="170" y="452" width="260" height="32" rx="6"/>
+    <rect x="330" y="520" width="240" height="34" rx="6"/>
+  </g>
+  <polygon points="300,132 372,150 300,168 228,150" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.2"/>
+  <polygon points="300,494 366,512 300,530 234,512" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.2"/>
+  <g font-size="10" text-anchor="middle">
+    <text x="300" y="64">Log in with verified account</text>
+    <text x="300" y="110">Open Analyser</text>
+    <text x="300" y="154" font-weight="bold">Input type?</text>
+    <text x="155" y="188">Paste SRS text</text>
+    <text x="455" y="188">Upload, validate, extract</text>
+    <text x="300" y="242">Segment into requirements</text>
+    <text x="300" y="288">Run 11 detectors per requirement</text>
+    <text x="300" y="334">Deduplicate findings</text>
+    <text x="300" y="380">Compute score, band, health</text>
+    <text x="300" y="426">Save analysis to database</text>
+    <text x="300" y="472">Display report</text>
+    <text x="300" y="516" font-weight="bold">Provider set?</text>
+    <text x="450" y="541">Request optional enhancement</text>
+  </g>
+  <ellipse cx="300" cy="640" rx="14" ry="14" fill="#fff" stroke="#10355f" stroke-width="1.4"/>
+  <ellipse cx="300" cy="640" rx="8" ry="8" fill="#10355f"/>
+  <g stroke="#34558b" stroke-width="1.2" fill="none">
+    <line x1="300" y1="31" x2="300" y2="41" marker-end="url(#m3)"/>
+    <line x1="300" y1="76" x2="300" y2="87" marker-end="url(#m3)"/>
+    <line x1="300" y1="122" x2="300" y2="130" marker-end="url(#m3)"/>
+    <path d="M228,150 L155,150 L155,165" marker-end="url(#m3)"/>
+    <path d="M372,150 L455,150 L455,165" marker-end="url(#m3)"/>
+    <path d="M155,200 L155,238 L167,238" marker-end="url(#m3)"/>
+    <path d="M455,200 L455,238 L433,238" marker-end="url(#m3)"/>
+    <line x1="300" y1="254" x2="300" y2="265" marker-end="url(#m3)"/>
+    <line x1="300" y1="300" x2="300" y2="311" marker-end="url(#m3)"/>
+    <line x1="300" y1="346" x2="300" y2="357" marker-end="url(#m3)"/>
+    <line x1="300" y1="392" x2="300" y2="403" marker-end="url(#m3)"/>
+    <line x1="300" y1="438" x2="300" y2="449" marker-end="url(#m3)"/>
+    <line x1="300" y1="484" x2="300" y2="492" marker-end="url(#m3)"/>
+    <path d="M366,512 L450,512 L450,517" marker-end="url(#m3)"/>
+    <path d="M450,554 L450,640 L317,640" marker-end="url(#m3)"/>
+    <line x1="300" y1="530" x2="300" y2="623" marker-end="url(#m3)"/>
+  </g>
+  <text x="316" y="580" font-size="9">No</text>
+  <text x="400" y="505" font-size="9">Yes</text>
+  <text x="180" y="143" font-size="9">Text</text>
+  <text x="392" y="143" font-size="9">Document</text>
+</svg>
+<div class="caption">Figure 7.3: Activity diagram for SRS analysis</div>
+</div>
+
+<h3>7.4.3 Data Flow Diagrams</h3>
+<p>Figure 7.4 is the context-level (Level 0) DFD: the whole system is one process exchanging data with the user, the email service and, optionally, an external provider. Figure 7.5 decomposes it into the five main processes and the two principal data stores.</p>
+
+<div class="figure">
+<svg viewBox="0 0 680 250" width="100%" style="max-width:580px;" font-family="'DejaVu Sans',sans-serif">
+  <defs><marker id="m4" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#34558b"/></marker></defs>
+  <rect x="16" y="95" width="110" height="58" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+  <text x="71" y="120" text-anchor="middle" font-size="10.5" font-weight="bold">User</text>
+  <text x="71" y="136" text-anchor="middle" font-size="8.5">(Visitor / Registered)</text>
+  <circle cx="345" cy="124" r="62" fill="#dcebf7" stroke="#10355f" stroke-width="1.5"/>
+  <text x="345" y="112" text-anchor="middle" font-size="10.5" font-weight="bold">0.0</text>
+  <text x="345" y="128" text-anchor="middle" font-size="10.5" font-weight="bold">SRS Ambiguity</text>
+  <text x="345" y="144" text-anchor="middle" font-size="10.5" font-weight="bold">Detector</text>
+  <rect x="520" y="26" width="150" height="48" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.1"/>
+  <text x="595" y="46" text-anchor="middle" font-size="10" font-weight="bold">Email Service</text>
+  <text x="595" y="61" text-anchor="middle" font-size="8.5">Verification / reset</text>
+  <rect x="520" y="176" width="150" height="48" fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.1"/>
+  <text x="595" y="196" text-anchor="middle" font-size="10" font-weight="bold">AI Provider (Optional)</text>
+  <text x="595" y="211" text-anchor="middle" font-size="8.5">User-configured</text>
+  <g stroke="#34558b" stroke-width="1.2" fill="none">
+    <path d="M126,108 L276,108" marker-end="url(#m4)"/>
+    <path d="M276,142 L126,142" marker-end="url(#m4)"/>
+    <path d="M398,88 L516,56" marker-end="url(#m4)"/>
+    <path d="M404,148 L516,192" stroke-dasharray="5,3" marker-end="url(#m4)"/>
+  </g>
+  <text x="150" y="100" font-size="9">Credentials, SRS text / document</text>
+  <text x="150" y="160" font-size="9">Reports, scores, history, dashboard</text>
+  <text x="420" y="58" font-size="9">Mail request</text>
+  <text x="420" y="182" font-size="9">Enhancement request / response</text>
+</svg>
+<div class="caption">Figure 7.4: Data flow diagram — Level 0 (context diagram)</div>
+</div>
+
+<div class="figure">
+<svg viewBox="0 0 700 450" width="100%" style="max-width:590px;" font-family="'DejaVu Sans',sans-serif">
+  <defs><marker id="m5" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#34558b"/></marker></defs>
+  <rect x="12" y="185" width="96" height="56" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+  <text x="60" y="209" text-anchor="middle" font-size="10.5" font-weight="bold">User</text>
+  <text x="60" y="225" text-anchor="middle" font-size="8.5">Visitor / Registered</text>
+  <g fill="#dcebf7" stroke="#10355f" stroke-width="1.3">
+    <rect x="150" y="36" width="160" height="50" rx="8"/>
+    <rect x="300" y="185" width="170" height="56" rx="8"/>
+    <rect x="150" y="330" width="160" height="50" rx="8"/>
+    <rect x="520" y="36" width="165" height="50" rx="8"/>
+    <rect x="520" y="330" width="165" height="50" rx="8"/>
+  </g>
+  <g font-size="10" text-anchor="middle" font-weight="bold">
+    <text x="230" y="57">1.0 Manage Accounts</text>
+    <text x="385" y="209">2.0 Analyse</text>
+    <text x="385" y="225">Requirements</text>
+    <text x="230" y="351">3.0 Process</text>
+    <text x="230" y="367">Documents</text>
+    <text x="602" y="57">4.0 Reports &amp;</text>
+    <text x="602" y="73">Dashboard</text>
+    <text x="602" y="351">5.0 Optional</text>
+    <text x="602" y="367">Enhancement</text>
+  </g>
+  <g fill="#fdf6e3" stroke="#8a6d1a" stroke-width="1.1">
+    <rect x="345" y="36" width="150" height="42"/>
+    <rect x="520" y="192" width="165" height="42"/>
+  </g>
+  <text x="420" y="53" text-anchor="middle" font-size="9.5" font-weight="bold">D1 Users &amp; Tokens</text>
+  <text x="420" y="68" text-anchor="middle" font-size="8.5">accounts, sessions</text>
+  <text x="602" y="209" text-anchor="middle" font-size="9.5" font-weight="bold">D2 Analysis Data</text>
+  <text x="602" y="224" text-anchor="middle" font-size="8.5">analyses, requirements, issues</text>
+  <rect x="345" y="392" width="150" height="40" fill="#fff" stroke="#8a6d1a" stroke-width="1.1"/>
+  <text x="420" y="409" text-anchor="middle" font-size="9.5" font-weight="bold">AI Provider</text>
+  <text x="420" y="423" text-anchor="middle" font-size="8.5">(external, optional)</text>
+  <g stroke="#34558b" stroke-width="1.15" fill="none">
+    <path d="M84,185 L120,120 L146,86" marker-end="url(#m5)"/>
+    <path d="M310,56 L341,56" marker-end="url(#m5)"/>
+    <path d="M108,205 L296,208" marker-end="url(#m5)"/>
+    <path d="M108,226 L180,326" marker-end="url(#m5)"/>
+    <path d="M310,345 L352,250" marker-end="url(#m5)"/>
+    <path d="M470,205 L516,208" marker-end="url(#m5)"/>
+    <path d="M602,192 L602,90" marker-end="url(#m5)"/>
+    <path d="M520,52 L130,24 L66,181" marker-end="url(#m5)"/>
+    <path d="M470,232 L560,326" stroke-dasharray="5,3" marker-end="url(#m5)"/>
+    <path d="M560,380 L470,392" stroke-dasharray="5,3" marker-end="url(#m5)"/>
+    <path d="M470,398 L499,392" stroke-dasharray="5,3" marker-end="url(#m5)"/>
+  </g>
+  <g font-size="8.8">
+    <text x="88" y="118">register / login</text>
+    <text x="150" y="196">SRS text</text>
+    <text x="112" y="300">document file</text>
+    <text x="300" y="300">extracted text</text>
+    <text x="474" y="196">findings &amp; score</text>
+    <text x="610" y="140">stored analyses</text>
+    <text x="300" y="18">reports, charts</text>
+    <text x="486" y="290">flagged requirements</text>
+    <text x="470" y="384">overview</text>
+  </g>
+</svg>
+<div class="caption">Figure 7.5: Data flow diagram — Level 1</div>
+</div>
+
+<h3>7.4.4 Entity-Relationship Diagram</h3>
+<p>The ER diagram (Figure 7.6) shows the ten database entities and their relationships. Every user-owned entity carries the owner’s identifier, so one user’s data is structurally separated from another’s. The detailed schema is presented in Chapter 8.</p>
+
+<div class="figure">
+<svg viewBox="0 0 700 520" width="100%" style="max-width:590px;" font-family="'DejaVu Sans',sans-serif">
+  <g font-size="9">
+    <!-- users -->
+    <rect x="30" y="215" width="165" height="86" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="30" y="215" width="165" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="112" y="229" text-anchor="middle" font-size="10" font-weight="bold">users</text>
+    <text x="38" y="250">id (PK)</text><text x="38" y="264">email (unique)</text><text x="38" y="278">password_hash</text><text x="38" y="292">is_verified</text>
+    <!-- analyses -->
+    <rect x="275" y="205" width="175" height="100" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="275" y="205" width="175" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="362" y="219" text-anchor="middle" font-size="10" font-weight="bold">analyses</text>
+    <text x="283" y="240">id (PK)</text><text x="283" y="254">owner_id (FK)</text><text x="283" y="268">document_id (FK)</text><text x="283" y="282">score, band</text><text x="283" y="296">source_type, status</text>
+    <!-- requirements -->
+    <rect x="520" y="80" width="165" height="86" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="520" y="80" width="165" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="602" y="94" text-anchor="middle" font-size="10" font-weight="bold">requirements</text>
+    <text x="528" y="115">id (PK)</text><text x="528" y="129">analysis_id (FK)</text><text x="528" y="143">position, text</text><text x="528" y="157">score, severity</text>
+    <!-- issues -->
+    <rect x="520" y="330" width="165" height="100" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="520" y="330" width="165" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="602" y="344" text-anchor="middle" font-size="10" font-weight="bold">issues</text>
+    <text x="528" y="365">id (PK)</text><text x="528" y="379">requirement_id (FK)</text><text x="528" y="393">detector_id, category</text><text x="528" y="407">severity, phrase</text><text x="528" y="421">reason, recommendation</text>
+    <!-- documents -->
+    <rect x="275" y="40" width="175" height="86" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="275" y="40" width="175" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="362" y="54" text-anchor="middle" font-size="10" font-weight="bold">documents</text>
+    <text x="283" y="75">id (PK)</text><text x="283" y="89">owner_id (FK)</text><text x="283" y="103">filename, file_type</text><text x="283" y="117">byte_size, storage_path</text>
+    <!-- credentials -->
+    <rect x="30" y="395" width="185" height="86" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="30" y="395" width="185" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="122" y="409" text-anchor="middle" font-size="10" font-weight="bold">ai_provider_credentials</text>
+    <text x="38" y="430">id (PK)</text><text x="38" y="444">owner_id (FK)</text><text x="38" y="458">provider</text><text x="38" y="472">encrypted_api_key</text>
+    <!-- tokens -->
+    <rect x="30" y="60" width="185" height="72" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="30" y="60" width="185" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="122" y="74" text-anchor="middle" font-size="10" font-weight="bold">authentication tokens</text>
+    <text x="38" y="95">refresh_tokens</text><text x="38" y="109">email_verification_tokens</text><text x="38" y="123">password_reset_tokens</text>
+    <!-- preferences -->
+    <rect x="275" y="395" width="175" height="72" fill="#eef3fa" stroke="#34558b" stroke-width="1.2"/>
+    <rect x="275" y="395" width="175" height="20" fill="#dcebf7" stroke="#34558b" stroke-width="1.2"/>
+    <text x="362" y="409" text-anchor="middle" font-size="10" font-weight="bold">user_preferences</text>
+    <text x="283" y="430">owner_id (PK, FK)</text><text x="283" y="444">history_retention_days</text><text x="283" y="458">created_at, updated_at</text>
+  </g>
+  <g stroke="#34558b" stroke-width="1.2">
+    <line x1="195" y1="245" x2="271" y2="248"/>
+    <line x1="450" y1="125" x2="516" y2="122"/>
+    <line x1="602" y1="166" x2="602" y2="326"/>
+    <line x1="450" y1="255" x2="516" y2="368"/>
+    <line x1="362" y1="126" x2="362" y2="201"/>
+    <line x1="150" y1="215" x2="150" y2="136"/>
+    <line x1="112" y1="301" x2="116" y2="391"/>
+    <line x1="240" y1="330" x2="300" y2="391"/>
+  </g>
+  <g font-size="9.5" font-weight="bold">
+    <text x="206" y="240">1</text><text x="256" y="240">N</text>
+    <text x="462" y="116">1</text><text x="500" y="116">N</text>
+    <text x="610" y="240">1</text><text x="610" y="322">N</text>
+    <text x="466" y="300">1</text><text x="500" y="356">N</text>
+    <text x="370" y="160">1</text><text x="370" y="196">0..1</text>
+    <text x="158" y="180">1</text><text x="158" y="140">N</text>
+    <text x="122" y="345">1</text><text x="122" y="388">N</text>
+    <text x="248" y="352">1</text><text x="288" y="388">1</text>
+  </g>
+</svg>
+<div class="caption">Figure 7.6: Entity-relationship diagram</div>
+</div>
+
+<h3>7.4.5 Sequence Diagram</h3>
+<p>The sequence diagram (Figure 7.7) traces one text-analysis request through the browser, API, service layer, detection engine and database, and back to the rendered report.</p>
+
+<div class="figure">
+<svg viewBox="0 0 720 400" width="100%" style="max-width:600px;" font-family="'DejaVu Sans',sans-serif">
+  <defs><marker id="m7" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#34558b"/></marker></defs>
+  <g fill="#eef3fa" stroke="#34558b" stroke-width="1.2">
+    <rect x="14" y="10" width="86" height="30"/><rect x="122" y="10" width="86" height="30"/><rect x="230" y="10" width="96" height="30"/>
+    <rect x="348" y="10" width="106" height="30"/><rect x="476" y="10" width="106" height="30"/><rect x="604" y="10" width="96" height="30"/>
+  </g>
+  <g font-size="9.5" text-anchor="middle" font-weight="bold">
+    <text x="57" y="29">User</text><text x="165" y="29">Web UI</text><text x="278" y="29">FastAPI API</text>
+    <text x="401" y="29">Analysis Service</text><text x="529" y="29">Detection Engine</text><text x="652" y="29">PostgreSQL</text>
+  </g>
+  <g stroke="#999" stroke-width="1" stroke-dasharray="4,4">
+    <line x1="57" y1="40" x2="57" y2="385"/><line x1="165" y1="40" x2="165" y2="385"/><line x1="278" y1="40" x2="278" y2="385"/>
+    <line x1="401" y1="40" x2="401" y2="385"/><line x1="529" y1="40" x2="529" y2="385"/><line x1="652" y1="40" x2="652" y2="385"/>
+  </g>
+  <g stroke="#34558b" stroke-width="1.15">
+    <line x1="57" y1="66" x2="161" y2="66" marker-end="url(#m7)"/>
+    <line x1="165" y1="94" x2="274" y2="94" marker-end="url(#m7)"/>
+    <line x1="278" y1="122" x2="397" y2="122" marker-end="url(#m7)"/>
+    <line x1="401" y1="150" x2="525" y2="150" marker-end="url(#m7)"/>
+    <line x1="401" y1="206" x2="648" y2="206" marker-end="url(#m7)"/>
+    <line x1="529" y1="178" x2="405" y2="178" stroke-dasharray="5,3" marker-end="url(#m7)"/>
+    <line x1="652" y1="234" x2="405" y2="234" stroke-dasharray="5,3" marker-end="url(#m7)"/>
+    <line x1="401" y1="262" x2="282" y2="262" stroke-dasharray="5,3" marker-end="url(#m7)"/>
+    <line x1="278" y1="290" x2="169" y2="290" stroke-dasharray="5,3" marker-end="url(#m7)"/>
+    <line x1="165" y1="318" x2="61" y2="318" stroke-dasharray="5,3" marker-end="url(#m7)"/>
+  </g>
+  <g font-size="9">
+    <text x="64" y="60">1: Enter SRS text</text>
+    <text x="172" y="88">2: POST /api/v1/analysis</text>
+    <text x="284" y="116">3: Verify session, validate input</text>
+    <text x="406" y="144">4: Segment, then detect</text>
+    <text x="430" y="172">5: Findings + scores</text>
+    <text x="408" y="200">6: Save analysis, requirements, issues</text>
+    <text x="560" y="228">7: Saved (id)</text>
+    <text x="300" y="256">8: Report data</text>
+    <text x="176" y="284">9: Report JSON</text>
+    <text x="70" y="312">10: Render report</text>
+  </g>
+  <rect x="392" y="146" width="18" height="92" fill="#dcebf7" stroke="#34558b" stroke-width="0.8"/>
+  <rect x="520" y="146" width="18" height="36" fill="#dcebf7" stroke="#34558b" stroke-width="0.8"/>
+</svg>
+<div class="caption">Figure 7.7: Sequence diagram for text analysis</div>
+</div>
+
+<!-- ================= CHAPTER 8 ================= -->
+<h1 class="ch">8. Database Design</h1>
+
+<h2>8.1 Overview and Design Principles</h2>
+<p>The system uses PostgreSQL (version 16 compatible) as its database. The schema is implemented through SQLAlchemy models and is created and evolved only through versioned Alembic migrations; no table is created informally. The design follows these principles:</p>
+<ul class="b">
+  <li>Every table has a UUID primary key generated by the application, so the same schema runs identically on a local PostgreSQL and on a managed service.</li>
+  <li>Every user-owned table carries <span class="mono">owner_id</span> referencing <span class="mono">users(id)</span> with <span class="mono">ON DELETE CASCADE</span>; ownership is checked in SQL and again in the API layer.</li>
+  <li>Status-like columns are short character fields guarded by CHECK constraints rather than database enums, which keeps migrations simple.</li>
+  <li>All timestamps are stored in UTC (<span class="mono">TIMESTAMPTZ</span>); every table has <span class="mono">created_at</span>, and mutable tables also have <span class="mono">updated_at</span>.</li>
+  <li>Deletion is real deletion (no soft-delete flags); privacy-sensitive purges remove rows and stored files together.</li>
+  <li>Indexes are created on the actual query paths: owner with time for history, owner with score for risk sorting, and analysis with category for charts.</li>
+</ul>
+
+<h2>8.2 Principal Tables</h2>
+<h3>8.2.1 users — user accounts</h3>
+<table>
+  <tr><th style="width:26%;">Column</th><th style="width:24%;">Type</th><th>Constraints / Notes</th></tr>
+  <tr><td class="mono">id</td><td>UUID</td><td>Primary key</td></tr>
+  <tr><td class="mono">email</td><td>VARCHAR(320)</td><td>Unique, not null; stored lower-cased</td></tr>
+  <tr><td class="mono">display_name</td><td>VARCHAR(100)</td><td>Nullable; shown in profile</td></tr>
+  <tr><td class="mono">password_hash</td><td>TEXT</td><td>Argon2id hash only; never a plain password</td></tr>
+  <tr><td class="mono">is_verified</td><td>BOOLEAN</td><td>Default false; true after email verification</td></tr>
+  <tr><td class="mono">is_active</td><td>BOOLEAN</td><td>Default true</td></tr>
+  <tr><td class="mono">last_login_at</td><td>TIMESTAMPTZ</td><td>Set at each successful login</td></tr>
+  <tr><td class="mono">created_at / updated_at</td><td>TIMESTAMPTZ</td><td>Not null</td></tr>
+</table>
+
+<h3>8.2.2 analyses — one analysis run</h3>
+<table>
+  <tr><th style="width:26%;">Column</th><th style="width:24%;">Type</th><th>Constraints / Notes</th></tr>
+  <tr><td class="mono">id</td><td>UUID</td><td>Primary key</td></tr>
+  <tr><td class="mono">owner_id</td><td>UUID</td><td>Foreign key to users, cascade delete</td></tr>
+  <tr><td class="mono">document_id</td><td>UUID</td><td>Foreign key to documents, null for pasted-text analyses</td></tr>
+  <tr><td class="mono">title</td><td>VARCHAR(200)</td><td>Auto-derived title of the analysis</td></tr>
+  <tr><td class="mono">source_type</td><td>VARCHAR(16)</td><td>CHECK: text / document</td></tr>
+  <tr><td class="mono">status</td><td>VARCHAR(16)</td><td>CHECK: segmented / analyzed / failed</td></tr>
+  <tr><td class="mono">source_text</td><td>TEXT</td><td>Normalised input retained with the analysis</td></tr>
+  <tr><td class="mono">score</td><td>SMALLINT</td><td>CHECK 0–100; null until scored</td></tr>
+  <tr><td class="mono">band</td><td>VARCHAR(16)</td><td>CHECK: low / moderate / high / very_high</td></tr>
+  <tr><td class="mono">score_breakdown</td><td>JSONB</td><td>Per-issue deductions for explainability</td></tr>
+  <tr><td class="mono">health</td><td>JSONB</td><td>Four health dimensions</td></tr>
+  <tr><td class="mono">requirements_count / issues_count</td><td>INTEGER</td><td>Denormalised counters for fast dashboard queries</td></tr>
+  <tr><td class="mono">ai_overview / ai_provider / ai_status</td><td>TEXT / VARCHAR</td><td>Optional enhancement outcome; status: ok / failed / skipped / unconfigured</td></tr>
+</table>
+
+<h3>8.2.3 requirements — segmented requirements</h3>
+<table>
+  <tr><th style="width:26%;">Column</th><th style="width:24%;">Type</th><th>Constraints / Notes</th></tr>
+  <tr><td class="mono">id</td><td>UUID</td><td>Primary key</td></tr>
+  <tr><td class="mono">owner_id / analysis_id</td><td>UUID</td><td>Foreign keys, cascade delete</td></tr>
+  <tr><td class="mono">position</td><td>INTEGER</td><td>Order in the document; unique per analysis</td></tr>
+  <tr><td class="mono">identifier</td><td>VARCHAR(32)</td><td>Detected identifier such as FR-001, when present</td></tr>
+  <tr><td class="mono">section</td><td>VARCHAR(200)</td><td>Heading-derived section path, when detectable</td></tr>
+  <tr><td class="mono">text</td><td>TEXT</td><td>Full requirement text</td></tr>
+  <tr><td class="mono">score</td><td>SMALLINT</td><td>CHECK 0–100; null until scored</td></tr>
+  <tr><td class="mono">severity</td><td>VARCHAR(16)</td><td>Worst severity among its issues; null when none</td></tr>
+  <tr><td class="mono">issues_count</td><td>INTEGER</td><td>Denormalised counter</td></tr>
+  <tr><td class="mono">suggested_rewrite</td><td>TEXT</td><td>Improvement suggestion, when produced</td></tr>
+</table>
+
+<h3>8.2.4 issues — detected findings</h3>
+<table>
+  <tr><th style="width:26%;">Column</th><th style="width:24%;">Type</th><th>Constraints / Notes</th></tr>
+  <tr><td class="mono">id</td><td>UUID</td><td>Primary key</td></tr>
+  <tr><td class="mono">owner_id / analysis_id / requirement_id</td><td>UUID</td><td>Foreign keys, cascade delete</td></tr>
+  <tr><td class="mono">detector_id</td><td>VARCHAR(64)</td><td>Stable detector identifier, e.g. <span class="mono">vague-quantifier</span></td></tr>
+  <tr><td class="mono">category</td><td>VARCHAR(64)</td><td>User-facing category name</td></tr>
+  <tr><td class="mono">severity</td><td>VARCHAR(16)</td><td>CHECK: low / medium / high / critical</td></tr>
+  <tr><td class="mono">phrase</td><td>TEXT</td><td>The exact matched phrase</td></tr>
+  <tr><td class="mono">start_offset / end_offset</td><td>INTEGER</td><td>Character offsets within the requirement; end after start (CHECK)</td></tr>
+  <tr><td class="mono">reason / recommendation</td><td>TEXT</td><td>Why it was flagged and how to improve it</td></tr>
+  <tr><td class="mono">ai_explanation</td><td>TEXT</td><td>Nullable; filled only by the optional enhancement</td></tr>
+</table>
+
+<h2>8.3 Supporting Tables</h2>
+<table>
+  <tr><th style="width:24%;">Table</th><th>Purpose and Key Columns</th></tr>
+  <tr><td class="mono">documents</td><td>Uploaded files: owner, original filename, verified file type, MIME type, byte size, SHA-256 digest, server-generated storage path, extracted character count, extraction status</td></tr>
+  <tr><td class="mono">ai_provider_credentials</td><td>User’s provider credentials: owner, provider name, label, <b>encrypted</b> key, key fingerprint and last four characters for display, enabled/default flags, fallback order, last test result. The plain key is never stored or returned.</td></tr>
+  <tr><td class="mono">refresh_tokens</td><td>Hashed refresh tokens with expiry and rotation/revocation information for session management</td></tr>
+  <tr><td class="mono">email_verification_tokens</td><td>Hashed, expiring tokens for email verification</td></tr>
+  <tr><td class="mono">password_reset_tokens</td><td>Hashed, expiring, single-use tokens for password reset</td></tr>
+  <tr><td class="mono">user_preferences</td><td>One row per user with privacy preferences such as history retention days</td></tr>
+</table>
+
+<h2>8.4 Keys, Constraints and Indexes</h2>
+<ul class="b">
+  <li>Primary keys are UUIDs on all tables; foreign keys enforce the relationships of Figure 7.6 with cascade deletion, so removing a user removes all dependent rows.</li>
+  <li>CHECK constraints protect value domains: analysis source type and status, score range 0–100, issue severity, and issue offset ordering.</li>
+  <li>A unique constraint on <span class="mono">users.email</span> prevents duplicate accounts; a unique constraint on (analysis, position) keeps requirement order unambiguous.</li>
+  <li>Composite indexes on (owner_id, created_at) and (owner_id, score) serve history and risk-sorted queries; (analysis_id, category) serves the report charts.</li>
+  <li>Only the enabled credential of a provider is treated as active for a user; disabling a credential frees that position, enforced by constraint.</li>
+</ul>
+
+<h2>8.5 Normalisation</h2>
+<p>The schema is in third normal form for its operational data: user facts are stored once in <span class="mono">users</span>, an analysis stores only its own attributes and foreign keys, requirements belong to exactly one analysis, and issues belong to exactly one requirement — no requirement text or user fact is repeated across rows. Two deliberate, documented exceptions are made for read performance: counters (<span class="mono">requirements_count</span>, <span class="mono">issues_count</span>, worst severity) are denormalised onto parent rows, and two JSONB columns (<span class="mono">score_breakdown</span>, <span class="mono">health</span>) store small derived summaries whose full detail remains available in the <span class="mono">issues</span> table. These derived values are always written in the same transaction as the findings they summarise, so they cannot disagree with the detailed data.</p>
+
+<h2>8.6 Data Integrity and Protection</h2>
+<p>Integrity is protected at three levels: database constraints reject invalid rows even if application code errs; the repository layer always filters by owner, so cross-user access returns “not found”; and all writes pass through the service layer in transactions that commit or roll back as a unit. Passwords exist only as Argon2id hashes, session and reset tokens only as hashes, and provider keys only as ciphertext — a database leak therefore does not directly expose any usable secret. Deleting an analysis also removes its requirements and issues and purges an orphaned uploaded document from storage; deleting the account removes all of the user’s rows and files.</p>
+<!-- ================= CHAPTER 9 ================= -->
+<h1 class="ch">9. Implementation, Deployment and Maintenance</h1>
+
+<h2>9.1 Development Environment and Technology Stack</h2>
+<p>The system was developed incrementally, module by module, under Git version control, with automated tests written alongside each module and the full test suites executed before the work was accepted as complete. Approximately 45,000 lines of code, including automated tests, were produced. The technology stack is summarised below.</p>
+<table>
+  <tr><th style="width:26%;">Layer</th><th>Technologies Used</th></tr>
+  <tr><td>Front end</td><td>Next.js (App Router), React, TypeScript, Tailwind CSS, Recharts for charts, Motion for interface animation, Lucide icons</td></tr>
+  <tr><td>Back end</td><td>Python 3.11, FastAPI, Pydantic v2, Uvicorn ASGI server</td></tr>
+  <tr><td>Database access</td><td>SQLAlchemy 2.0 (async) with asyncpg driver; Alembic migrations</td></tr>
+  <tr><td>Database</td><td>PostgreSQL 16 (local server for development; managed PostgreSQL in production)</td></tr>
+  <tr><td>Security libraries</td><td>Argon2id password hashing, JSON Web Tokens (HS256), Fernet symmetric encryption for the credential vault, Cloudflare Turnstile CAPTCHA</td></tr>
+  <tr><td>Document processing</td><td>pypdf for PDF extraction, python-docx for DOCX extraction, multipart upload handling</td></tr>
+  <tr><td>Email</td><td>Email service abstraction with a production mail adapter and a local console/file outbox for development</td></tr>
+  <tr><td>Testing</td><td>pytest (back end, 591 tests against a real PostgreSQL), Vitest with Testing Library (front end, 432 tests)</td></tr>
+  <tr><td>Monitoring</td><td>Sentry error tracking with aggressive scrubbing of secrets and document content; structured request logging with request identifiers</td></tr>
+</table>
+
+<h2>9.2 Detection Engine Implementation</h2>
+<p>The detection engine is implemented as a registry of eleven independent detector functions. Each detector receives one requirement at a time and returns findings containing the detector identifier, category, severity, matched phrase, character offsets within the requirement, reason and recommendation. Because detectors are independent, a new category can be added by registering one more function without disturbing existing behaviour.</p>
+<table>
+  <tr><th style="width:22%;">Detector</th><th style="width:30%;">What It Detects</th><th>Example (flagged phrase in quotes)</th></tr>
+  <tr><td class="mono">vague-quantifier</td><td>Quantity words such as “some”, “many”, “few”, “several”</td><td>“The system shall support <b>several</b> users.”</td></tr>
+  <tr><td class="mono">subjective-term</td><td>Subjective quality words such as “fast”, “quickly”, “easy”, “user-friendly”, “robust”</td><td>“The system shall respond <b>quickly</b>.”</td></tr>
+  <tr><td class="mono">missing-measurable-criteria</td><td>Performance or quality claims carrying no measurable criterion</td><td>“The system shall load reports <b>efficiently</b>.”</td></tr>
+  <tr><td class="mono">pronoun-reference</td><td>Pronouns or demonstratives whose referent may be unclear</td><td>“When the service receives a request, <b>it</b> validates <b>it</b>.”</td></tr>
+  <tr><td class="mono">optional-language</td><td>Words such as “may”, “might”, “could”, “if possible”, “as needed”</td><td>“The system <b>may</b> send an alert <b>if possible</b>.”</td></tr>
+  <tr><td class="mono">ambiguous-operator</td><td>“and/or”, “etc.”, “and so on”, ambiguous “or”</td><td>“The user can export PDF <b>and/or</b> CSV reports.”</td></tr>
+  <tr><td class="mono">undefined-terminology</td><td>Capitalised or domain-like terms that appear without definition</td><td>“The system shall notify <b>Premium Users</b>.”</td></tr>
+  <tr><td class="mono">absolute-language</td><td>Absolutes such as “always”, “never”, “all”, “every”, “instant”</td><td>“The system shall <b>always</b> be available.”</td></tr>
+  <tr><td class="mono">passive-actor</td><td>Passive constructions in which the responsible actor is unclear</td><td>“The report shall <b>be approved</b> before release.”</td></tr>
+  <tr><td class="mono">missing-constraint</td><td>Behaviour described without necessary constraints (limits, timing, format, retention)</td><td>“The system shall <b>store audit logs</b>.”</td></tr>
+  <tr><td class="mono">incomplete-requirement</td><td>Fragments, placeholders such as “TBD”, dangling modal verbs</td><td>“The system shall <b>TBD</b>.”</td></tr>
+</table>
+<p>Findings from all detectors are deduplicated deterministically: exact duplicates collapse to one; identical spans reported by two detectors keep the higher severity; overlapping but different spans are preserved. Scoring is deliberately transparent, with no hidden weighting:</p>
+<div class="eqbox"><b>Requirement score</b> = max (0, 100 − Σ severity deductions), where Low = 5, Medium = 10, High = 15, Critical = 20.<br><b>Analysis score</b> = arithmetic mean of requirement scores.</div>
+<table>
+  <tr><th style="width:30%;">Score Range</th><th>Ambiguity Band</th></tr>
+  <tr><td>80–100</td><td>Low ambiguity</td></tr>
+  <tr><td>60–79</td><td>Moderate ambiguity</td></tr>
+  <tr><td>40–59</td><td>High ambiguity</td></tr>
+  <tr><td>0–39</td><td>Very high ambiguity</td></tr>
+</table>
+<p>The same deductions also feed four health dimensions, so every number in the report can be traced back to individual findings:</p>
+<table>
+  <tr><th style="width:26%;">Health Dimension</th><th>Contributing Detectors</th></tr>
+  <tr><td>Measurability</td><td>Subjective terms, missing measurable criteria</td></tr>
+  <tr><td>Specificity</td><td>Vague quantifiers, undefined terminology, absolute language</td></tr>
+  <tr><td>Clarity</td><td>Pronoun references, ambiguous operators, optional language, passive voice</td></tr>
+  <tr><td>Completeness</td><td>Missing constraints, incomplete requirements</td></tr>
+</table>
+
+<h2>9.3 Back-End Implementation</h2>
+<p>The back end exposes a versioned REST API under <span class="mono">/api/v1</span>. Routers validate requests through Pydantic schemas, services execute the business logic inside transactions, and repositories contain all database access. Typical endpoints are:</p>
+<table>
+  <tr><th style="width:30%;">API Area</th><th>Representative Endpoints</th></tr>
+  <tr><td>Authentication</td><td class="mono">POST /auth/register, /auth/login, /auth/logout, /auth/refresh, /auth/verify-email, /auth/forgot-password, /auth/reset-password, /auth/change-password; GET /auth/me; DELETE /auth/account</td></tr>
+  <tr><td>Analysis</td><td class="mono">POST /analysis (text), GET /analysis/{id}, DELETE /analysis/{id}, POST /analysis/{id}/retry-ai, list with search/filter/sort</td></tr>
+  <tr><td>Documents</td><td class="mono">POST /documents/upload, list, delete, signed download</td></tr>
+  <tr><td>Dashboard</td><td class="mono">GET /dashboard summary and trends</td></tr>
+  <tr><td>Provider credentials</td><td class="mono">Create, list (masked), test, set default, delete</td></tr>
+  <tr><td>Settings and privacy</td><td class="mono">Profile update, data export, history purge, retention preference</td></tr>
+  <tr><td>Health</td><td class="mono">GET /health and readiness checks for monitoring</td></tr>
+</table>
+<p>Uploaded documents pass through a validation chain — declared type, actual magic bytes, size streamed and counted (10 MB maximum), extraction time budget — before their text enters the same pipeline as pasted text. Stored files receive server-generated names; downloads are issued through short-lived signed links.</p>
+
+<h2>9.4 Front-End Implementation</h2>
+<p>The front end is a Next.js application with public pages (home, features, how-it-works, resources) that are server-rendered for search visibility, and signed-in pages for the analyser, reports (<span class="mono">/analysis/[id]</span>), history, dashboard and settings. A typed API client centralises all communication with the back end; authentication state is held through secure cookies, never in browser storage. Charts are drawn with Recharts, and the layout is responsive across desktop, tablet and mobile widths, as the screenshots in Section 9.6 show. The production build compiles all 19 routes successfully with full TypeScript type checking.</p>
+
+<h2>9.5 Demonstration Run and Results</h2>
+<p>The complete system was executed locally with a real PostgreSQL database, and a demonstration account was used to run the application end to end. The sample input consisted of seven deliberately weak requirements (FR-001 to FR-007, covering login, reporting, dashboard, payment, approval, performance and data handling). The observed result, which also appears in the screenshots, was:</p>
+<table>
+  <tr><th style="width:38%;">Measure</th><th>Observed Value</th></tr>
+  <tr><td>Requirements segmented</td><td>7</td></tr>
+  <tr><td>Total issues detected</td><td>18 (Low 3, Medium 10, High 5, Critical 0)</td></tr>
+  <tr><td>Overall score and band</td><td>73 / 100 — Moderate ambiguity</td></tr>
+  <tr><td>Issues by category</td><td>Missing measurable criteria 4; Subjective terms 4; Vague quantifiers 2; Optional language 2; Passive voice 2; Absolute language 1; Ambiguous operators 1; Undefined terminology 1; Pronoun references 1</td></tr>
+  <tr><td>Health dimensions</td><td>Clarity 45/100; Specificity 65/100; Measurability 0/100; Completeness 100/100</td></tr>
+  <tr><td>Document run (same content as TXT upload)</td><td>Identical result: 73/100, 18 issues — confirming both input paths share one pipeline</td></tr>
+</table>
+<p>Spot-checking the findings confirms their correctness: “log in quickly”, “respond fast” and “provide good performance” were flagged as performance claims without measurable criteria (High severity); “and/or” was flagged as an ambiguous operator; “always” as absolute language; “as needed” and “should” as optional language; and “be processed” / “be approved” as passive constructions with no named actor.</p>
+
+<h2>9.6 Output Screens</h2>
+<p>The following screenshots were captured from the actual running application using the demonstration account and the sample SRS of Section 9.5.</p>
+
+<div class="figure"><img src="../screenshots/01-home--1440x900.png" style="width:84%;"><div class="caption">Figure 9.1: Public home page of SRS Ambiguity Detector</div></div>
+<div class="figure"><img src="../screenshots/07-analyzer-input--1440x900.png" style="width:84%;"><div class="caption">Figure 9.2: Analyser with sample SRS text entered</div></div>
+<div class="figure"><img src="../screenshots/08-analysis-result--1440x900.png" style="width:84%;"><div class="caption">Figure 9.3: Analysis result — score 73/100, Moderate ambiguity, 18 issues</div></div>
+<div class="figure"><img src="../screenshots/09-analysis-report--1440x900.png" style="width:84%;"><div class="caption">Figure 9.4: Saved analysis report reopened from the database</div></div>
+<div class="figure"><img src="../screenshots/06-dashboard--1440x900.png" style="width:84%;"><div class="caption">Figure 9.5: Dashboard with aggregate statistics and charts</div></div>
+<div class="figure"><img src="../screenshots/10-history--1440x900.png" style="width:84%;"><div class="caption">Figure 9.6: Analysis history with saved text and document analyses</div></div>
+<div class="figure"><img src="../screenshots/13-document-upload--1440x900.png" style="width:84%;"><div class="caption">Figure 9.7: Document upload for PDF, DOCX and TXT files</div></div>
+<div class="figure"><img src="../screenshots/12-ai-provider-settings--1440x900.png" style="width:84%;"><div class="caption">Figure 9.8: Settings — provider credential management (optional enhancement)</div></div>
+<div class="figure"><img src="../screenshots/15-mobile-analyzer--390x844.png" style="width:44%;"><div class="caption">Figure 9.9: Analyser on a mobile-width screen (responsive design)</div></div>
+
+<h2>9.7 Deployment</h2>
+<p>The production topology separates the two tiers. The Next.js front end is deployed on a managed web host (Vercel), and the FastAPI back end on a Python-capable service host, connected to managed PostgreSQL and object storage. The principal deployment steps are:</p>
+<ol class="n">
+  <li>Create the managed PostgreSQL database and a private storage bucket.</li>
+  <li>Configure back-end environment variables (database URLs, JWT secret, encryption master key, email service key, CAPTCHA keys, application base URL) — secrets are never committed to the repository.</li>
+  <li>Apply database migrations with <span class="mono">alembic upgrade head</span>.</li>
+  <li>Start the back end under Uvicorn behind HTTPS and verify the health endpoint.</li>
+  <li>Deploy the front end with <span class="mono">NEXT_PUBLIC_API_URL</span> pointing at the back end’s <span class="mono">/api/v1</span> address.</li>
+  <li>Verify registration, email verification, analysis, upload and dashboard flows on the live deployment.</li>
+</ol>
+
+<h2>9.8 Maintenance</h2>
+<ul class="b">
+  <li><b>Corrective maintenance:</b> error monitoring reports faults with secrets and document content scrubbed; the layered structure and test suites allow defects to be fixed and re-verified safely.</li>
+  <li><b>Adaptive maintenance:</b> dependencies are pinned and periodically audited and upgraded; database changes are made only through new migrations.</li>
+  <li><b>Perfective maintenance:</b> detector word-lists and rules can be refined from observed false positives without changing the architecture; user feedback guides new categories.</li>
+  <li><b>Preventive maintenance:</b> regular database backups by the managed provider, review of rate-limit and error reports, and periodic re-running of the complete test suites before any release.</li>
+</ul>
+
+<!-- ================= CHAPTER 10 ================= -->
+<h1 class="ch">10. Security, Privacy, Testing and Quality Assurance</h1>
+
+<h2>10.1 Security Measures Implemented</h2>
+<ul class="b">
+  <li>Passwords are stored only as Argon2id hashes; password policy rejects weak passwords (for example, a password containing the user’s own email address is refused).</li>
+  <li>Sessions use HttpOnly cookies: a short-lived access token (15 minutes) and a rotating refresh token (30 days); reuse of an old refresh token revokes the whole token family.</li>
+  <li>Mutating requests that rely on cookies are protected by Origin/Referer checks, and cross-origin access is restricted to the configured front-end origin.</li>
+  <li>Every user-owned resource is filtered by owner in the database and in the API; requesting another user’s analysis returns “not found”, preventing insecure direct object reference.</li>
+  <li>Provider credentials are encrypted with Fernet (AES-based) encryption before storage; only the last four characters are ever shown, and the key is never returned by any API.</li>
+  <li>Uploaded files are validated by size, declared type, magic bytes and parser limits; stored under server-generated names; downloads use signed links that expire within 15 minutes.</li>
+  <li>Rate limiting protects authentication, analysis, upload and credential-testing endpoints; CAPTCHA verification can be enabled on abuse-prone operations.</li>
+  <li>Logs and error reports are scrubbed so that passwords, tokens, provider keys and SRS document text are never recorded.</li>
+  <li>Security response headers and production gating of API documentation reduce information exposure.</li>
+</ul>
+
+<h2>10.2 Threats and Mitigations</h2>
+<table>
+  <tr><th style="width:26%;">Threat</th><th>Mitigation in the System</th></tr>
+  <tr><td>SQL injection</td><td>All database access through SQLAlchemy parameterised queries; no string-built SQL</td></tr>
+  <tr><td>Cross-site scripting (XSS)</td><td>React’s automatic output escaping; security headers; no raw HTML rendering of user content</td></tr>
+  <tr><td>Cross-site request forgery (CSRF)</td><td>Origin/Referer verification on cookie-authenticated mutating requests</td></tr>
+  <tr><td>Session hijacking / token theft</td><td>HttpOnly cookies, short access-token life, refresh rotation with reuse detection and family revocation</td></tr>
+  <tr><td>Credential stuffing and brute force</td><td>Per-endpoint rate limits, CAPTCHA support, Argon2id hashing cost</td></tr>
+  <tr><td>Insecure direct object reference</td><td>Owner-wise filtering in repositories and endpoints; foreign identifiers return 404</td></tr>
+  <tr><td>Malicious file upload</td><td>Magic-byte and size validation, extraction time and size budgets, server-generated storage names, no execution of uploaded content</td></tr>
+  <tr><td>Secret leakage</td><td>Encrypted credential vault, hashed tokens, scrubbed logs and error reports, secrets only in environment variables</td></tr>
+  <tr><td>Abuse of costly operations</td><td>Separate rate-limit budgets for analysis, uploads and provider tests, with HTTP 429 responses</td></tr>
+</table>
+
+<h2>10.3 Privacy</h2>
+<p>Analyses, documents and credentials are private to their owner by construction. The user can view and export the data held about them, purge analysis history, set a history-retention preference, and delete the account completely — which removes all owned rows and stored files. Requirement text is never written to application logs or error reports. Where the optional enhancement is used, the report discloses that an external provider processed the content, and this happens only with credentials the user personally supplied. These facilities put the privacy lifecycle under the user’s control.</p>
+
+<h2>10.4 Testing Approach</h2>
+<p>Testing was carried out at four levels. <b>Unit tests</b> cover each detector, the scoring formula, deduplication and segmentation against fixed examples, including a curated corpus of sample requirements with expected findings. <b>Integration tests</b> run the API and services against a real PostgreSQL database (never a substitute), covering authentication flows, analysis persistence, document processing, ownership isolation, the credential vault and privacy operations. <b>Interface tests</b> exercise the front-end components and pages with Vitest and Testing Library. <b>System testing</b> was performed by executing the complete application — database, back end and front end — and running the demonstration of Section 9.5 through the browser, from registration and email verification to text analysis, document analysis, history and dashboard.</p>
+
+<h2>10.5 Test Results</h2>
+<table>
+  <tr><th style="width:44%;">Verification Activity</th><th>Result</th></tr>
+  <tr><td>Back-end test suite (pytest, real PostgreSQL)</td><td>591 tests passed</td></tr>
+  <tr><td>Front-end test suite (Vitest, 53 test files)</td><td>432 tests passed</td></tr>
+  <tr><td>Total automated tests</td><td><b>1,023 passed, 0 failed</b></td></tr>
+  <tr><td>Database migrations (6 revisions)</td><td>Applied successfully; 10 application tables created</td></tr>
+  <tr><td>Production front-end build (with type checking)</td><td>Successful; 19 routes generated</td></tr>
+  <tr><td>End-to-end demonstration (browser, live system)</td><td>Text and document analyses both scored 73/100 with 18 issues on the sample SRS</td></tr>
+</table>
+
+<h2>10.6 Sample Test Cases</h2>
+<table>
+  <tr><th style="width:9%;">ID</th><th style="width:20%;">Module</th><th style="width:31%;">Test Case</th><th style="width:26%;">Expected Result</th><th>Status</th></tr>
+  <tr><td>TC-01</td><td>Registration</td><td>Register with valid name, email and password</td><td>Account created in unverified state; verification email issued</td><td>Pass</td></tr>
+  <tr><td>TC-02</td><td>Registration</td><td>Register with a password containing the email address</td><td>Rejected as a weak password</td><td>Pass</td></tr>
+  <tr><td>TC-03</td><td>Email verification</td><td>Submit a valid verification token</td><td>Account marked verified and login permitted</td><td>Pass</td></tr>
+  <tr><td>TC-04</td><td>Detection</td><td>Analyse “The system shall support several users.”</td><td>Vague-quantifier finding on “several” with reason and recommendation</td><td>Pass</td></tr>
+  <tr><td>TC-05</td><td>Scoring</td><td>Analyse the seven-requirement sample SRS</td><td>Score 73/100, Moderate band, 18 issues (3 Low, 10 Medium, 5 High)</td><td>Pass</td></tr>
+  <tr><td>TC-06</td><td>Document upload</td><td>Upload the sample SRS as a TXT file</td><td>Text extracted and analysed with the same result as pasted text</td><td>Pass</td></tr>
+  <tr><td>TC-07</td><td>Document upload</td><td>Upload an oversized or wrong-type file</td><td>Rejected with a clear validation error; nothing stored</td><td>Pass</td></tr>
+  <tr><td>TC-08</td><td>Ownership</td><td>User B requests User A’s analysis by its identifier</td><td>HTTP 404; no data of User A disclosed</td><td>Pass</td></tr>
+  <tr><td>TC-09</td><td>Credential vault</td><td>Save a provider credential and list credentials</td><td>Stored encrypted; list shows only provider and last four characters</td><td>Pass</td></tr>
+  <tr><td>TC-10</td><td>Session security</td><td>Reuse an already-rotated refresh token</td><td>Token family revoked; fresh login required</td><td>Pass</td></tr>
+  <tr><td>TC-11</td><td>Rate limiting</td><td>Repeat authentication attempts beyond the configured budget</td><td>HTTP 429 with retry guidance</td><td>Pass</td></tr>
+  <tr><td>TC-12</td><td>Dashboard</td><td>Open the dashboard after two analyses</td><td>Totals, severity mix and recent analyses match the saved data</td><td>Pass</td></tr>
+</table>
+
+<h2>10.7 Quality Assurance Practices</h2>
+<ul class="b">
+  <li>A single documented verification routine runs type checking, linting, formatting checks and both test suites, and was executed before the system was accepted as complete.</li>
+  <li>Dependency audits for both the Python and JavaScript ecosystems and a scan for accidentally committed secrets form part of the checks.</li>
+  <li>Requirements are traced to implementation modules and tests, so every functional requirement of Chapter 6 has corresponding evidence.</li>
+  <li>All findings shown to users are explainable from stored data (phrase, offsets, reason), which makes defects in the engine itself easy to reproduce and correct.</li>
+</ul>
+
+<!-- ================= CHAPTER 11 ================= -->
+<h1 class="ch">11. Project Evaluation and Future Enhancements</h1>
+
+<h2>11.1 Evaluation Against Objectives</h2>
+<table>
+  <tr><th style="width:36%;">Objective</th><th>Evaluation</th></tr>
+  <tr><td>Accept SRS text and documents</td><td>Achieved — paste-text and PDF/DOCX/TXT upload run through one pipeline; verified live with identical results</td></tr>
+  <tr><td>Deterministic segmentation and detection</td><td>Achieved — 11 detector categories with phrase-level findings, reasons and recommendations</td></tr>
+  <tr><td>Transparent scoring</td><td>Achieved — published deduction formula, ambiguity bands and four health dimensions; no hidden weighting</td></tr>
+  <tr><td>Accounts, persistence, history, dashboard</td><td>Achieved — verified accounts, PostgreSQL storage, searchable history and chart dashboard all working</td></tr>
+  <tr><td>Optional enhancement</td><td>Achieved — encrypted user-owned credentials, six supported providers, disclosure in reports; core result never depends on it</td></tr>
+  <tr><td>Security and privacy</td><td>Achieved — controls of Chapter 10 implemented and tested, including ownership isolation and complete deletion</td></tr>
+  <tr><td>Verification</td><td>Achieved — 1,023 automated tests pass; production build succeeds; live end-to-end demonstration completed</td></tr>
+</table>
+<p>Overall, the project meets the objectives recorded in Chapter 3. Its strongest qualities are the explainability of every finding, the reproducibility of the deterministic engine, and the completeness of the surrounding product, which makes it usable as a real working tool rather than a demonstration of a single algorithm.</p>
+
+<h2>11.2 Limitations</h2>
+<ul class="b">
+  <li>Detection is heuristic: patterns can occasionally flag acceptable phrasing (false positives) and cannot recognise ambiguity that requires domain knowledge (false negatives). Findings must be read as review aids.</li>
+  <li>The score is an analytical indicator for comparing documents within the tool; it is not a formal certification of SRS quality.</li>
+  <li>Scanned or image-only PDFs cannot be analysed because OCR is not included.</li>
+  <li>Analysis is English-first; requirement text in other languages is not reliably detected.</li>
+  <li>Rate limiting currently operates within a single server process; a shared limiter would be needed for very large multi-instance deployments.</li>
+  <li>The optional enhancement depends on external providers chosen by the user; its suggestions are advisory and are always shown separately from deterministic findings.</li>
+</ul>
+
+<h2>11.3 Future Enhancements</h2>
+<ul class="b">
+  <li><b>Team workspaces:</b> shared analyses, comments and review assignments for project teams.</li>
+  <li><b>Report export:</b> download of the analysis report as a formatted PDF or DOCX document for attachment to project records.</li>
+  <li><b>Batch and CI integration:</b> an API or command-line mode so SRS quality can be checked automatically in a build pipeline.</li>
+  <li><b>OCR support:</b> text recognition for scanned SRS documents.</li>
+  <li><b>Multilingual analysis:</b> detector packs for additional languages.</li>
+  <li><b>Configurable detector packs:</b> organisation-specific terminology, glossaries and severity policies.</li>
+  <li><b>Deeper language analysis:</b> additional checks such as cross-requirement consistency and duplicate-requirement detection.</li>
+  <li><b>Distributed rate limiting and horizontal scaling</b> for large public deployments.</li>
+  <li><b>Native mobile application</b> reusing the same back-end API.</li>
+</ul>
+
+<!-- ================= CHAPTER 12 ================= -->
+<h1 class="ch">12. Conclusion</h1>
+<p>This project set out to solve a practical problem of software engineering: requirement statements written in natural language are frequently vague, subjective, incomplete or unverifiable, and the resulting misunderstandings cause rework and defects that are discovered late and cost much to repair. The study of literature confirmed that a large part of this weakness follows recognisable wording patterns, and therefore can be detected automatically, provided the findings remain explainable to the human analyst.</p>
+<p>The SRS Ambiguity Detector developed in this project meets that requirement. It is a complete web application — not merely a demonstration of an algorithm — in which a verified user can paste SRS text or upload a PDF, DOCX or TXT document, and within seconds receive a requirement-by-requirement report: eleven categories of findings, each with the exact phrase, severity, reason and recommendation; a transparent score out of 100 with an ambiguity band; and four health dimensions that show where a document is weak. Analyses are preserved in PostgreSQL, so reports can be reopened, history searched, and quality trends observed on a dashboard. An optional enhancement, driven by the user’s own encrypted credentials, can add an overview and rewrite suggestions, while the deterministic engine remains the authoritative and reproducible source of every result. Security and privacy — Argon2id password hashing, secure cookie sessions with rotation, owner-wise data isolation, an encrypted credential vault, rate limiting, data export and complete deletion — were treated as core requirements, not afterthoughts.</p>
+<p>The system was verified thoroughly: 591 back-end tests and 432 front-end tests (1,023 in total) pass, the production build succeeds, and a live demonstration on a sample SRS produced consistent, correct findings (73/100, Moderate ambiguity, 18 issues across 7 requirements) through both the text and document paths. Evaluated as a startup concept, the product needs very little investment, serves a clearly identified group of users — students, analysts, developers, testers and small teams — and can sustain itself through a simple freemium model. The project thus demonstrates the complete journey from an identified problem, through literature study, feasibility analysis, design, implementation, security, testing and deployment planning, to a working product with a credible path to real use. It has strengthened my understanding of requirements engineering, full-stack development, database design, application security and software testing, and it provides a firm base for the future enhancements recorded in Chapter 11.</p>
+
+<!-- ================= CHAPTER 13 ================= -->
+<h1 class="ch">13. References</h1>
+<ol class="n">
+  <li>IEEE Std 830-1998, <i>IEEE Recommended Practice for Software Requirements Specifications</i>, Institute of Electrical and Electronics Engineers, 1998.</li>
+  <li>ISO/IEC/IEEE 29148:2018, <i>Systems and Software Engineering — Life Cycle Processes — Requirements Engineering</i>, International Organization for Standardization, 2018.</li>
+  <li>D. M. Berry and E. Kamsties, “Ambiguity in Requirements Specification,” in <i>Perspectives of Requirements Engineering</i>, 2004.</li>
+  <li>H. Femmer, D. Méndez Fernández, S. Wagner and S. Eder, “Rapid Quality Assurance with Requirements Smells,” <i>Journal of Systems and Software</i>, vol. 123, pp. 190–213, 2017.</li>
+  <li>S. Gnesi, G. Lami and G. Trentanni, “An Automatic Tool for the Analysis of Natural Language Requirements” (QuARS), ISTI-CNR, Pisa, 2005.</li>
+  <li>W. M. Wilson, L. H. Rosenberg and L. E. Hyatt, “Automated Quality Analysis of Natural Language Requirement Specifications” (ARM), NASA Software Assurance Technology Center, 1997.</li>
+  <li>K. Wiegers and J. Beatty, <i>Software Requirements</i>, 3rd ed., Microsoft Press, 2013.</li>
+  <li>I. Sommerville, <i>Software Engineering</i>, 10th ed., Pearson, 2016.</li>
+  <li>R. S. Pressman and B. R. Maxim, <i>Software Engineering: A Practitioner’s Approach</i>, 9th ed., McGraw-Hill, 2020.</li>
+  <li>S. Robertson and J. Robertson, <i>Mastering the Requirements Process: Getting Requirements Right</i>, 3rd ed., Addison-Wesley, 2012.</li>
+  <li>OWASP Foundation, “OWASP Top 10:2021 — The Ten Most Critical Web Application Security Risks,” https://owasp.org/Top10, accessed November 2026.</li>
+  <li>FastAPI Documentation, https://fastapi.tiangolo.com, accessed November 2026.</li>
+  <li>Next.js Documentation, https://nextjs.org/docs, accessed November 2026.</li>
+  <li>PostgreSQL 16 Documentation, https://www.postgresql.org/docs/16, accessed November 2026.</li>
+</ol>
+
+</body>
+</html>

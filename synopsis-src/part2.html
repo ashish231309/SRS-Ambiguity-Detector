@@ -1,0 +1,169 @@
+<!-- ================= CHAPTER 4 ================= -->
+<h1 class="ch">4. Literature and Background Study</h1>
+
+<h2>4.1 The SRS and Its Quality Characteristics</h2>
+<p>The Software Requirements Specification has been studied for decades. The IEEE Std 830-1998, <i>IEEE Recommended Practice for Software Requirements Specifications</i>, states that a good SRS should be correct, unambiguous, complete, consistent, ranked for importance and/or stability, verifiable, modifiable and traceable [1]. Its successor, ISO/IEC/IEEE 29148:2018, continues the same line and requires that each requirement be singular, unambiguous, complete, verifiable and conforming [2]. Of all these characteristics, <i>unambiguous</i> is the one most directly connected with language: an SRS is unambiguous if every requirement in it has only one interpretation. Standard textbooks repeat the point — Wiegers and Beatty insist that requirements must be written so that every reader arrives at the same understanding, and Sommerville lists ambiguity among the principal causes of requirements problems [7][8]. The present project takes this classical quality characteristic and turns it into an automatic check.</p>
+
+<h2>4.2 Nature of Ambiguity in Requirements</h2>
+<p>Berry and Kamsties, in their widely cited study of ambiguity in requirements specification, show that ambiguity enters natural-language requirements in several forms [3]. <b>Lexical ambiguity</b> arises when a word has more than one meaning. <b>Syntactic ambiguity</b> arises when a sentence can be parsed in more than one way, as with careless use of “and/or”. <b>Semantic and scope ambiguity</b> arise when quantifiers and modifiers do not make clear how much or to what they apply (“several users”, “all reports”). <b>Referential ambiguity</b> arises when pronouns such as “it” or “they” have no clear antecedent. To these classical forms, practical requirements writing adds further weaknesses that are not ambiguity in the strict linguistic sense but have the same effect: subjective words (“fast”, “user-friendly”), optional wording (“may”, “if possible”), absolutes (“always”, “never”), passive constructions that hide the responsible actor (“shall be approved”), and claims that carry no measurable criterion, so that nobody can verify whether the finished system satisfies them. The eleven detectors of the proposed system were selected to cover these practical categories (Chapter 7 and Chapter 9).</p>
+
+<h2>4.3 Requirements Smells and Automated Quality Checks</h2>
+<p>The idea of detecting weak requirement language automatically is established in the literature under the name <i>requirements smells</i>. Femmer and co-authors define a requirements smell as an indicator of a quality violation in a requirements artifact that can be detected with lightweight, static analysis, and they demonstrate that such smells — subjective language, ambiguous quantifiers, superlatives and similar patterns — can be found automatically and help rapid quality assurance [4]. Earlier, the QuARS (Quality Analyzer of Requirements Specification) tool developed at ISTI-CNR applied natural-language processing to evaluate ambiguity, completeness and consistency of requirements documents [5], and NASA’s Automated Requirement Measurement (ARM) tool measured requirement quality indicators in large specification documents [6]. These works establish two facts on which the present project is built: first, a large share of requirement weakness is pattern-based and therefore machine-detectable; second, automatic findings are review aids that must remain explainable to the analyst.</p>
+
+<h2>4.4 Other Existing Approaches</h2>
+<ul class="b">
+  <li><b>Manual peer review and checklists:</b> effective in expert hands, but slow, dependent on the reviewer’s attention, and difficult to repeat consistently over a long document.</li>
+  <li><b>Enterprise requirements-management suites</b> (for example IBM Engineering Requirements Management DOORS and Jama Connect, with quality add-ons): powerful, but costly, heavy to administer, and aimed at large organisations; they are practically unavailable to students and small teams.</li>
+  <li><b>Generic writing assistants:</b> grammar and readability tools improve prose style but know nothing about requirements; they do not check for measurable criteria, responsible actors or requirement completeness.</li>
+  <li><b>Research prototypes:</b> tools in the QuARS/ARM tradition validate the approach but are generally not available as maintained, easy-to-use web products.</li>
+  <li><b>General-purpose chatbot services:</b> can comment on a requirement, but results vary from run to run, no stable score or stored history is produced, and confidential SRS text must be sent to a third party by pasting it into a consumer service.</li>
+</ul>
+
+<h2>4.5 Gap Identified</h2>
+<p>The study shows a clear gap: there is no lightweight, freely usable web tool that (i) checks an SRS against a defined set of ambiguity categories, (ii) explains every finding at the exact phrase with a reason and a remedy, (iii) expresses document quality through a transparent, reproducible score, (iv) accepts the document formats actually used (PDF, DOCX, TXT), (v) preserves a private history of analyses for registered users, and (vi) gives deterministic results that do not change between runs. The proposed system is designed to fill exactly this gap, while keeping an optional, user-controlled enhancement for those who want generative suggestions in addition to the deterministic findings.</p>
+
+<!-- ================= CHAPTER 5 ================= -->
+<h1 class="ch">5. Existing and Proposed System</h1>
+
+<h2>5.1 Existing System</h2>
+<p>In the existing practice followed by most students and small teams, an SRS is written in a word processor and reviewed manually. One or two reviewers read the document, mark doubtful sentences in comments, and discuss them in a meeting. There is no fixed checklist of ambiguity patterns, no measurement of overall quality, and no record of how the document improved between drafts. Where any tool support exists, it is either a generic grammar checker that does not understand requirements, or an enterprise requirements suite whose licence cost and administration effort put it out of reach. Confidential documents reviewed through consumer chatbot websites additionally raise privacy concerns, and the comments obtained are not reproducible.</p>
+
+<h2>5.2 Proposed System</h2>
+<p>The proposed system, <b>SRS Ambiguity Detector</b>, is a full-stack web application that performs the first-level review automatically and consistently. Its working is as follows. A registered user pastes SRS text or uploads a PDF, DOCX or TXT document. The input is normalised and segmented deterministically into individual requirements. Eleven rule-based detectors examine every requirement and record findings with the matched phrase, character offsets, severity, reason and recommendation. Duplicate findings are removed by fixed rules. Each requirement starts with 100 points and loses fixed points per issue (Low 5, Medium 10, High 15, Critical 20); the analysis score is the mean of requirement scores, presented with an ambiguity band (Low, Moderate, High, Very High) and four health dimensions — measurability, specificity, clarity and completeness. The report is saved to PostgreSQL, appears in the user’s history and dashboard, and can be reopened at any time. If the user has stored credentials of a supported provider, an optional enhancement can add an overview and rewrite suggestions, clearly disclosed as such; the deterministic findings remain the authoritative result in all cases.</p>
+
+<h2>5.3 Comparison of Existing and Proposed System</h2>
+<table>
+  <tr><th style="width:26%;">Aspect</th><th style="width:35%;">Existing System</th><th>Proposed System</th></tr>
+  <tr><td>Review method</td><td>Manual reading by one or two reviewers</td><td>Automatic rule-based review of the whole document in seconds</td></tr>
+  <tr><td>Consistency</td><td>Depends on reviewer’s attention and experience</td><td>Same checks applied uniformly to every requirement</td></tr>
+  <tr><td>Findings</td><td>General comments in margins or meetings</td><td>Exact phrase highlighted, with category, severity, reason and recommendation</td></tr>
+  <tr><td>Quality measurement</td><td>None; improvement between drafts is not visible</td><td>Score out of 100, ambiguity band and four health dimensions</td></tr>
+  <tr><td>Input formats</td><td>Whatever the reviewer can open manually</td><td>Pasted text plus PDF, DOCX and TXT upload with text extraction</td></tr>
+  <tr><td>Record keeping</td><td>Scattered document versions and comments</td><td>Saved reports, searchable history and dashboard trends per user</td></tr>
+  <tr><td>Availability and cost</td><td>Enterprise tools costly; manual effort recurring</td><td>Web application; free tier possible on low-cost cloud hosting</td></tr>
+  <tr><td>Privacy</td><td>Documents often pasted into third-party consumer services</td><td>Private accounts; documents and keys stored under the user’s own account, encrypted where sensitive</td></tr>
+  <tr><td>Result reproducibility</td><td>Different reviewers give different comments</td><td>Deterministic engine: same input always gives the same findings and score</td></tr>
+</table>
+
+<h2>5.4 Advantages of the Proposed System</h2>
+<ul class="b">
+  <li>Review time for an SRS drops from hours of reading to a few seconds of automatic analysis.</li>
+  <li>Findings are explainable: the user sees exactly which phrase was flagged and why, and how to improve it.</li>
+  <li>The transparent score (no hidden weighting) lets users measure the improvement of a document draft by draft.</li>
+  <li>Deterministic behaviour makes results trustworthy and comparable; the tool works without any external service.</li>
+  <li>Document upload, history and dashboard make it useful as a continuing work tool, not a one-time check.</li>
+  <li>Security and privacy controls (verified accounts, encrypted credential vault, data export and deletion) make it suitable for real documents.</li>
+</ul>
+
+<h2>5.5 Risks</h2>
+<table>
+  <tr><th style="width:30%;">Risk</th><th>Description</th></tr>
+  <tr><td>False positives</td><td>A flagged phrase may be acceptable in a particular context, which may irritate users.</td></tr>
+  <tr><td>False negatives</td><td>Deep semantic ambiguity that needs domain knowledge cannot be detected by rules.</td></tr>
+  <tr><td>Over-trust in the score</td><td>Users may treat the heuristic score as a certification of document quality.</td></tr>
+  <tr><td>Document parsing limits</td><td>Scanned PDFs contain no extractable text; complex layouts may extract imperfectly.</td></tr>
+  <tr><td>Data protection duty</td><td>Uploaded SRS documents may be confidential; a breach would harm users and reputation.</td></tr>
+  <tr><td>External service dependency</td><td>The optional enhancement depends on third-party provider availability and pricing.</td></tr>
+</table>
+
+<h2>5.6 Risk Mitigation</h2>
+<table>
+  <tr><th style="width:30%;">Risk</th><th>Mitigation Adopted</th></tr>
+  <tr><td>False positives</td><td>Findings are worded as “may indicate ambiguity”; reason and context are always shown so the user can judge.</td></tr>
+  <tr><td>False negatives</td><td>The limitation is disclosed in the product and in this report; the tool is positioned as a first-level review aid.</td></tr>
+  <tr><td>Over-trust in the score</td><td>The report itself states that the score is a heuristic indicator, not a certification of SRS quality.</td></tr>
+  <tr><td>Document parsing limits</td><td>File type, size and content are validated; extraction limits and unsupported cases are reported clearly to the user.</td></tr>
+  <tr><td>Data protection duty</td><td>Verified accounts, owner-wise data isolation, encryption of stored credentials, secure cookies, rate limiting, data export and complete deletion facilities (Chapter 10).</td></tr>
+  <tr><td>External service dependency</td><td>The deterministic engine is the authoritative layer; enhancement failure never blocks or changes the core result.</td></tr>
+</table>
+
+<h2>5.7 Business Model and Marketing Strategy</h2>
+<p>For the purpose of this startup assessment, the project is viewed as an early-stage software-as-a-service (SaaS) product named <b>SRS Ambiguity Detector</b>, aimed at students, individual professionals and institutions that prepare SRS documents.</p>
+<table>
+  <tr><th style="width:22%;">Item</th><th>Details</th></tr>
+  <tr><td>Startup Name</td><td>SRS Ambiguity Detector</td></tr>
+  <tr><td>Target Customers</td><td>Computer-science students and faculty; requirements analysts, developers and QA engineers in small and medium software teams; training institutes</td></tr>
+  <tr><td>Investment</td><td>Very low: open-source technology stack; free/low-cost cloud tiers for hosting, database and storage; optional domain name</td></tr>
+  <tr><td>Income Source</td><td>Freemium model — free tier for individuals (deterministic analysis); paid Pro plan for higher limits and enhancement credits; Institution plan with annual licence for colleges and companies</td></tr>
+  <tr><td>Marketing</td><td>College demonstrations and workshops, GitHub project page, LinkedIn and developer-community posts, demonstration video, word of mouth through faculty and student networks</td></tr>
+  <tr><td>Main Benefit</td><td>Users obtain an instant, explainable quality review of an SRS and a measurable score, improving documents before development begins</td></tr>
+</table>
+<p>As a worked example, if 100 users subscribe to a Pro plan of ₹299 per month, the monthly revenue is ₹29,900 against hosting expenses that remain within a few thousand rupees at this scale; an Institution plan of ₹24,999 per year for a college covers the remaining operating cost with a small number of customers. The marketing strategy is to begin with the academic community — free use for students, live demonstrations in software-engineering classes, and sharing of the public project page — and then approach small software firms and training institutes that prepare SRS documents regularly. Because the core engine runs without any paid external service, the cost of serving a free user is minimal, which keeps the freemium model practical.</p>
+
+<!-- ================= CHAPTER 6 ================= -->
+<h1 class="ch">6. Feasibility Study and Requirement Analysis</h1>
+
+<h2>6.1 Technical Feasibility</h2>
+<p>The system is built entirely with mature, open-source technologies that are well documented and widely used in industry: Next.js with React and TypeScript for the front end; Python with FastAPI, Pydantic and SQLAlchemy for the back end; PostgreSQL as the database; and Alembic for schema migrations. The detection engine needs no specialised hardware or paid library — it is a set of deterministic text-processing rules that run on an ordinary server. Document extraction uses established open-source parsers for PDF and DOCX. All components were installed, executed and tested on a normal development computer, and the production topology (front end on a managed web host, back end on a Python service host, managed PostgreSQL) uses standard services. The project is therefore technically feasible, and it has in fact been implemented and verified as described in Chapters 9 and 10.</p>
+
+<h2>6.2 Economic Feasibility</h2>
+<table>
+  <tr><th style="width:34%;">Cost Item</th><th>Estimate</th></tr>
+  <tr><td>Development tools and software</td><td>₹0 — all tools and libraries are free and open source</td></tr>
+  <tr><td>Development hardware</td><td>₹0 — existing personal computer used</td></tr>
+  <tr><td>Front-end hosting</td><td>₹0 on the free tier of a managed host (for example Vercel)</td></tr>
+  <tr><td>Back-end hosting</td><td>₹0 free tier to about ₹800/month on a starter Python service host</td></tr>
+  <tr><td>PostgreSQL database and file storage</td><td>₹0 on the free tier of a managed provider (for example Supabase) at academic scale</td></tr>
+  <tr><td>Domain name (optional)</td><td>About ₹700–₹1,000 per year</td></tr>
+  <tr><td>Email delivery</td><td>Free tier sufficient at this scale</td></tr>
+</table>
+<p>The total cost of developing and initially operating the system is negligible, while the benefit — hours of manual review saved on every SRS document — is immediate. As usage grows, hosting cost rises slowly and can be recovered through the Pro and Institution plans described in Section 5.7. The project is therefore economically feasible.</p>
+
+<h2>6.3 Operational Feasibility</h2>
+<p>The system operates through an ordinary web browser and needs no installation by the user. Its screens follow a simple workflow — register, verify, log in, paste or upload, analyse, read the report — that was designed to be understandable without training. The report language is deliberately plain: every finding states what was found, why it matters and what to do. Operation by the administrator consists of standard tasks (deploying updates, applying database migrations, reviewing error reports), all documented in the project’s deployment documentation. The system is therefore operationally feasible for its intended users.</p>
+
+<h2>6.4 Schedule Feasibility</h2>
+<p>The work was planned and executed module by module within one academic semester, alongside regular coursework. An indicative work plan is given below.</p>
+<table>
+  <tr><th style="width:26%;">Work Package</th><th style="width:22%;">Indicative Period</th><th>Main Activities</th></tr>
+  <tr><td>Problem study and planning</td><td>Weeks 1–2</td><td>Problem identification, literature study, scope and requirement finalisation</td></tr>
+  <tr><td>Design</td><td>Weeks 3–4</td><td>Architecture, UML diagrams, database schema, interface design</td></tr>
+  <tr><td>Back-end development</td><td>Weeks 5–8</td><td>Database, authentication, segmentation, detection engine, scoring, document processing, APIs</td></tr>
+  <tr><td>Front-end development</td><td>Weeks 8–11</td><td>Public pages, analyser, report, history, dashboard and settings interfaces</td></tr>
+  <tr><td>Testing and correction</td><td>Weeks 11–13</td><td>Automated test suites, end-to-end verification, defect fixing</td></tr>
+  <tr><td>Documentation and submission</td><td>Weeks 13–14</td><td>Project documentation, screenshots, synopsis and presentation preparation</td></tr>
+</table>
+
+<h2>6.5 Legal and Ethical Feasibility</h2>
+<p>The system processes documents that users themselves upload and provides them the facility to export or permanently delete their data, which supports responsible data handling in line with the principles of India’s Digital Personal Data Protection Act, 2023. User credentials for external services are stored only in encrypted form and are never displayed after saving. The software is built from open-source components used under their respective licences, and no copyrighted content is reproduced by the system. Findings are presented honestly as heuristic indicators rather than guarantees, which keeps the tool ethically sound. The project is therefore legally and ethically feasible.</p>
+
+<h2>6.6 Functional Requirements</h2>
+<table>
+  <tr><th style="width:11%;">ID</th><th style="width:32%;">Requirement</th><th>Description</th></tr>
+  <tr><td>FR-01</td><td>User registration</td><td>The system shall allow a visitor to register with name, email and password, with validation of all fields.</td></tr>
+  <tr><td>FR-02</td><td>Email verification</td><td>The system shall verify the user’s email through a time-limited verification link before the account is used.</td></tr>
+  <tr><td>FR-03</td><td>Login and logout</td><td>The system shall authenticate verified users and maintain a secure session using HttpOnly cookies with refresh-token rotation.</td></tr>
+  <tr><td>FR-04</td><td>Password reset and change</td><td>The system shall provide forgot-password reset through email and password change from settings.</td></tr>
+  <tr><td>FR-05</td><td>Text analysis</td><td>The system shall accept pasted SRS text up to 200,000 characters and analyse it.</td></tr>
+  <tr><td>FR-06</td><td>Document analysis</td><td>The system shall accept one PDF, DOCX or TXT document up to 10 MB, extract its text and analyse it.</td></tr>
+  <tr><td>FR-07</td><td>Requirement segmentation</td><td>The system shall split the input deterministically into ordered individual requirements.</td></tr>
+  <tr><td>FR-08</td><td>Ambiguity detection</td><td>The system shall examine every requirement with eleven detector categories and record phrase, offsets, severity, reason and recommendation for each finding.</td></tr>
+  <tr><td>FR-09</td><td>Scoring</td><td>The system shall compute requirement and analysis scores, an ambiguity band and four health dimensions by a fixed published formula.</td></tr>
+  <tr><td>FR-10</td><td>Analysis report</td><td>The system shall display a report with score, severity and category summaries, health dimensions and requirement-wise findings.</td></tr>
+  <tr><td>FR-11</td><td>History</td><td>The system shall list the user’s analyses with search, filter, sorting, pagination and deletion.</td></tr>
+  <tr><td>FR-12</td><td>Dashboard</td><td>The system shall show aggregate statistics, trends, severity and category charts and recent analyses.</td></tr>
+  <tr><td>FR-13</td><td>Provider credential management</td><td>The system shall let the user save, test and delete credentials of supported providers, stored encrypted and never shown again.</td></tr>
+  <tr><td>FR-14</td><td>Optional enhancement</td><td>Where a provider is configured, the system shall offer an overview and rewrite suggestions, clearly disclosed, without changing deterministic findings.</td></tr>
+  <tr><td>FR-15</td><td>Privacy lifecycle</td><td>The system shall provide profile management, data export, history purge, retention preference and complete account deletion.</td></tr>
+</table>
+
+<h2>6.7 Non-Functional Requirements</h2>
+<table>
+  <tr><th style="width:11%;">ID</th><th style="width:24%;">Requirement</th><th>Description</th></tr>
+  <tr><td>NFR-01</td><td>Performance</td><td>Analysis of a typical SRS shall complete within a few seconds; ordinary pages shall load promptly on a normal connection.</td></tr>
+  <tr><td>NFR-02</td><td>Security</td><td>Passwords shall be stored only as Argon2id hashes; sessions shall use HttpOnly cookies; stored provider credentials shall be encrypted; access to every resource shall be restricted to its owner.</td></tr>
+  <tr><td>NFR-03</td><td>Privacy</td><td>User documents and analysis content shall not be exposed to other users or written to logs; export and deletion shall be available to the user.</td></tr>
+  <tr><td>NFR-04</td><td>Usability</td><td>The interface shall be usable without training and shall work on desktop, tablet and mobile screens.</td></tr>
+  <tr><td>NFR-05</td><td>Reliability and determinism</td><td>The same input shall always produce the same findings and score; failure of the optional enhancement shall not affect the core result.</td></tr>
+  <tr><td>NFR-06</td><td>Maintainability</td><td>The code shall follow a layered structure (interface, service, repository, model) with automated tests, so defects can be located and corrected safely.</td></tr>
+  <tr><td>NFR-07</td><td>Scalability</td><td>The stateless back end and managed PostgreSQL shall permit additional server instances as usage grows.</td></tr>
+  <tr><td>NFR-08</td><td>Availability</td><td>The deployed service shall target normal business-hours availability appropriate to its hosting tier, with health-check endpoints for monitoring.</td></tr>
+</table>
+
+<h2>6.8 User Roles</h2>
+<table>
+  <tr><th style="width:24%;">Role</th><th>Permissions and Activities</th></tr>
+  <tr><td>Visitor (Guest)</td><td>Views public pages (home, features, how it works, resources); registers for an account</td></tr>
+  <tr><td>Registered User</td><td>Verifies email, logs in, analyses text and documents, views reports, history and dashboard, manages profile, provider credentials and privacy settings, deletes own data and account</td></tr>
+  <tr><td>Administrator / Operator</td><td>Deploys and configures the service, applies migrations, monitors health and errors, manages hosting and backups; has no access to user passwords or decrypted credentials</td></tr>
+</table>

@@ -1,0 +1,252 @@
+<!-- ================= CHAPTER 9 ================= -->
+<h1 class="ch">9. Implementation, Deployment and Maintenance</h1>
+
+<h2>9.1 Development Environment and Technology Stack</h2>
+<p>The system was developed incrementally, module by module, under Git version control, with automated tests written alongside each module and the full test suites executed before the work was accepted as complete. Approximately 45,000 lines of code, including automated tests, were produced. The technology stack is summarised below.</p>
+<table>
+  <tr><th style="width:26%;">Layer</th><th>Technologies Used</th></tr>
+  <tr><td>Front end</td><td>Next.js (App Router), React, TypeScript, Tailwind CSS, Recharts for charts, Motion for interface animation, Lucide icons</td></tr>
+  <tr><td>Back end</td><td>Python 3.11, FastAPI, Pydantic v2, Uvicorn ASGI server</td></tr>
+  <tr><td>Database access</td><td>SQLAlchemy 2.0 (async) with asyncpg driver; Alembic migrations</td></tr>
+  <tr><td>Database</td><td>PostgreSQL 16 (local server for development; managed PostgreSQL in production)</td></tr>
+  <tr><td>Security libraries</td><td>Argon2id password hashing, JSON Web Tokens (HS256), Fernet symmetric encryption for the credential vault, Cloudflare Turnstile CAPTCHA</td></tr>
+  <tr><td>Document processing</td><td>pypdf for PDF extraction, python-docx for DOCX extraction, multipart upload handling</td></tr>
+  <tr><td>Email</td><td>Email service abstraction with a production mail adapter and a local console/file outbox for development</td></tr>
+  <tr><td>Testing</td><td>pytest (back end, 591 tests against a real PostgreSQL), Vitest with Testing Library (front end, 432 tests)</td></tr>
+  <tr><td>Monitoring</td><td>Sentry error tracking with aggressive scrubbing of secrets and document content; structured request logging with request identifiers</td></tr>
+</table>
+
+<h2>9.2 Detection Engine Implementation</h2>
+<p>The detection engine is implemented as a registry of eleven independent detector functions. Each detector receives one requirement at a time and returns findings containing the detector identifier, category, severity, matched phrase, character offsets within the requirement, reason and recommendation. Because detectors are independent, a new category can be added by registering one more function without disturbing existing behaviour.</p>
+<table>
+  <tr><th style="width:22%;">Detector</th><th style="width:30%;">What It Detects</th><th>Example (flagged phrase in quotes)</th></tr>
+  <tr><td class="mono">vague-quantifier</td><td>Quantity words such as “some”, “many”, “few”, “several”</td><td>“The system shall support <b>several</b> users.”</td></tr>
+  <tr><td class="mono">subjective-term</td><td>Subjective quality words such as “fast”, “quickly”, “easy”, “user-friendly”, “robust”</td><td>“The system shall respond <b>quickly</b>.”</td></tr>
+  <tr><td class="mono">missing-measurable-criteria</td><td>Performance or quality claims carrying no measurable criterion</td><td>“The system shall load reports <b>efficiently</b>.”</td></tr>
+  <tr><td class="mono">pronoun-reference</td><td>Pronouns or demonstratives whose referent may be unclear</td><td>“When the service receives a request, <b>it</b> validates <b>it</b>.”</td></tr>
+  <tr><td class="mono">optional-language</td><td>Words such as “may”, “might”, “could”, “if possible”, “as needed”</td><td>“The system <b>may</b> send an alert <b>if possible</b>.”</td></tr>
+  <tr><td class="mono">ambiguous-operator</td><td>“and/or”, “etc.”, “and so on”, ambiguous “or”</td><td>“The user can export PDF <b>and/or</b> CSV reports.”</td></tr>
+  <tr><td class="mono">undefined-terminology</td><td>Capitalised or domain-like terms that appear without definition</td><td>“The system shall notify <b>Premium Users</b>.”</td></tr>
+  <tr><td class="mono">absolute-language</td><td>Absolutes such as “always”, “never”, “all”, “every”, “instant”</td><td>“The system shall <b>always</b> be available.”</td></tr>
+  <tr><td class="mono">passive-actor</td><td>Passive constructions in which the responsible actor is unclear</td><td>“The report shall <b>be approved</b> before release.”</td></tr>
+  <tr><td class="mono">missing-constraint</td><td>Behaviour described without necessary constraints (limits, timing, format, retention)</td><td>“The system shall <b>store audit logs</b>.”</td></tr>
+  <tr><td class="mono">incomplete-requirement</td><td>Fragments, placeholders such as “TBD”, dangling modal verbs</td><td>“The system shall <b>TBD</b>.”</td></tr>
+</table>
+<p>Findings from all detectors are deduplicated deterministically: exact duplicates collapse to one; identical spans reported by two detectors keep the higher severity; overlapping but different spans are preserved. Scoring is deliberately transparent, with no hidden weighting:</p>
+<div class="eqbox"><b>Requirement score</b> = max (0, 100 − Σ severity deductions), where Low = 5, Medium = 10, High = 15, Critical = 20.<br><b>Analysis score</b> = arithmetic mean of requirement scores.</div>
+<table>
+  <tr><th style="width:30%;">Score Range</th><th>Ambiguity Band</th></tr>
+  <tr><td>80–100</td><td>Low ambiguity</td></tr>
+  <tr><td>60–79</td><td>Moderate ambiguity</td></tr>
+  <tr><td>40–59</td><td>High ambiguity</td></tr>
+  <tr><td>0–39</td><td>Very high ambiguity</td></tr>
+</table>
+<p>The same deductions also feed four health dimensions, so every number in the report can be traced back to individual findings:</p>
+<table>
+  <tr><th style="width:26%;">Health Dimension</th><th>Contributing Detectors</th></tr>
+  <tr><td>Measurability</td><td>Subjective terms, missing measurable criteria</td></tr>
+  <tr><td>Specificity</td><td>Vague quantifiers, undefined terminology, absolute language</td></tr>
+  <tr><td>Clarity</td><td>Pronoun references, ambiguous operators, optional language, passive voice</td></tr>
+  <tr><td>Completeness</td><td>Missing constraints, incomplete requirements</td></tr>
+</table>
+
+<h2>9.3 Back-End Implementation</h2>
+<p>The back end exposes a versioned REST API under <span class="mono">/api/v1</span>. Routers validate requests through Pydantic schemas, services execute the business logic inside transactions, and repositories contain all database access. Typical endpoints are:</p>
+<table>
+  <tr><th style="width:30%;">API Area</th><th>Representative Endpoints</th></tr>
+  <tr><td>Authentication</td><td class="mono">POST /auth/register, /auth/login, /auth/logout, /auth/refresh, /auth/verify-email, /auth/forgot-password, /auth/reset-password, /auth/change-password; GET /auth/me; DELETE /auth/account</td></tr>
+  <tr><td>Analysis</td><td class="mono">POST /analysis (text), GET /analysis/{id}, DELETE /analysis/{id}, POST /analysis/{id}/retry-ai, list with search/filter/sort</td></tr>
+  <tr><td>Documents</td><td class="mono">POST /documents/upload, list, delete, signed download</td></tr>
+  <tr><td>Dashboard</td><td class="mono">GET /dashboard summary and trends</td></tr>
+  <tr><td>Provider credentials</td><td class="mono">Create, list (masked), test, set default, delete</td></tr>
+  <tr><td>Settings and privacy</td><td class="mono">Profile update, data export, history purge, retention preference</td></tr>
+  <tr><td>Health</td><td class="mono">GET /health and readiness checks for monitoring</td></tr>
+</table>
+<p>Uploaded documents pass through a validation chain — declared type, actual magic bytes, size streamed and counted (10 MB maximum), extraction time budget — before their text enters the same pipeline as pasted text. Stored files receive server-generated names; downloads are issued through short-lived signed links.</p>
+
+<h2>9.4 Front-End Implementation</h2>
+<p>The front end is a Next.js application with public pages (home, features, how-it-works, resources) that are server-rendered for search visibility, and signed-in pages for the analyser, reports (<span class="mono">/analysis/[id]</span>), history, dashboard and settings. A typed API client centralises all communication with the back end; authentication state is held through secure cookies, never in browser storage. Charts are drawn with Recharts, and the layout is responsive across desktop, tablet and mobile widths, as the screenshots in Section 9.6 show. The production build compiles all 19 routes successfully with full TypeScript type checking.</p>
+
+<h2>9.5 Demonstration Run and Results</h2>
+<p>The complete system was executed locally with a real PostgreSQL database, and a demonstration account was used to run the application end to end. The sample input consisted of seven deliberately weak requirements (FR-001 to FR-007, covering login, reporting, dashboard, payment, approval, performance and data handling). The observed result, which also appears in the screenshots, was:</p>
+<table>
+  <tr><th style="width:38%;">Measure</th><th>Observed Value</th></tr>
+  <tr><td>Requirements segmented</td><td>7</td></tr>
+  <tr><td>Total issues detected</td><td>18 (Low 3, Medium 10, High 5, Critical 0)</td></tr>
+  <tr><td>Overall score and band</td><td>73 / 100 — Moderate ambiguity</td></tr>
+  <tr><td>Issues by category</td><td>Missing measurable criteria 4; Subjective terms 4; Vague quantifiers 2; Optional language 2; Passive voice 2; Absolute language 1; Ambiguous operators 1; Undefined terminology 1; Pronoun references 1</td></tr>
+  <tr><td>Health dimensions</td><td>Clarity 45/100; Specificity 65/100; Measurability 0/100; Completeness 100/100</td></tr>
+  <tr><td>Document run (same content as TXT upload)</td><td>Identical result: 73/100, 18 issues — confirming both input paths share one pipeline</td></tr>
+</table>
+<p>Spot-checking the findings confirms their correctness: “log in quickly”, “respond fast” and “provide good performance” were flagged as performance claims without measurable criteria (High severity); “and/or” was flagged as an ambiguous operator; “always” as absolute language; “as needed” and “should” as optional language; and “be processed” / “be approved” as passive constructions with no named actor.</p>
+
+<h2>9.6 Output Screens</h2>
+<p>The following screenshots were captured from the actual running application using the demonstration account and the sample SRS of Section 9.5.</p>
+
+<div class="figure"><img src="../screenshots/01-home--1440x900.png" style="width:84%;"><div class="caption">Figure 9.1: Public home page of SRS Ambiguity Detector</div></div>
+<div class="figure"><img src="../screenshots/07-analyzer-input--1440x900.png" style="width:84%;"><div class="caption">Figure 9.2: Analyser with sample SRS text entered</div></div>
+<div class="figure"><img src="../screenshots/08-analysis-result--1440x900.png" style="width:84%;"><div class="caption">Figure 9.3: Analysis result — score 73/100, Moderate ambiguity, 18 issues</div></div>
+<div class="figure"><img src="../screenshots/09-analysis-report--1440x900.png" style="width:84%;"><div class="caption">Figure 9.4: Saved analysis report reopened from the database</div></div>
+<div class="figure"><img src="../screenshots/06-dashboard--1440x900.png" style="width:84%;"><div class="caption">Figure 9.5: Dashboard with aggregate statistics and charts</div></div>
+<div class="figure"><img src="../screenshots/10-history--1440x900.png" style="width:84%;"><div class="caption">Figure 9.6: Analysis history with saved text and document analyses</div></div>
+<div class="figure"><img src="../screenshots/13-document-upload--1440x900.png" style="width:84%;"><div class="caption">Figure 9.7: Document upload for PDF, DOCX and TXT files</div></div>
+<div class="figure"><img src="../screenshots/12-ai-provider-settings--1440x900.png" style="width:84%;"><div class="caption">Figure 9.8: Settings — provider credential management (optional enhancement)</div></div>
+<div class="figure"><img src="../screenshots/15-mobile-analyzer--390x844.png" style="width:44%;"><div class="caption">Figure 9.9: Analyser on a mobile-width screen (responsive design)</div></div>
+
+<h2>9.7 Deployment</h2>
+<p>The production topology separates the two tiers. The Next.js front end is deployed on a managed web host (Vercel), and the FastAPI back end on a Python-capable service host, connected to managed PostgreSQL and object storage. The principal deployment steps are:</p>
+<ol class="n">
+  <li>Create the managed PostgreSQL database and a private storage bucket.</li>
+  <li>Configure back-end environment variables (database URLs, JWT secret, encryption master key, email service key, CAPTCHA keys, application base URL) — secrets are never committed to the repository.</li>
+  <li>Apply database migrations with <span class="mono">alembic upgrade head</span>.</li>
+  <li>Start the back end under Uvicorn behind HTTPS and verify the health endpoint.</li>
+  <li>Deploy the front end with <span class="mono">NEXT_PUBLIC_API_URL</span> pointing at the back end’s <span class="mono">/api/v1</span> address.</li>
+  <li>Verify registration, email verification, analysis, upload and dashboard flows on the live deployment.</li>
+</ol>
+
+<h2>9.8 Maintenance</h2>
+<ul class="b">
+  <li><b>Corrective maintenance:</b> error monitoring reports faults with secrets and document content scrubbed; the layered structure and test suites allow defects to be fixed and re-verified safely.</li>
+  <li><b>Adaptive maintenance:</b> dependencies are pinned and periodically audited and upgraded; database changes are made only through new migrations.</li>
+  <li><b>Perfective maintenance:</b> detector word-lists and rules can be refined from observed false positives without changing the architecture; user feedback guides new categories.</li>
+  <li><b>Preventive maintenance:</b> regular database backups by the managed provider, review of rate-limit and error reports, and periodic re-running of the complete test suites before any release.</li>
+</ul>
+
+<!-- ================= CHAPTER 10 ================= -->
+<h1 class="ch">10. Security, Privacy, Testing and Quality Assurance</h1>
+
+<h2>10.1 Security Measures Implemented</h2>
+<ul class="b">
+  <li>Passwords are stored only as Argon2id hashes; password policy rejects weak passwords (for example, a password containing the user’s own email address is refused).</li>
+  <li>Sessions use HttpOnly cookies: a short-lived access token (15 minutes) and a rotating refresh token (30 days); reuse of an old refresh token revokes the whole token family.</li>
+  <li>Mutating requests that rely on cookies are protected by Origin/Referer checks, and cross-origin access is restricted to the configured front-end origin.</li>
+  <li>Every user-owned resource is filtered by owner in the database and in the API; requesting another user’s analysis returns “not found”, preventing insecure direct object reference.</li>
+  <li>Provider credentials are encrypted with Fernet (AES-based) encryption before storage; only the last four characters are ever shown, and the key is never returned by any API.</li>
+  <li>Uploaded files are validated by size, declared type, magic bytes and parser limits; stored under server-generated names; downloads use signed links that expire within 15 minutes.</li>
+  <li>Rate limiting protects authentication, analysis, upload and credential-testing endpoints; CAPTCHA verification can be enabled on abuse-prone operations.</li>
+  <li>Logs and error reports are scrubbed so that passwords, tokens, provider keys and SRS document text are never recorded.</li>
+  <li>Security response headers and production gating of API documentation reduce information exposure.</li>
+</ul>
+
+<h2>10.2 Threats and Mitigations</h2>
+<table>
+  <tr><th style="width:26%;">Threat</th><th>Mitigation in the System</th></tr>
+  <tr><td>SQL injection</td><td>All database access through SQLAlchemy parameterised queries; no string-built SQL</td></tr>
+  <tr><td>Cross-site scripting (XSS)</td><td>React’s automatic output escaping; security headers; no raw HTML rendering of user content</td></tr>
+  <tr><td>Cross-site request forgery (CSRF)</td><td>Origin/Referer verification on cookie-authenticated mutating requests</td></tr>
+  <tr><td>Session hijacking / token theft</td><td>HttpOnly cookies, short access-token life, refresh rotation with reuse detection and family revocation</td></tr>
+  <tr><td>Credential stuffing and brute force</td><td>Per-endpoint rate limits, CAPTCHA support, Argon2id hashing cost</td></tr>
+  <tr><td>Insecure direct object reference</td><td>Owner-wise filtering in repositories and endpoints; foreign identifiers return 404</td></tr>
+  <tr><td>Malicious file upload</td><td>Magic-byte and size validation, extraction time and size budgets, server-generated storage names, no execution of uploaded content</td></tr>
+  <tr><td>Secret leakage</td><td>Encrypted credential vault, hashed tokens, scrubbed logs and error reports, secrets only in environment variables</td></tr>
+  <tr><td>Abuse of costly operations</td><td>Separate rate-limit budgets for analysis, uploads and provider tests, with HTTP 429 responses</td></tr>
+</table>
+
+<h2>10.3 Privacy</h2>
+<p>Analyses, documents and credentials are private to their owner by construction. The user can view and export the data held about them, purge analysis history, set a history-retention preference, and delete the account completely — which removes all owned rows and stored files. Requirement text is never written to application logs or error reports. Where the optional enhancement is used, the report discloses that an external provider processed the content, and this happens only with credentials the user personally supplied. These facilities put the privacy lifecycle under the user’s control.</p>
+
+<h2>10.4 Testing Approach</h2>
+<p>Testing was carried out at four levels. <b>Unit tests</b> cover each detector, the scoring formula, deduplication and segmentation against fixed examples, including a curated corpus of sample requirements with expected findings. <b>Integration tests</b> run the API and services against a real PostgreSQL database (never a substitute), covering authentication flows, analysis persistence, document processing, ownership isolation, the credential vault and privacy operations. <b>Interface tests</b> exercise the front-end components and pages with Vitest and Testing Library. <b>System testing</b> was performed by executing the complete application — database, back end and front end — and running the demonstration of Section 9.5 through the browser, from registration and email verification to text analysis, document analysis, history and dashboard.</p>
+
+<h2>10.5 Test Results</h2>
+<table>
+  <tr><th style="width:44%;">Verification Activity</th><th>Result</th></tr>
+  <tr><td>Back-end test suite (pytest, real PostgreSQL)</td><td>591 tests passed</td></tr>
+  <tr><td>Front-end test suite (Vitest, 53 test files)</td><td>432 tests passed</td></tr>
+  <tr><td>Total automated tests</td><td><b>1,023 passed, 0 failed</b></td></tr>
+  <tr><td>Database migrations (6 revisions)</td><td>Applied successfully; 10 application tables created</td></tr>
+  <tr><td>Production front-end build (with type checking)</td><td>Successful; 19 routes generated</td></tr>
+  <tr><td>End-to-end demonstration (browser, live system)</td><td>Text and document analyses both scored 73/100 with 18 issues on the sample SRS</td></tr>
+</table>
+
+<h2>10.6 Sample Test Cases</h2>
+<table>
+  <tr><th style="width:9%;">ID</th><th style="width:20%;">Module</th><th style="width:31%;">Test Case</th><th style="width:26%;">Expected Result</th><th>Status</th></tr>
+  <tr><td>TC-01</td><td>Registration</td><td>Register with valid name, email and password</td><td>Account created in unverified state; verification email issued</td><td>Pass</td></tr>
+  <tr><td>TC-02</td><td>Registration</td><td>Register with a password containing the email address</td><td>Rejected as a weak password</td><td>Pass</td></tr>
+  <tr><td>TC-03</td><td>Email verification</td><td>Submit a valid verification token</td><td>Account marked verified and login permitted</td><td>Pass</td></tr>
+  <tr><td>TC-04</td><td>Detection</td><td>Analyse “The system shall support several users.”</td><td>Vague-quantifier finding on “several” with reason and recommendation</td><td>Pass</td></tr>
+  <tr><td>TC-05</td><td>Scoring</td><td>Analyse the seven-requirement sample SRS</td><td>Score 73/100, Moderate band, 18 issues (3 Low, 10 Medium, 5 High)</td><td>Pass</td></tr>
+  <tr><td>TC-06</td><td>Document upload</td><td>Upload the sample SRS as a TXT file</td><td>Text extracted and analysed with the same result as pasted text</td><td>Pass</td></tr>
+  <tr><td>TC-07</td><td>Document upload</td><td>Upload an oversized or wrong-type file</td><td>Rejected with a clear validation error; nothing stored</td><td>Pass</td></tr>
+  <tr><td>TC-08</td><td>Ownership</td><td>User B requests User A’s analysis by its identifier</td><td>HTTP 404; no data of User A disclosed</td><td>Pass</td></tr>
+  <tr><td>TC-09</td><td>Credential vault</td><td>Save a provider credential and list credentials</td><td>Stored encrypted; list shows only provider and last four characters</td><td>Pass</td></tr>
+  <tr><td>TC-10</td><td>Session security</td><td>Reuse an already-rotated refresh token</td><td>Token family revoked; fresh login required</td><td>Pass</td></tr>
+  <tr><td>TC-11</td><td>Rate limiting</td><td>Repeat authentication attempts beyond the configured budget</td><td>HTTP 429 with retry guidance</td><td>Pass</td></tr>
+  <tr><td>TC-12</td><td>Dashboard</td><td>Open the dashboard after two analyses</td><td>Totals, severity mix and recent analyses match the saved data</td><td>Pass</td></tr>
+</table>
+
+<h2>10.7 Quality Assurance Practices</h2>
+<ul class="b">
+  <li>A single documented verification routine runs type checking, linting, formatting checks and both test suites, and was executed before the system was accepted as complete.</li>
+  <li>Dependency audits for both the Python and JavaScript ecosystems and a scan for accidentally committed secrets form part of the checks.</li>
+  <li>Requirements are traced to implementation modules and tests, so every functional requirement of Chapter 6 has corresponding evidence.</li>
+  <li>All findings shown to users are explainable from stored data (phrase, offsets, reason), which makes defects in the engine itself easy to reproduce and correct.</li>
+</ul>
+
+<!-- ================= CHAPTER 11 ================= -->
+<h1 class="ch">11. Project Evaluation and Future Enhancements</h1>
+
+<h2>11.1 Evaluation Against Objectives</h2>
+<table>
+  <tr><th style="width:36%;">Objective</th><th>Evaluation</th></tr>
+  <tr><td>Accept SRS text and documents</td><td>Achieved — paste-text and PDF/DOCX/TXT upload run through one pipeline; verified live with identical results</td></tr>
+  <tr><td>Deterministic segmentation and detection</td><td>Achieved — 11 detector categories with phrase-level findings, reasons and recommendations</td></tr>
+  <tr><td>Transparent scoring</td><td>Achieved — published deduction formula, ambiguity bands and four health dimensions; no hidden weighting</td></tr>
+  <tr><td>Accounts, persistence, history, dashboard</td><td>Achieved — verified accounts, PostgreSQL storage, searchable history and chart dashboard all working</td></tr>
+  <tr><td>Optional enhancement</td><td>Achieved — encrypted user-owned credentials, six supported providers, disclosure in reports; core result never depends on it</td></tr>
+  <tr><td>Security and privacy</td><td>Achieved — controls of Chapter 10 implemented and tested, including ownership isolation and complete deletion</td></tr>
+  <tr><td>Verification</td><td>Achieved — 1,023 automated tests pass; production build succeeds; live end-to-end demonstration completed</td></tr>
+</table>
+<p>Overall, the project meets the objectives recorded in Chapter 3. Its strongest qualities are the explainability of every finding, the reproducibility of the deterministic engine, and the completeness of the surrounding product, which makes it usable as a real working tool rather than a demonstration of a single algorithm.</p>
+
+<h2>11.2 Limitations</h2>
+<ul class="b">
+  <li>Detection is heuristic: patterns can occasionally flag acceptable phrasing (false positives) and cannot recognise ambiguity that requires domain knowledge (false negatives). Findings must be read as review aids.</li>
+  <li>The score is an analytical indicator for comparing documents within the tool; it is not a formal certification of SRS quality.</li>
+  <li>Scanned or image-only PDFs cannot be analysed because OCR is not included.</li>
+  <li>Analysis is English-first; requirement text in other languages is not reliably detected.</li>
+  <li>Rate limiting currently operates within a single server process; a shared limiter would be needed for very large multi-instance deployments.</li>
+  <li>The optional enhancement depends on external providers chosen by the user; its suggestions are advisory and are always shown separately from deterministic findings.</li>
+</ul>
+
+<h2>11.3 Future Enhancements</h2>
+<ul class="b">
+  <li><b>Team workspaces:</b> shared analyses, comments and review assignments for project teams.</li>
+  <li><b>Report export:</b> download of the analysis report as a formatted PDF or DOCX document for attachment to project records.</li>
+  <li><b>Batch and CI integration:</b> an API or command-line mode so SRS quality can be checked automatically in a build pipeline.</li>
+  <li><b>OCR support:</b> text recognition for scanned SRS documents.</li>
+  <li><b>Multilingual analysis:</b> detector packs for additional languages.</li>
+  <li><b>Configurable detector packs:</b> organisation-specific terminology, glossaries and severity policies.</li>
+  <li><b>Deeper language analysis:</b> additional checks such as cross-requirement consistency and duplicate-requirement detection.</li>
+  <li><b>Distributed rate limiting and horizontal scaling</b> for large public deployments.</li>
+  <li><b>Native mobile application</b> reusing the same back-end API.</li>
+</ul>
+
+<!-- ================= CHAPTER 12 ================= -->
+<h1 class="ch">12. Conclusion</h1>
+<p>This project set out to solve a practical problem of software engineering: requirement statements written in natural language are frequently vague, subjective, incomplete or unverifiable, and the resulting misunderstandings cause rework and defects that are discovered late and cost much to repair. The study of literature confirmed that a large part of this weakness follows recognisable wording patterns, and therefore can be detected automatically, provided the findings remain explainable to the human analyst.</p>
+<p>The SRS Ambiguity Detector developed in this project meets that requirement. It is a complete web application — not merely a demonstration of an algorithm — in which a verified user can paste SRS text or upload a PDF, DOCX or TXT document, and within seconds receive a requirement-by-requirement report: eleven categories of findings, each with the exact phrase, severity, reason and recommendation; a transparent score out of 100 with an ambiguity band; and four health dimensions that show where a document is weak. Analyses are preserved in PostgreSQL, so reports can be reopened, history searched, and quality trends observed on a dashboard. An optional enhancement, driven by the user’s own encrypted credentials, can add an overview and rewrite suggestions, while the deterministic engine remains the authoritative and reproducible source of every result. Security and privacy — Argon2id password hashing, secure cookie sessions with rotation, owner-wise data isolation, an encrypted credential vault, rate limiting, data export and complete deletion — were treated as core requirements, not afterthoughts.</p>
+<p>The system was verified thoroughly: 591 back-end tests and 432 front-end tests (1,023 in total) pass, the production build succeeds, and a live demonstration on a sample SRS produced consistent, correct findings (73/100, Moderate ambiguity, 18 issues across 7 requirements) through both the text and document paths. Evaluated as a startup concept, the product needs very little investment, serves a clearly identified group of users — students, analysts, developers, testers and small teams — and can sustain itself through a simple freemium model. The project thus demonstrates the complete journey from an identified problem, through literature study, feasibility analysis, design, implementation, security, testing and deployment planning, to a working product with a credible path to real use. It has strengthened my understanding of requirements engineering, full-stack development, database design, application security and software testing, and it provides a firm base for the future enhancements recorded in Chapter 11.</p>
+
+<!-- ================= CHAPTER 13 ================= -->
+<h1 class="ch">13. References</h1>
+<ol class="n">
+  <li>IEEE Std 830-1998, <i>IEEE Recommended Practice for Software Requirements Specifications</i>, Institute of Electrical and Electronics Engineers, 1998.</li>
+  <li>ISO/IEC/IEEE 29148:2018, <i>Systems and Software Engineering — Life Cycle Processes — Requirements Engineering</i>, International Organization for Standardization, 2018.</li>
+  <li>D. M. Berry and E. Kamsties, “Ambiguity in Requirements Specification,” in <i>Perspectives of Requirements Engineering</i>, 2004.</li>
+  <li>H. Femmer, D. Méndez Fernández, S. Wagner and S. Eder, “Rapid Quality Assurance with Requirements Smells,” <i>Journal of Systems and Software</i>, vol. 123, pp. 190–213, 2017.</li>
+  <li>S. Gnesi, G. Lami and G. Trentanni, “An Automatic Tool for the Analysis of Natural Language Requirements” (QuARS), ISTI-CNR, Pisa, 2005.</li>
+  <li>W. M. Wilson, L. H. Rosenberg and L. E. Hyatt, “Automated Quality Analysis of Natural Language Requirement Specifications” (ARM), NASA Software Assurance Technology Center, 1997.</li>
+  <li>K. Wiegers and J. Beatty, <i>Software Requirements</i>, 3rd ed., Microsoft Press, 2013.</li>
+  <li>I. Sommerville, <i>Software Engineering</i>, 10th ed., Pearson, 2016.</li>
+  <li>R. S. Pressman and B. R. Maxim, <i>Software Engineering: A Practitioner’s Approach</i>, 9th ed., McGraw-Hill, 2020.</li>
+  <li>S. Robertson and J. Robertson, <i>Mastering the Requirements Process: Getting Requirements Right</i>, 3rd ed., Addison-Wesley, 2012.</li>
+  <li>OWASP Foundation, “OWASP Top 10:2021 — The Ten Most Critical Web Application Security Risks,” https://owasp.org/Top10, accessed November 2026.</li>
+  <li>FastAPI Documentation, https://fastapi.tiangolo.com, accessed November 2026.</li>
+  <li>Next.js Documentation, https://nextjs.org/docs, accessed November 2026.</li>
+  <li>PostgreSQL 16 Documentation, https://www.postgresql.org/docs/16, accessed November 2026.</li>
+</ol>
+
+</body>
+</html>

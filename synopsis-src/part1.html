@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SRS Ambiguity Detector — Synopsis</title>
+<style>
+@font-face { font-family:'Tinos'; src:url('fonts/tinos-latin-400-normal.woff2') format('woff2'); font-weight:400; font-style:normal; }
+@font-face { font-family:'Tinos'; src:url('fonts/tinos-latin-400-italic.woff2') format('woff2'); font-weight:400; font-style:italic; }
+@font-face { font-family:'Tinos'; src:url('fonts/tinos-latin-700-normal.woff2') format('woff2'); font-weight:700; font-style:normal; }
+@font-face { font-family:'Tinos'; src:url('fonts/tinos-latin-700-italic.woff2') format('woff2'); font-weight:700; font-style:italic; }
+@page { size: A4; margin: 52px 60px 72px 60px; }
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; }
+body { font-family:'Tinos','Times New Roman',serif; font-size:11.5pt; line-height:1.45; color:#111; }
+p { text-align:justify; margin:0 0 10px 0; }
+h1.ch { font-size:16.5pt; font-weight:700; color:#10355f; text-transform:uppercase; letter-spacing:.4px; border-bottom:2.2px solid #10355f; padding-bottom:7px; margin:0 0 18px 0; page-break-before:always; page-break-after:avoid; }
+h1.ch:first-of-type { page-break-before:avoid; }
+h2 { font-size:12.5pt; font-weight:700; color:#000; margin:15px 0 6px 0; page-break-after:avoid; }
+h3 { font-size:12pt; font-weight:700; color:#10355f; margin:14px 0 6px 0; page-break-after:avoid; }
+ul.b { list-style:none; margin:4px 0 12px 0; padding-left:20px; }
+ul.b li { margin-bottom:5px; text-align:justify; }
+ul.b li::before { content:"●"; font-size:6.5pt; color:#222; display:inline-block; width:17px; margin-left:-17px; vertical-align:2px; }
+ol.n { margin:4px 0 12px 0; padding-left:26px; }
+ol.n li { margin-bottom:5px; text-align:justify; }
+table { border-collapse:collapse; width:100%; margin:10px 0 16px 0; font-size:10pt; line-height:1.38; }
+th, td { border:1px solid #555; padding:4px 6px; vertical-align:top; text-align:left; }
+th { background:#d9e2ef; font-weight:700; }
+thead { display:table-header-group; }
+tr { page-break-inside:avoid; }
+.mono { font-family:'DejaVu Sans Mono',monospace; font-size:9.3pt; }
+.frontpage { page-break-after:always; }
+.fronttitle { text-align:center; font-size:16pt; font-weight:700; color:#10355f; letter-spacing:1.2px; margin:6px 0 26px 0; }
+.center { text-align:center; }
+.figure { text-align:center; margin:10px 0 14px 0; page-break-inside:avoid; }
+.figure img { max-width:100%; border:1px solid #888; }
+.caption { font-size:10.5pt; font-style:italic; margin-top:7px; text-align:center; }
+.sigrow { display:flex; justify-content:space-between; margin-top:56px; }
+.sigbox { width:44%; }
+.sigline { border-top:1.4px solid #111; margin-top:34px; padding-top:5px; }
+.small { font-size:10.5pt; }
+.tocline { margin:0 0 9px 0; font-size:12.5pt; }
+.eqbox { background:#f2f5fa; border:1px solid #b9c6da; padding:10px 14px; margin:10px 0 14px 0; font-size:11pt; }
+.avoidbreak { page-break-inside:avoid; }
+</style>
+</head>
+<body>
+
+<!-- ================= COVER PAGE ================= -->
+<div class="frontpage">
+  <div style="margin-top:52px;" class="center">
+    <div style="font-size:22.5pt; font-weight:700; color:#10355f; line-height:1.3;">“SRS AMBIGUITY DETECTOR”</div>
+    <div style="font-size:14.5pt; font-weight:700; margin-top:26px; line-height:1.45;">SYNOPSIS OF STARTUP AND<br>ENTREPRENEURIAL ACTIVITY ASSESSMENT</div>
+    <div style="font-size:13.5pt; margin-top:30px; line-height:1.9;">
+      of<br>
+      <b>Bachelor of Technology</b><br>
+      in<br>
+      <b>Computer Science and Engineering</b>
+    </div>
+    <div style="font-size:13pt; margin-top:30px;"><b>By</b></div>
+  </div>
+  <table style="width:88%; margin:16px auto 0 auto; font-size:11.5pt;">
+    <tr><th style="width:12%; text-align:center;">S.NO</th><th style="width:34%;">Student Name</th><th style="width:28%;">Roll Number</th><th>Branch and Section</th></tr>
+    <tr><td style="text-align:center;">1</td><td>Ashish Kumar</td><td>2301650100054</td><td>Computer Science and Engineering (Section A)</td></tr>
+  </table>
+  <div class="center" style="font-size:12pt; margin-top:14px;">Seventh Semester, Session 2026–27</div>
+  <div class="center" style="margin-top:38px;">
+    <img src="assets/kit-logo.png" style="width:430px;">
+  </div>
+  <div class="center" style="margin-top:26px; font-size:13.5pt; font-weight:700; line-height:1.7;">
+    Kanpur Institute of Technology, Kanpur<br>
+    Dr. A.P.J. Abdul Kalam Technical University, Lucknow
+  </div>
+</div>
+
+<!-- ================= DECLARATION ================= -->
+<div class="frontpage">
+  <div class="fronttitle">DECLARATION</div>
+  <p>I hereby declare that the project work entitled <b>“SRS AMBIGUITY DETECTOR”</b>, submitted as a Synopsis of Startup and Entrepreneurial Activity Assessment for the degree of Bachelor of Technology in Computer Science and Engineering, is my original work carried out by me under the guidance of the concerned faculty <b>Mr. Suraj Srivastava</b>.</p>
+  <p>To the best of my knowledge and belief, the work presented in this report has not been submitted, either wholly or partly, for the award of any other degree or academic qualification. All sources of information and assistance used in the preparation of this project have been duly acknowledged wherever applicable. I accept responsibility for the accuracy and originality of the work presented in this report.</p>
+  <p style="margin-top:26px;"><b>Name:</b> Ashish Kumar<br><b>Roll No.:</b> 2301650100054</p>
+  <p style="margin-top:22px;"><b>Approved By:</b><br>Mr. Suraj Srivastava<br>Assistant Professor<br>Department of Computer Science and Engineering<br>Kanpur Institute of Technology, Kanpur</p>
+  <div class="sigrow">
+    <div class="sigbox"><div class="sigline"><b>Student Signature</b></div></div>
+    <div class="sigbox"><div class="sigline"><b>Faculty Signature</b></div></div>
+  </div>
+</div>
+
+<!-- ================= CERTIFICATE ================= -->
+<div class="frontpage">
+  <div class="fronttitle">CERTIFICATE</div>
+  <p>This is to certify that the project report entitled <b>“SRS AMBIGUITY DETECTOR”</b> has been prepared by <b>Ashish Kumar</b>, a student of B.Tech in Computer Science and Engineering (Seventh Semester), under the guidance of <b>Mr. Suraj Srivastava</b>, Assistant Professor, Department of Computer Science and Engineering, Kanpur Institute of Technology, Kanpur.</p>
+  <p>The work presented in this report is submitted as a Synopsis of Startup and Entrepreneurial Activity Assessment for the degree of Bachelor of Technology in Computer Science and Engineering. The project work has been carried out as per the academic requirements of the Department of Computer Science and Engineering, Kanpur Institute of Technology, Kanpur.</p>
+  <p style="margin-top:24px;"><b>Student Name:</b> Ashish Kumar<br><b>Roll No.:</b> 2301650100054</p>
+  <div style="margin-top:40px;">
+    <p><b>Project Guide</b><br>Name: Mr. Suraj Srivastava<br>Designation: Assistant Professor<br>Department: CSE<br>Signature: ________________</p>
+  </div>
+  <div style="margin-top:44px;">
+    <p><b>Head of Department</b><br>Name: Mr. Rahul Singh<br>Designation: Head of Department<br>Department: CSE<br>Signature: ________________</p>
+  </div>
+</div>
+
+<!-- ================= ACKNOWLEDGEMENT ================= -->
+<div class="frontpage">
+  <div class="fronttitle">ACKNOWLEDGEMENT</div>
+  <p>I would like to express my sincere gratitude to <b>Mr. Suraj Srivastava</b>, Assistant Professor, Department of Computer Science and Engineering, Kanpur Institute of Technology, Kanpur, for his valuable guidance, support, and encouragement throughout the preparation of my project entitled <b>“SRS Ambiguity Detector.”</b></p>
+  <p>I am thankful to the Head of the Department and all the faculty members of the Department of Computer Science and Engineering for providing the necessary academic support and resources to complete this project.</p>
+  <p>I would also like to thank my college for providing me with the opportunity to work on this project as part of the Startup and Entrepreneurial Activity Assessment. This project has helped me understand how a careful study of software requirements, combined with systematic software design, implementation and testing, can produce a practical tool that solves a real problem faced by software teams and can also be developed as a small technology startup idea.</p>
+  <p>Finally, I am grateful to my family and friends who supported and motivated me during the completion of this project.</p>
+  <p style="margin-top:34px;"><b>Ashish Kumar</b><br>Roll No.: 2301650100054<br>B.Tech – Computer Science and Engineering<br>Kanpur Institute of Technology, Kanpur</p>
+</div>
+
+<!-- ================= ABSTRACT ================= -->
+<div class="frontpage">
+  <div class="fronttitle">ABSTRACT</div>
+  <p>The Software Requirements Specification (SRS) is the foundation on which a software system is designed, developed and tested. In practice, however, requirement statements are written in natural language and frequently contain vague words, subjective terms, undefined terminology, optional language and missing measurable criteria. Such ambiguous requirements are understood differently by different stakeholders, which leads to wrong implementation, repeated clarification, rework, cost overrun and defects that reach the testing phase. This project, <b>SRS Ambiguity Detector</b>, is a full-stack web application that automatically reviews SRS text and documents and reports requirement statements that may be ambiguous, incomplete or difficult to verify.</p>
+  <p>The application allows a registered user to paste requirement text or upload an SRS document in PDF, DOCX or TXT format. A deterministic rule-based detection engine — the authoritative analysis layer of the system — segments the input into individual requirements and examines each requirement with eleven detector categories, including vague quantifiers, subjective terms, missing measurable criteria, pronoun references, optional language, ambiguous operators, undefined terminology, absolute language, passive voice, missing constraints and incomplete requirements. Every finding is reported with the exact phrase that triggered it, its severity (Low, Medium, High or Critical), a reason, and a recommendation for improvement. A transparent scoring model starts from 100 and applies fixed deductions per issue (Low −5, Medium −10, High −15, Critical −20) to produce an ambiguity score, an ambiguity band and four requirement-health dimensions (measurability, specificity, clarity and completeness). An optional enhancement feature can additionally produce an overview and rewrite suggestions using the user’s own provider credentials, without ever changing the deterministic result. All analyses are saved in a PostgreSQL database, so the user can reopen reports, browse analysis history and view dashboard charts of ambiguity trends.</p>
+  <p>The system is developed using Next.js, React and TypeScript for the front end and Python with the FastAPI framework, SQLAlchemy and PostgreSQL for the back end, with authentication, email verification, document processing, privacy controls and production-oriented security measures such as Argon2id password hashing, HttpOnly session cookies, encrypted credential storage and rate limiting. The complete system was executed and verified: the automated test suites (591 back-end tests and 432 front-end tests, 1,023 tests in total) pass, and a live demonstration on a sample SRS produced a score of 73/100 (Moderate ambiguity) with 18 issues detected across 7 requirements. As a startup idea, the tool requires only modest cloud investment, follows a freemium model for students, professionals and institutions, and demonstrates how software engineering methods can convert a well-identified problem into a working, useful product.</p>
+</div>
+
+<!-- ================= TABLE OF CONTENTS ================= -->
+<div class="frontpage">
+  <div class="fronttitle">TABLE OF CONTENTS</div>
+  <p class="tocline">Declaration</p>
+  <p class="tocline">Certificate</p>
+  <p class="tocline">Acknowledgement</p>
+  <p class="tocline">Abstract</p>
+  <p class="tocline">1. Introduction</p>
+  <p class="tocline">2. Problem Statement and Motivation</p>
+  <p class="tocline">3. Objectives and Scope</p>
+  <p class="tocline">4. Literature and Background Study</p>
+  <p class="tocline">5. Existing and Proposed System</p>
+  <p class="tocline">6. Feasibility Study and Requirement Analysis</p>
+  <p class="tocline">7. System Architecture and UML Design</p>
+  <p class="tocline">8. Database Design</p>
+  <p class="tocline">9. Implementation, Deployment and Maintenance</p>
+  <p class="tocline">10. Security, Privacy, Testing and Quality Assurance</p>
+  <p class="tocline">11. Project Evaluation and Future Enhancements</p>
+  <p class="tocline">12. Conclusion</p>
+  <p class="tocline">13. References</p>
+</div>
+
+<!-- ================= CHAPTER 1 ================= -->
+<h1 class="ch">1. Introduction</h1>
+
+<h2>1.1 Background</h2>
+<p>Every software project begins with requirements. The Software Requirements Specification (SRS) document records what the system shall do, under which conditions, and to what level of quality. Developers design and code from this document, testers derive test cases from it, managers estimate cost and schedule from it, and the client accepts the final product against it. Because so much depends on this one document, the quality of the language used in it directly affects the quality of the software that is finally delivered.</p>
+<p>In real projects, requirements are written in natural language by people with different backgrounds. Natural language is expressive, but it is also imprecise. A sentence such as <i>“The system shall respond quickly”</i> appears simple, yet it does not state how quickly, under what load, or measured how. Another sentence such as <i>“It shall generate reports as needed”</i> leaves the reader guessing what “it” refers to and who decides what is “needed”. Studies of software failure repeatedly show that defects introduced during the requirements phase are the most expensive to repair, because they are discovered late — often during testing or after delivery — when design, code and test cases built upon the wrong interpretation must all be changed.</p>
+<p>Ambiguity cannot be removed from natural language completely, but a large part of it follows recognisable patterns: vague quantity words (“many”, “several”), subjective quality words (“fast”, “user-friendly”), optional wording (“may”, “if possible”), absolutes (“always”, “never”), pronouns with unclear references, and performance claims without numbers. Because these patterns are systematic, they can be detected automatically by a program. Automation does not replace the judgement of a requirements analyst; it gives the analyst an early, consistent and tireless first review, so that human effort is spent on decisions rather than on searching for careless wording.</p>
+
+<h2>1.2 Project Overview</h2>
+<p><b>SRS Ambiguity Detector</b> is a web-based application that reviews SRS text and documents and reports requirement statements that may be ambiguous, incomplete or difficult to verify. The user registers and logs in, then either pastes requirement text directly into the analyser or uploads an SRS document in PDF, DOCX or TXT format. The system segments the input into individual requirements, applies a deterministic rule-based detection engine of eleven ambiguity categories to every requirement, and presents a report containing an overall ambiguity score, severity counts, category-wise issue distribution, four requirement-health dimensions, and a requirement-by-requirement list of findings. Each finding highlights the exact phrase that was flagged and explains why it was flagged and how it can be improved.</p>
+<p>All analyses are stored in a PostgreSQL database under the user’s account. The user can reopen any saved report, search and filter the analysis history, and view a dashboard with aggregate statistics and charts. The system also provides an optional enhancement feature: if the user saves credentials of a supported external AI service in an encrypted vault, the tool can request an overview summary and rewrite suggestions for flagged requirements. This enhancement is strictly optional and additive — the detection, scoring and report are always produced by the deterministic engine and never depend on any external service. The application is responsive and works on desktop, tablet and mobile browsers.</p>
+
+<h2>1.3 Need for the Project</h2>
+<ul class="b">
+  <li>Manual review of a long SRS is slow and inconsistent; the same careless wording is easily missed on the tenth page that would be caught on the first.</li>
+  <li>Ambiguous requirements are interpreted differently by developers and testers, producing rework, disputes and defects that surface late in the life cycle.</li>
+  <li>Students, junior analysts and small teams usually have no access to costly commercial requirements-management tools that offer quality checks.</li>
+  <li>A transparent, explainable tool is needed that not only flags a problem but also states the reason and suggests how the requirement can be rewritten.</li>
+  <li>A repeatable score is needed so that the quality of a document can be compared before and after revision, and tracked over time.</li>
+  <li>SRS documents exist in different formats (PDF, DOCX, TXT), so the tool must accept documents as well as pasted text.</li>
+</ul>
+
+<h2>1.4 Organization of the Report</h2>
+<p>This report is organised as follows. Chapter 1 introduces the background and the project. Chapter 2 states the problem and the motivation, identifies the stakeholders and defines success criteria and expected outcomes. Chapter 3 records the objectives and the scope of the work. Chapter 4 reviews the relevant literature and background. Chapter 5 compares existing practice with the proposed system and presents advantages, risks and the business model. Chapter 6 studies feasibility and analyses the functional and non-functional requirements. Chapter 7 describes the system architecture and the UML design. Chapter 8 presents the database design. Chapter 9 explains the implementation, deployment and maintenance, together with output screens of the working application. Chapter 10 covers security, privacy, testing and quality assurance. Chapter 11 evaluates the project and lists future enhancements. Chapter 12 concludes the report, and Chapter 13 lists the references.</p>
+
+<h2>1.5 Objectives of the Project</h2>
+<ul class="b">
+  <li>To design and develop a web application that accepts SRS text and SRS documents (PDF, DOCX, TXT) for automatic review.</li>
+  <li>To segment the input deterministically into individual requirement statements.</li>
+  <li>To detect patterns that indicate ambiguity, incompleteness or weak verifiability using a rule-based engine of eleven detector categories.</li>
+  <li>To explain every finding with the matched phrase, severity, reason and a recommendation for improvement.</li>
+  <li>To compute a transparent ambiguity score with severity-wise deductions, an ambiguity band and four requirement-health dimensions.</li>
+  <li>To provide user accounts with registration, email verification, login and password reset, and to store all analyses in a PostgreSQL database.</li>
+  <li>To provide saved reports, a searchable analysis history and a dashboard with charts and trends.</li>
+  <li>To provide an optional enhancement that generates an overview and rewrite suggestions from the user’s own external service credentials, stored encrypted.</li>
+  <li>To protect user data through sound security and privacy measures, and to verify the complete system through automated testing and live demonstration.</li>
+</ul>
+
+<h2>1.6 Scope of the Project</h2>
+<p>The scope of this project includes a responsive web application in which a registered and verified user can paste requirement text (up to 200,000 characters) or upload one SRS document in PDF, DOCX or TXT format (up to 10 MB), run a deterministic ambiguity analysis, and view the score, issue categories, health dimensions and requirement-level findings. It includes account management (registration, email verification, login, logout, password change and reset, account deletion), saved analysis reports, paginated history with search, filter and sorting, a statistics dashboard, profile and privacy settings including data export and purge, and optional enhancement through user-configured service providers. The system is designed primarily for students, requirements analysts, developers, testers and small software teams who prepare or review SRS documents in English. The detailed inclusions and exclusions are recorded in Chapter 3.</p>
+
+<!-- ================= CHAPTER 2 ================= -->
+<h1 class="ch">2. Problem Statement and Motivation</h1>
+
+<h2>2.1 Problem Statement</h2>
+<p>Software Requirements Specifications are written in natural language and therefore commonly contain vague, subjective, incomplete and unverifiable statements. Phrases such as “fast response”, “many users”, “as needed”, “user-friendly” and “shall be processed” do not define measurable behaviour. Different stakeholders interpret the same statement in different ways, so the system that is designed, coded and tested may not be the system that was actually wanted. At present, detecting such statements depends almost entirely on slow manual reading, which is inconsistent and does not scale to long documents. There is a need for an automated, explainable and repeatable tool that performs a first-level review of an SRS, pinpoints the exact phrases that create ambiguity, explains the problem, suggests an improvement, and summarises document quality in a score that can be tracked.</p>
+
+<h2>2.2 Effects of Ambiguous Requirements</h2>
+<ul class="b">
+  <li><b>Rework and cost overrun:</b> defects whose origin lies in requirements are usually found during testing or after delivery, when correcting them requires changes in design, code and tests together.</li>
+  <li><b>Incorrect implementation:</b> developers fill the gaps left by vague statements with their own assumptions, which may differ from the client’s expectation.</li>
+  <li><b>Unverifiable testing:</b> a requirement without measurable criteria cannot be tested objectively; testers cannot decide pass or fail for “respond quickly”.</li>
+  <li><b>Estimation errors:</b> scope hidden inside words like “etc.”, “and/or” and “as needed” makes effort and schedule estimation unreliable.</li>
+  <li><b>Disputes at acceptance:</b> at delivery time, each side reads the ambiguous sentence in the way that favours it, leading to conflict and loss of trust.</li>
+  <li><b>Maintenance difficulty:</b> later changes become risky when the original intention of a requirement is not clearly recorded.</li>
+</ul>
+
+<h2>2.3 Motivation</h2>
+<p>The motivation for this project came from observing, during academic software engineering work, how much time is spent arguing about the meaning of requirement sentences that a careful first review could have corrected in minutes. Most ambiguity in requirements is not deep or philosophical; it is created by a limited set of careless wording patterns that repeat from document to document. If those patterns are known, a program can find them reliably, tirelessly and in seconds. A deterministic rule-based approach was chosen deliberately: its decisions can be explained phrase by phrase, its scoring is transparent and repeatable, and it works without depending on any external service. Building the solution as a complete web product also provided the opportunity to practise the full process of developing, testing and presenting a real software system, and to examine it as a small startup idea under this assessment.</p>
+
+<h2>2.4 Stakeholders</h2>
+<table>
+  <tr><th style="width:24%;">Stakeholder</th><th style="width:36%;">Interest in the System</th><th>Benefit Expected</th></tr>
+  <tr><td>Business / Requirements Analyst</td><td>Writes and reviews the SRS before it is approved</td><td>Faster self-review; concrete suggestions to improve each weak requirement</td></tr>
+  <tr><td>Software Developer</td><td>Implements the requirements</td><td>Clearer requirements; fewer wrong assumptions and less rework</td></tr>
+  <tr><td>Tester / QA Engineer</td><td>Derives test cases and acceptance criteria</td><td>Unverifiable statements are highlighted before test design begins</td></tr>
+  <tr><td>Project Manager</td><td>Estimates effort, schedule and risk</td><td>Score and trends give an early indication of document quality and risk</td></tr>
+  <tr><td>Client / Product Owner</td><td>Approves what will be built</td><td>A shared, objective view of requirement quality before sign-off</td></tr>
+  <tr><td>Students and Faculty</td><td>Learn software engineering and requirements writing</td><td>Practical feedback on SRS documents prepared in coursework</td></tr>
+  <tr><td>System Administrator</td><td>Operates and maintains the deployed service</td><td>Documented deployment, monitoring and maintenance procedures</td></tr>
+</table>
+
+<h2>2.5 Success Criteria</h2>
+<ul class="b">
+  <li>The system accepts pasted SRS text and SRS documents in PDF, DOCX and TXT formats and analyses them through one common pipeline.</li>
+  <li>At least ten distinct ambiguity categories are detected, each reported with the matched phrase, severity, reason and recommendation.</li>
+  <li>The ambiguity score, band and health dimensions are computed by a documented, deterministic and repeatable formula.</li>
+  <li>Users can register, verify their email, log in, save analyses, reopen reports, search history and view dashboard statistics.</li>
+  <li>One user can never access another user’s analyses, documents or credentials.</li>
+  <li>The complete system passes its automated test suites and is demonstrated live on sample SRS input.</li>
+</ul>
+
+<h2>2.6 Expected Outcomes</h2>
+<ul class="b">
+  <li>A working, deployed-quality web application for SRS ambiguity detection, usable from desktop and mobile browsers.</li>
+  <li>Earlier detection of weak requirements, leading to clearer SRS documents and reduced downstream rework for its users.</li>
+  <li>A measurable quality indicator (score, band, health dimensions) that makes improvement of a document visible and comparable.</li>
+  <li>A documented, tested and maintainable codebase that demonstrates sound software engineering practice.</li>
+  <li>A viable small-startup concept with a clear target group, low operating cost and a simple revenue model.</li>
+</ul>
+
+<!-- ================= CHAPTER 3 ================= -->
+<h1 class="ch">3. Objectives and Scope</h1>
+
+<h2>3.1 Objectives</h2>
+<ol class="n">
+  <li>To develop a web application that reviews SRS text and SRS documents and reports likely ambiguity automatically.</li>
+  <li>To implement deterministic requirement segmentation that splits input text into individual, ordered requirement statements.</li>
+  <li>To implement eleven rule-based detectors covering vague quantifiers, subjective terms, missing measurable criteria, pronoun references, optional language, ambiguous operators, undefined terminology, absolute language, passive voice, missing constraints and incomplete requirements.</li>
+  <li>To attach to every finding the matched phrase with character offsets, a severity, a human-readable reason and a recommendation.</li>
+  <li>To compute a transparent score (100 minus fixed severity deductions), ambiguity bands and four health dimensions, and to remove duplicate findings deterministically.</li>
+  <li>To provide secure user accounts: registration, email verification, login/logout, password reset and change, and account deletion.</li>
+  <li>To persist analyses, requirements, issues and documents in PostgreSQL and to provide saved reports, searchable history and a dashboard with charts.</li>
+  <li>To offer optional enhancement (overview and rewrite suggestions) through user-owned credentials of supported providers, encrypted at rest, without affecting the deterministic result.</li>
+  <li>To implement privacy lifecycle features — data export, history purge, retention preference and complete account deletion.</li>
+  <li>To verify the system with automated unit, integration and interface tests and a live end-to-end demonstration.</li>
+</ol>
+
+<h2>3.2 Scope of the System</h2>
+<h3>3.2.1 In Scope</h3>
+<ul class="b">
+  <li>Paste-text analysis of SRS content up to 200,000 characters.</li>
+  <li>Single-document upload in PDF, DOCX or TXT format up to 10 MB, with text extraction and the same analysis pipeline.</li>
+  <li>Deterministic segmentation, eleven detector categories, deduplication, scoring, bands and health dimensions.</li>
+  <li>Email/password authentication with verification, reset, secure cookie sessions and refresh-token rotation.</li>
+  <li>Saved reports, paginated history with search/filter/sort, and an aggregate dashboard.</li>
+  <li>Optional enhancement using the user’s own credentials for supported providers, with encrypted storage and clear disclosure in the report.</li>
+  <li>Profile, password, provider, privacy and retention settings; data export and account deletion.</li>
+  <li>Responsive interface for desktop, tablet and mobile, with public information pages (home, features, how it works, resources).</li>
+</ul>
+<h3>3.2.2 Out of Scope</h3>
+<ul class="b">
+  <li>Login through external identity providers (social/OAuth sign-in).</li>
+  <li>Optical Character Recognition (OCR) for scanned or image-only PDFs.</li>
+  <li>Analysis of languages other than English.</li>
+  <li>Team workspaces, shared analyses and multi-user collaboration on one document.</li>
+  <li>Batch or command-line processing for continuous-integration pipelines.</li>
+  <li>A guarantee of complete ambiguity detection: the tool reports patterns that <i>may</i> indicate ambiguity; final judgement remains with the human analyst.</li>
+</ul>
+
+<h2>3.3 Assumptions</h2>
+<ul class="b">
+  <li>The SRS content submitted for analysis is written in English and is available as text, PDF, DOCX or TXT.</li>
+  <li>Users have a modern web browser and an internet connection; the system is not required to work offline.</li>
+  <li>A finding indicates a <i>possible</i> ambiguity; a flagged phrase can occasionally be acceptable in context, and users apply their own judgement.</li>
+  <li>For the optional enhancement, the user possesses a valid credential of a supported provider; the core analysis needs no such credential.</li>
+  <li>Email delivery for verification and password reset is available through the configured mail service.</li>
+</ul>
+
+<h2>3.4 Deliverables</h2>
+<table>
+  <tr><th style="width:26%;">Deliverable</th><th>Description</th></tr>
+  <tr><td>Web application</td><td>Complete front-end and back-end source code of the SRS Ambiguity Detector</td></tr>
+  <tr><td>Database schema and migrations</td><td>PostgreSQL schema with versioned migration scripts</td></tr>
+  <tr><td>Automated test suites</td><td>Back-end (pytest) and front-end (Vitest) test suites with passing results</td></tr>
+  <tr><td>Project documentation</td><td>Architecture, database schema, API, security, detection-engine, deployment and user documentation</td></tr>
+  <tr><td>Output screenshots</td><td>Screenshots captured from the actual running application (Chapter 9)</td></tr>
+  <tr><td>Synopsis report</td><td>This document, prepared for the Startup and Entrepreneurial Activity Assessment</td></tr>
+</table>
+
+</body>
+</html>
