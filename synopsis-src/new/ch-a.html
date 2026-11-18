@@ -2,80 +2,73 @@
 <h1 class="ch">1. Introduction</h1>
 
 <h2>1.1 Background</h2>
-<p>Every software project begins with requirements: the Software Requirements Specification (SRS) records what the system shall do and to what quality; developers code from it, testers derive test cases from it, and the client accepts the product against it. Yet requirements are written in natural language, which is expressive but imprecise: <i>“The system shall respond quickly”</i> states neither how quickly, under what load, nor measured how, and <i>“It shall generate reports as needed”</i> leaves “it” and “needed” to the reader’s guess. Defects introduced during the requirements phase are the costliest to repair, since they surface late, when design, code and tests must all change. Fortunately, much ambiguity follows recognisable patterns — vague quantities, subjective words, optional wording, absolutes, unclear pronouns, and claims without measurable criteria — which a program can detect automatically, giving the analyst an early, consistent first review.</p>
+<p>Every software project begins with requirements: the Software Requirements Specification (SRS) records what the system shall do and to what quality; developers code from it and testers test against it. But requirements are written in imprecise natural language: <i>“The system shall respond quickly”</i> states neither how quickly nor under what load, and <i>“It shall generate reports as needed”</i> leaves “it” and “needed” to the reader’s guess. Defects introduced during the requirements phase are the costliest to repair, since they surface late. Fortunately, much ambiguity follows recognisable patterns — vague quantities, subjective words, optional wording, absolutes, unclear pronouns, unmeasurable claims — which a program can detect automatically.</p>
 
 <h2>1.2 Project Overview</h2>
-<p><b>SRS Ambiguity Detector</b> is a web application that reviews SRS text and documents and reports requirements that may be ambiguous, incomplete or difficult to verify. A registered user pastes requirement text or uploads a PDF, DOCX or TXT document; the system segments the input into individual requirements, applies a deterministic rule-based engine of eleven ambiguity categories, and presents a report with an overall ambiguity score, severity counts, category distribution, four requirement-health dimensions, and requirement-wise findings showing the exact flagged phrase, the reason, and a recommendation. Analyses are saved in PostgreSQL for reopening, history search and dashboard trends. An optional enhancement adds an overview and rewrite suggestions via the user’s own encrypted credentials, never affecting the deterministic result. The interface is responsive across desktop, tablet and mobile.</p>
+<p><b>SRS Ambiguity Detector</b> is a web application that reviews SRS text and documents for ambiguous, incomplete or unverifiable requirements. A registered user pastes requirement text or uploads a PDF, DOCX or TXT document; the system segments the input into individual requirements, applies a deterministic rule-based engine of eleven ambiguity categories, and presents a report with an overall score, severity counts, category distribution, four health dimensions, and findings showing the flagged phrase, reason, and recommendation. Analyses are saved in PostgreSQL for reopening and trend analysis. An optional enhancement adds an overview and rewrite suggestions via the user’s own encrypted credentials.</p>
 
 <h2>1.3 Need for the Project</h2>
 <ul class="b">
-  <li>Manual review of a long SRS is slow and inconsistent; careless wording easily escapes notice.</li>
-  <li>Ambiguous requirements are read differently by developers and testers, causing rework and late defects.</li>
-  <li>Students and small teams cannot afford commercial requirements tools with quality checks.</li>
-  <li>An explainable tool is needed that flags the phrase, states the reason, and suggests the rewrite.</li>
-  <li>A repeatable score is needed to compare document quality between drafts and track it over time.</li>
+  <li>Manual review of a long SRS is slow and inconsistent; careless wording escapes notice and is read differently by developers and testers, causing rework.</li>
+  <li>An explainable, affordable tool is needed that flags the phrase, states the reason, and suggests the rewrite.</li>
+  <li>A repeatable score is needed to compare drafts and track quality over time.</li>
 </ul>
 
 <h2>1.4 Organization of the Report</h2>
-<p>Chapter 2 states the problem, stakeholders and success criteria; Chapter 3, the objectives and scope; Chapter 4, the literature; Chapter 5, the existing and proposed systems; Chapter 6, feasibility and requirements; Chapters 7–8, architecture, UML and database design; Chapter 9, implementation, deployment and maintenance; Chapter 10, security and testing; Chapter 11, evaluation and future work; then the conclusion and references.</p>
+<p>Chapters 2–3 state the problem, objectives and scope; Chapter 4, the literature; Chapter 5, existing vs. proposed system; Chapter 6, feasibility and requirements; Chapters 7–8, architecture, UML and database design; Chapter 9, implementation; Chapter 10, security and testing; Chapter 11, evaluation and future work; then the conclusion and references.</p>
 
 <h2>1.5 Objectives of the Project</h2>
 <ul class="b">
-  <li>To accept SRS text and documents (PDF, DOCX, TXT) and segment them deterministically into requirements.</li>
-  <li>To detect ambiguity patterns with a rule-based engine of eleven detector categories.</li>
-  <li>To explain every finding with the matched phrase, severity, reason and recommendation.</li>
-  <li>To compute a transparent ambiguity score, band and four requirement-health dimensions.</li>
-  <li>To provide verified user accounts with PostgreSQL-backed reports, history and dashboard.</li>
+  <li>To accept SRS text/documents (PDF, DOCX, TXT), segment them, and detect ambiguity with eleven rule-based detectors.</li>
+  <li>To explain every finding (phrase, severity, reason, recommendation) and compute a transparent score, band and four health dimensions.</li>
+  <li>To provide verified accounts with saved reports, history and dashboard.</li>
   <li>To offer optional enhancement through encrypted user credentials, protect user data, and verify the system by automated testing and live demonstration.</li>
 </ul>
 
 <h2>1.6 Scope of the Project</h2>
-<p>The scope covers a responsive web application where a verified user can paste requirement text (up to 200,000 characters) or upload one PDF, DOCX or TXT document (up to 10 MB) and view scores, health dimensions and findings, with accounts, saved reports, history, a dashboard and privacy settings (Chapter 3 gives details).</p>
+<p>A responsive web application: verified users paste requirement text (up to 200,000 characters) or upload one PDF, DOCX or TXT document (10 MB) and view scores, health dimensions and findings (details in Chapter 3).</p>
 
 <!-- ================= CHAPTER 2 ================= -->
 <h1 class="ch">2. Problem Statement and Motivation</h1>
 
 <h2>2.1 Problem Statement</h2>
-<p>SRS documents are written in natural language and commonly contain vague, subjective, incomplete and unverifiable statements — “fast response”, “many users”, “as needed”, “user-friendly”, “shall be processed”. Different stakeholders interpret the same statement differently, so the system designed, coded and tested may not be the system wanted. Detection depends on slow, inconsistent manual reading that does not scale. An automated, explainable, repeatable tool is needed that pinpoints the exact phrases creating ambiguity, explains the problem, suggests an improvement, and summarises quality in a trackable score.</p>
+<p>SRS documents are written in natural language and commonly contain vague, subjective, incomplete and unverifiable statements — “fast response”, “many users”, “as needed”, “user-friendly”. The same statement is interpreted differently by different stakeholders. Since detection depends on slow, inconsistent manual reading, an automated, explainable, repeatable tool is needed to pinpoint such phrases and summarise quality in a trackable score.</p>
 
 <h2>2.2 Effects of Ambiguous Requirements</h2>
 <ul class="b">
-  <li><b>Rework and cost overrun:</b> requirement defects surface in testing or after delivery, when design, code and tests must change together.</li>
+  <li><b>Rework and cost overrun:</b> requirement defects surface late, when design, code and tests change together.</li>
   <li><b>Incorrect implementation:</b> developers fill gaps with their own assumptions.</li>
-  <li><b>Unverifiable testing:</b> without measurable criteria, testers cannot objectively decide pass or fail.</li>
-  <li><b>Estimation errors and acceptance disputes:</b> scope hidden in “etc.” and “and/or” makes estimates unreliable and invites disputes at acceptance.</li>
+  <li><b>Unverifiable testing:</b> without measurable criteria, pass/fail cannot be decided objectively.</li>
+  <li><b>Estimation errors and acceptance disputes:</b> hidden scope (“etc.”, “and/or”) makes estimates unreliable and invites acceptance disputes.</li>
 </ul>
 
 <h2>2.3 Motivation</h2>
-<p>The motivation came from observing, during academic software engineering work, how much time is spent arguing about the meaning of requirement sentences that a careful first review could have corrected in minutes. Most ambiguity comes from a limited set of careless wording patterns repeated across documents, which a program can find reliably and in seconds. A deterministic rule-based approach was chosen deliberately: explainable phrase by phrase, transparent in scoring, and independent of external services. Building the solution as a complete web product also provided practice in developing, testing and presenting a real, working software system.</p>
+<p>The motivation came from observing time spent arguing over requirement sentences a first review could correct in minutes. Most ambiguity comes from a few careless wording patterns repeated across documents, which a program finds reliably in seconds. A deterministic rule-based approach was chosen: explainable, transparent, independent of external services. Building it as a complete web product provided end-to-end practice in developing and testing real software.</p>
 
 <h2>2.4 Stakeholders</h2>
 <table>
   <tr><th style="width:30%;">Stakeholder</th><th>Benefit Expected</th></tr>
-  <tr><td>Business / Requirements Analyst</td><td>Faster self-review with concrete suggestions for each weak requirement</td></tr>
-  <tr><td>Software Developer</td><td>Clearer requirements; fewer wrong assumptions and less rework</td></tr>
-  <tr><td>Tester / QA Engineer</td><td>Unverifiable statements highlighted before test design begins</td></tr>
-  <tr><td>Project Manager</td><td>Score and trends give an early indication of document quality and risk</td></tr>
-  <tr><td>Client / Product Owner</td><td>A shared, objective view of requirement quality before sign-off</td></tr>
+  <tr><td>Business / Requirements Analyst</td><td>Faster self-review with suggestions</td></tr>
+  <tr><td>Software Developer</td><td>Clearer requirements; less rework</td></tr>
+  <tr><td>Tester / QA Engineer</td><td>Unverifiable statements highlighted early</td></tr>
+  <tr><td>Project Manager</td><td>Early view of document quality/risk</td></tr>
+  <tr><td>Client / Product Owner</td><td>Objective view of requirement quality</td></tr>
   <tr><td>Students and Faculty</td><td>Practical feedback on SRS documents prepared in coursework</td></tr>
-  <tr><td>System Administrator</td><td>Documented deployment, monitoring and maintenance procedures</td></tr>
-</table>
+  </table>
 
 <h2>2.5 Success Criteria</h2>
 <ul class="b">
-  <li>Pasted text and PDF, DOCX and TXT documents are analysed through one common pipeline.</li>
-  <li>At least ten ambiguity categories are detected, each with phrase, severity, reason and recommendation.</li>
-  <li>Score, band and health dimensions follow a documented, deterministic, repeatable formula.</li>
-  <li>Users can register, verify, log in, save and reopen analyses, search history and view dashboard statistics.</li>
-  <li>No user can access another user’s analyses, documents or credentials, and the system passes its test suites and a live demonstration.</li>
+  <li>Pasted text and PDF/DOCX/TXT documents share one analysis pipeline.</li>
+  <li>At least ten ambiguity categories, each with phrase, severity, reason and recommendation.</li>
+  <li>Score, band and health follow a documented, deterministic formula.</li>
+  <li>Users can register, verify, log in, save and search analyses, and view dashboards.</li>
+  <li>No user can access another’s data; the system passes its test suites and a live demonstration.</li>
 </ul>
 
 <h2>2.6 Expected Outcomes</h2>
 <ul class="b">
-  <li>A working web application for SRS ambiguity detection on desktop and mobile browsers.</li>
-  <li>Earlier detection of weak requirements, clearer SRS documents and reduced downstream rework.</li>
-  <li>A measurable quality indicator (score, band, health dimensions) making document improvement visible.</li>
-  <li>A documented, tested and maintainable codebase that demonstrates sound software engineering practice.</li>
+  <li>A working, documented, tested and maintainable SRS ambiguity detection web application.</li>
+  <li>Earlier detection of weak requirements, and a measurable quality indicator (score, band, health) making improvement visible.</li>
 </ul>
 
 <!-- ================= CHAPTER 3 ================= -->
@@ -83,14 +76,13 @@
 
 <h2>3.1 Objectives</h2>
 <ol class="n">
-  <li>To develop a web application that reviews SRS text and documents and reports likely ambiguity automatically.</li>
-  <li>To implement deterministic segmentation of input into ordered, individual requirement statements.</li>
-  <li>To implement eleven rule-based detectors: vague quantifiers, subjective terms, missing measurable criteria, pronoun references, optional language, ambiguous operators, undefined terminology, absolute language, passive voice, missing constraints and incomplete requirements.</li>
-  <li>To attach to every finding the matched phrase with character offsets, severity, reason and recommendation.</li>
-  <li>To compute a transparent score (100 minus fixed severity deductions), ambiguity bands and four health dimensions, with deterministic deduplication.</li>
-  <li>To provide secure accounts — registration, email verification, login/logout, password reset and change, account deletion — and PostgreSQL persistence with reports, history and dashboard.</li>
-  <li>To offer optional enhancement through user-owned, encrypted provider credentials, and privacy lifecycle features (export, purge, retention, deletion).</li>
-  <li>To verify the system with automated unit, integration and interface tests and a live end-to-end demonstration.</li>
+  <li>To develop a web application that reviews SRS text and documents for likely ambiguity.</li>
+  <li>To implement deterministic segmentation into ordered requirement statements.</li>
+  <li>To implement eleven rule-based detectors covering vague, subjective, optional, absolute and passive language, measurable criteria, terminology, operators, constraints and completeness.</li>
+  <li>To attach phrase, offsets, severity, reason and recommendation to every finding, and compute score, bands and health dimensions.</li>
+  <li>To provide secure accounts (registration, verification, login, password reset, account deletion) and PostgreSQL persistence.</li>
+  <li>To offer optional enhancement via encrypted user credentials, plus privacy lifecycle features.</li>
+  <li>To verify the system with automated tests and a live demonstration.</li>
 </ol>
 
 <h2>3.2 Scope of the System</h2>
@@ -99,29 +91,28 @@
   <li>Paste-text analysis up to 200,000 characters; single-document upload (PDF, DOCX, TXT) up to 10 MB with text extraction.</li>
   <li>Deterministic segmentation, eleven detectors, deduplication, scoring, bands and health dimensions.</li>
   <li>Email/password authentication with verification, reset, secure cookie sessions and refresh-token rotation.</li>
-  <li>Saved reports, paginated history with search/filter/sort, aggregate dashboard, and optional enhancement with encrypted user credentials.</li>
-  <li>Profile, password, provider, privacy and retention settings; data export and account deletion; responsive interface with public pages.</li>
+  <li>Saved reports, searchable history, dashboard, and optional enhancement with encrypted credentials.</li>
+  <li>Profile, privacy and retention settings; data export and account deletion; responsive interface.</li>
 </ul>
 <h3>3.2.2 Out of Scope</h3>
 <ul class="b">
-  <li>Login through external identity providers (social/OAuth sign-in); OCR for scanned or image-only PDFs.</li>
+  <li>External identity-provider login (OAuth); OCR for scanned PDFs.</li>
   <li>Analysis of languages other than English; team workspaces and multi-user collaboration.</li>
-  <li>Batch or command-line processing for CI pipelines. The tool reports patterns that <i>may</i> indicate ambiguity — final judgement remains with the human analyst.</li>
+  <li>Batch/CI processing. The tool reports patterns that <i>may</i> indicate ambiguity; final judgement remains with the analyst.</li>
 </ul>
 
 <h2>3.3 Assumptions</h2>
 <ul class="b">
-  <li>SRS content is in English (text, PDF, DOCX or TXT); users have a modern browser and internet connection.</li>
+  <li>SRS content is in English; users have a modern browser and internet connection.</li>
   <li>A finding indicates a <i>possible</i> ambiguity; a flagged phrase can occasionally be acceptable in context.</li>
-  <li>The optional enhancement needs the user’s own provider credential; the core analysis needs none, and email delivery is available for verification and reset.</li>
+  <li>The optional enhancement needs the user’s own provider credential; the core analysis needs none.</li>
 </ul>
 
 <h2>3.4 Deliverables</h2>
 <table>
   <tr><th style="width:28%;">Deliverable</th><th>Description</th></tr>
-  <tr><td>Web application</td><td>Complete front-end and back-end source code of the SRS Ambiguity Detector</td></tr>
+  <tr><td>Web application</td><td>Complete front-end and back-end source code</td></tr>
   <tr><td>Database schema</td><td>PostgreSQL schema with versioned migration scripts</td></tr>
-  <tr><td>Test suites</td><td>Back-end (pytest) and front-end (Vitest) suites with passing results</td></tr>
-  <tr><td>Documentation</td><td>Architecture, database, API, security, detection-engine, deployment and user documentation</td></tr>
+  <tr><td>Test suites and documentation</td><td>pytest and Vitest suites; architecture, database, API, security and deployment documentation</td></tr>
   <tr><td>Synopsis report</td><td>This document, describing the complete project</td></tr>
 </table>
