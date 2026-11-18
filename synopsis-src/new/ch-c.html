@@ -1,0 +1,73 @@
+<!-- ================= CHAPTER 7 ================= -->
+<h1 class="ch">7. System Architecture and UML Design</h1>
+
+<h2>7.1 Architecture Overview</h2>
+<p>The system follows a three-tier, layered architecture (Figure 7.1). The <b>presentation tier</b> is a Next.js (React + TypeScript) web application rendering public pages, the analyser, reports, history, dashboard and settings, communicating with the back end only through a versioned REST API. The <b>application tier</b> is a FastAPI (Python) service organised in layers — API routers receive requests, a service layer executes business logic, and a repository layer alone talks to the database through SQLAlchemy. Within this tier, the <b>deterministic detection engine</b> (segmentation, eleven detectors, deduplication, scoring) performs the complete analysis with no external dependency. The <b>data tier</b> is PostgreSQL plus a document-storage component (local disk in development, managed object storage in production). External services sit only at the edges: email for verification and reset messages, CAPTCHA for abuse protection, error monitoring, and — only when the user configures it — external AI providers for the optional enhancement.</p>
+
+<div class="figure">%%FIG71%%<div class="caption">Figure 7.1: System architecture of SRS Ambiguity Detector</div></div>
+
+<h2>7.2 Module Description</h2>
+<p>The back end is organised into modules with single responsibilities: <b>Authentication</b> (registration, email verification, login/logout, refresh-token rotation with reuse detection, password reset/change, account deletion); <b>SRS input and documents</b> (analyser for pasted text; PDF/DOCX/TXT upload with validation, extraction and storage); <b>Segmentation</b> (deterministic splitting into ordered requirements); <b>Detection engine</b> (eleven detectors, deduplication, scoring, health dimensions); <b>Report, history and dashboard</b> (saved reports with charts, searchable history, aggregate statistics); <b>Credential vault and enhancement</b> (encrypted credential storage and testing; optional overview and rewrite suggestions with disclosure); and <b>Settings and privacy</b> (profile, data export, history purge, retention, account deletion).</p>
+
+<h2>7.3 Analysis Pipeline</h2>
+<ol class="n">
+  <li>The user submits SRS text or an uploaded document; documents are validated and their text extracted.</li>
+  <li>The text is normalised and segmented deterministically into individual requirements.</li>
+  <li>All eleven detectors examine every requirement, producing findings (phrase, offsets, severity, reason, recommendation).</li>
+  <li>Findings are deduplicated: exact duplicates collapse; identical spans from two detectors keep the higher severity.</li>
+  <li>Scores are computed per requirement (100 minus fixed deductions, minimum 0); the analysis score is their mean, mapped to a band, with four health dimensions derived from the same deductions.</li>
+  <li>Analysis, requirements and issues are stored in PostgreSQL under the user’s ownership and the report is rendered; a configured provider may add the optional enhancement.</li>
+</ol>
+
+<h2>7.4 UML Diagrams</h2>
+
+<h3>7.4.1 Use Case Diagram</h3>
+<p>A <b>Visitor</b> views public pages and registers; a <b>Registered User</b> performs all working use cases. Running ambiguity detection is included by both analysis use cases (Figure 7.2).</p>
+<div class="figure">%%FIG72%%<div class="caption">Figure 7.2: Use case diagram</div></div>
+
+<h3>7.4.2 Activity Diagram</h3>
+<p>Figure 7.3 shows the analysis activity from login to the final report, including the choice between pasted text and document upload and the optional enhancement branch.</p>
+<div class="figure">%%FIG73%%<div class="caption">Figure 7.3: Activity diagram for SRS analysis</div></div>
+
+<h3>7.4.3 Data Flow Diagram</h3>
+<p>At context level (Level 0), the system is a single process exchanging credentials and SRS content for reports and dashboard data with the user, mail requests with the email service, and enhancement requests with an optional external provider. Figure 7.4 decomposes it (Level 1) into the five main processes and two principal data stores.</p>
+<div class="figure">%%FIG75%%<div class="caption">Figure 7.4: Data flow diagram — Level 1</div></div>
+
+<h3>7.4.4 Entity-Relationship Diagram</h3>
+<p>The ER diagram (Figure 7.5) shows the ten database entities and their relationships; every user-owned entity carries the owner’s identifier, structurally separating one user’s data from another’s. The schema is detailed in Chapter 8.</p>
+<div class="figure">%%FIG76%%<div class="caption">Figure 7.5: Entity-relationship diagram</div></div>
+
+<h3>7.4.5 Sequence Diagram</h3>
+<p>Figure 7.6 traces one text-analysis request through the browser, API, service layer, detection engine and database, and back to the rendered report.</p>
+<div class="figure">%%FIG77%%<div class="caption">Figure 7.6: Sequence diagram for text analysis</div></div>
+
+<!-- ================= CHAPTER 8 ================= -->
+<h1 class="ch">8. Database Design</h1>
+
+<h2>8.1 Design Principles</h2>
+<ul class="b">
+  <li>PostgreSQL 16 is used; the schema exists as SQLAlchemy models and is created and evolved only through versioned Alembic migrations.</li>
+  <li>Every table has an application-generated UUID primary key, so the schema runs identically on local and managed PostgreSQL.</li>
+  <li>Every user-owned table carries <span class="mono">owner_id</span> referencing <span class="mono">users(id)</span> with <span class="mono">ON DELETE CASCADE</span>; ownership is enforced in SQL and again in the API layer.</li>
+  <li>Status columns are short text fields guarded by CHECK constraints (not database enums), keeping migrations simple; scores are constrained to 0–100.</li>
+  <li>Timestamps are UTC (<span class="mono">TIMESTAMPTZ</span>); deletion is real deletion, and indexes follow the actual query paths (owner + time, owner + score, analysis + category).</li>
+</ul>
+
+<h2>8.2 Schema Summary</h2>
+<table>
+  <tr><th style="width:24%;">Table</th><th>Purpose and Key Columns</th></tr>
+  <tr><td class="mono">users</td><td>Accounts: <span class="mono">id</span> (PK), unique lower-cased <span class="mono">email</span>, <span class="mono">display_name</span>, Argon2id <span class="mono">password_hash</span> (never plain text), <span class="mono">is_verified</span>, <span class="mono">is_active</span>, <span class="mono">last_login_at</span>, timestamps</td></tr>
+  <tr><td class="mono">analyses</td><td>One analysis run: <span class="mono">id</span>, <span class="mono">owner_id</span> (FK), nullable <span class="mono">document_id</span> (FK), <span class="mono">title</span>, <span class="mono">source_type</span> (text/document), <span class="mono">status</span>, normalised <span class="mono">source_text</span>, <span class="mono">score</span> 0–100, <span class="mono">band</span>, <span class="mono">score_breakdown</span> and <span class="mono">health</span> (JSONB), requirement/issue counters, optional-enhancement outcome fields</td></tr>
+  <tr><td class="mono">requirements</td><td>Segmented requirements: <span class="mono">id</span>, <span class="mono">owner_id</span>, <span class="mono">analysis_id</span> (FK), <span class="mono">position</span> (unique per analysis), detected <span class="mono">identifier</span> (e.g., FR-001), <span class="mono">section</span>, <span class="mono">text</span>, <span class="mono">score</span>, worst <span class="mono">severity</span>, issue counter, <span class="mono">suggested_rewrite</span></td></tr>
+  <tr><td class="mono">issues</td><td>Findings: <span class="mono">id</span>, <span class="mono">owner_id</span>, <span class="mono">analysis_id</span>, <span class="mono">requirement_id</span> (FKs), <span class="mono">detector_id</span>, <span class="mono">category</span>, <span class="mono">severity</span> (low/medium/high/critical), matched <span class="mono">phrase</span>, <span class="mono">start_offset</span>/<span class="mono">end_offset</span> within the requirement (ordered, CHECK), <span class="mono">reason</span>, <span class="mono">recommendation</span></td></tr>
+  <tr><td class="mono">documents</td><td>Uploads: owner, original filename, verified file type, MIME type, byte size, SHA-256 digest, server-generated storage path, extracted character count, extraction status</td></tr>
+  <tr><td class="mono">ai_provider_credentials</td><td>Provider credentials: owner, provider, label, <b>encrypted</b> key, fingerprint and last four characters for display, enabled/default flags, fallback order, last test result; the plain key is never stored or returned</td></tr>
+  <tr><td class="mono">refresh_tokens</td><td>Hashed refresh tokens with expiry and rotation/revocation data for session management</td></tr>
+  <tr><td class="mono">email_verification_tokens</td><td>Hashed, expiring tokens for email verification</td></tr>
+  <tr><td class="mono">password_reset_tokens</td><td>Hashed, expiring, single-use tokens for password reset</td></tr>
+  <tr><td class="mono">user_preferences</td><td>One row per user: privacy preferences such as history retention days</td></tr>
+</table>
+
+<h2>8.3 Normalisation, Integrity and Protection</h2>
+<p>The schema is in third normal form: user facts are stored once in <span class="mono">users</span>, an analysis stores only its own attributes and foreign keys, requirements belong to exactly one analysis, and issues to exactly one requirement — no fact is repeated across rows. Two documented exceptions serve read performance: counters and worst severity are denormalised onto parent rows, and two small JSONB summaries (<span class="mono">score_breakdown</span>, <span class="mono">health</span>) are stored with the analysis; both are written in the same transaction as the findings they summarise, so they cannot disagree with the detailed data.</p>
+<p>Integrity is protected at three levels: database constraints reject invalid rows even if application code errs; the repository layer always filters by owner, so cross-user access returns “not found”; and service-layer transactions commit or roll back as a unit. Passwords exist only as Argon2id hashes, session and reset tokens only as hashes, and provider keys only as ciphertext, so a database leak exposes no usable secret. Deleting an analysis removes its requirements and issues and purges an orphaned uploaded file; deleting the account removes all of the user’s rows and files.</p>
